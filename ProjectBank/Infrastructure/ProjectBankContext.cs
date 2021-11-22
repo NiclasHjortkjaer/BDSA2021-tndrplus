@@ -7,6 +7,4 @@ public class ProjectBankContext : DbContext
     public DbSet<Project> Projects {get; set;}
 
 
-
-
 }

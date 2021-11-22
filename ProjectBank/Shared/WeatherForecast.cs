@@ -1,3 +1,5 @@
+using System;
+
 namespace ProjectBank.Shared;
 
 public class WeatherForecast
