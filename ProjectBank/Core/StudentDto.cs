@@ -1,19 +1,21 @@
 namespace Core;
 
 public record StudentDto (
+    int Id,
+    Degree CurrentDegree,
     Task<IEnumerable<ProjectDto>> SavedProjects,
     float AcquiredETCS,
-    Level StudyLevel
-) : AccountDto;
+    Degree StudyLevel
+) : AccountDto (Id, CurrentDegree);
 
 public record StudentCreateDto : AccountCreateDto {
     public IEnumerable<ProjectDto> SavedProjects { get; init; }
 
-    public float AcquiredETCS{get; init;}
+    public float AcquiredETCS { get; init; }
 
-    public Level StudyLevel{get; init;}
+    public Degree StudyLevel { get; init; }
 }
 
 public record StudentUpdateDto : AccountCreateDto{
-    public int Id {get; init;}
+    public int Id { get; init; }
 }

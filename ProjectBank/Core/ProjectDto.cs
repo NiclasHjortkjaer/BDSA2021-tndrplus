@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Core;
 
 public record ProjectDto(
@@ -30,7 +32,7 @@ public record ProjectCreateDto
     [StringLength(500)]
     public string Body { get; init; }
     
-    public Degree RequiredDegree {}
+    public Degree RequiredDegree { get; init; }
     
     public float ECTS {get; init;}
 
