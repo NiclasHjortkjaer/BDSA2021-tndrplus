@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Infrastructure;
+namespace ProjectBank.Infrastructure;
 
 public class ProjectBankContext : DbContext, IProjectBankContext
 {

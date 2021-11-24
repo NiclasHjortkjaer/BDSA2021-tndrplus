@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace Core;
+namespace ProjectBank.Core;
 
 public record ProjectDto(
     int Id,

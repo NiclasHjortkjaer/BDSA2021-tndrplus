@@ -1,4 +1,4 @@
-namespace Core;
+namespace ProjectBank.Core;
 
 public record StudentDto (
     int Id,
