@@ -2,9 +2,9 @@ namespace Infrastructure;
 
 public class ProjectBankContext : DbContext
 {
-    public DbSet<Account> Accounts {get; set;}
-    public DbSet<Keyword> Keywords {get; set;}
-    public DbSet<Project> Projects {get; set;}
+    public DbSet<Account> Accounts => Set<Account>();
+    public DbSet<Keyword> Keywords => Set<Keyword>();
+    public DbSet<Project> Projects => Set<Project>();
 
 
 }
