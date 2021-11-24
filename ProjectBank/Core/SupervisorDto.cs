@@ -7,7 +7,7 @@ public record SupervisorDto (
 ) : AccountDto (Id, CurrentDegree);
 
 public record SupervisorCreateDto : AccountCreateDto {
-    public IEnumerable<ProjectDto> Projects { get; init; }
+    public IEnumerable<ProjectDto>? Projects { get; init; }
 }
 
 public record SupervisorUpdateDto : AccountCreateDto{
