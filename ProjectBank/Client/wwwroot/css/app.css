@@ -4,6 +4,11 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+main{
+    background-color: #212121;
+    color: #ffffff;
+}
+
 h1:focus {
     outline: none;
 }
@@ -13,7 +18,7 @@ a, .btn-link {
 }
 
 .btn-primary {
-    color: #fff;
+    color: #ffffff;
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
