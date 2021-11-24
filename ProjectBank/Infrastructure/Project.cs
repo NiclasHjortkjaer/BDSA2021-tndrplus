@@ -2,12 +2,17 @@ namespace ProjectBank.Infrastructure;
 
 public class Project
 {
+    public Project(string title)
+    {
+        Title = title;
+    }
+
     public int Id { get; set; }
 
     public int? AuthorId { get; set; }
     public Account? Author { get; set; }
 
-    public Degree Degree { get; set; }
+    public Degree? Degree { get; set; }
     
     [StringLength(100)]
     public string Title { get; set; }

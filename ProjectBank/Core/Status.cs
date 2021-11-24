@@ -5,6 +5,8 @@ namespace ProjectBank.Core
         Created,
         Updated,
         Deleted,
-        NotFound
+        NotFound,
+        BadRequest,
+        Conflict
     }
 }

@@ -1,4 +1,4 @@
-namespace ProjectBank.Core;
+/*namespace ProjectBank.Core;
 
 public record StudentDto (
     int Id,
@@ -18,4 +18,4 @@ public record StudentCreateDto : AccountCreateDto {
 
 public record StudentUpdateDto : AccountCreateDto{
     public int Id { get; init; }
-}
+}*/
