@@ -8,13 +8,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBank.Client", "Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBank.Shared", "Shared\ProjectBank.Shared.csproj", "{55B0DBE4-55BA-4A8B-9FA3-9521595BE325}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{790D1729-68D6-424C-9CF4-6DD42B61E881}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBank.Infrastructure", "Infrastructure\Infrastructure.csproj", "{790D1729-68D6-424C-9CF4-6DD42B61E881}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{DF7C2EF6-ACA3-4954-A3EA-F0AE692B8C0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBank.Core", "Core\Core.csproj", "{DF7C2EF6-ACA3-4954-A3EA-F0AE692B8C0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.test", "Infrastructure.test\Infrastructure.test.csproj", "{52C27F9A-2ECC-4BAD-B1E5-D862A70E1144}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBank.Infrastructure.test", "Infrastructure.test\Infrastructure.test.csproj", "{52C27F9A-2ECC-4BAD-B1E5-D862A70E1144}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.test", "Server.test\Server.test.csproj", "{D7210837-1B71-495D-B1FB-DAA13564608E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBank.Server.test", "Server.test\Server.test.csproj", "{D7210837-1B71-495D-B1FB-DAA13564608E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
