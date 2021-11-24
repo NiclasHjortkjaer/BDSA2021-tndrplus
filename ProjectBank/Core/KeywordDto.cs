@@ -1,17 +1,18 @@
-namespace Core;
+namespace ProjectBank.Core;
 
 public record KeywordDto(
     int Id,
+    string Word);
+public record KeywordDetailsDto(
+    int Id,
     string Word,
-    string Project
-);
+    ISet<ProjectDto> Projects);
 public record KeywordCreateDto
 {
     [StringLength(50)]
     public string Word { get; init; }
-    
-    [StringLength(100)]
-    public string Project { get; init; }
+
+    private ISet<ProjectDto> Projects { get; init; } = null!;
 }
 
 public record KeywordUpdateDto : KeywordCreateDto {

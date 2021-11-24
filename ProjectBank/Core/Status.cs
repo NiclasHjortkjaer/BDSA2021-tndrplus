@@ -1,10 +1,12 @@
-namespace Core
+namespace ProjectBank.Core
 {
     public enum Status
     {
         Created,
         Updated,
         Deleted,
-        NotFound
+        NotFound,
+        BadRequest,
+        Conflict
     }
 }

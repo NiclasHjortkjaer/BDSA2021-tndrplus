@@ -1,13 +1,19 @@
-namespace Core;
+namespace ProjectBank.Core;
 
 public record AccountDto(
     int Id,
-    Degree CurrentDegree
-);
+    string AzureAdToken,
+    AccountType AccountType,
+    ISet<ProjectDto> SavedProjects);
 
 public record AccountCreateDto
 {
-    public Degree CurrentDegree { get; init; }
+    public string AzureAAdToken { get; init; }
+    
+    public AccountType AccountType { get; init; }
+    
+    public ISet<ProjectDto> SavedProjects { get; init; } = null!;
+
 }
 
 public record AccountUpdateDto : AccountCreateDto
