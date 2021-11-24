@@ -1,4 +1,4 @@
-namespace Core;
+/*namespace Core;
 
 public record SupervisorDto (
     int Id,
@@ -12,4 +12,4 @@ public record SupervisorCreateDto : AccountCreateDto {
 
 public record SupervisorUpdateDto : AccountCreateDto{
     public int Id {get; init;}
-}
+}*/

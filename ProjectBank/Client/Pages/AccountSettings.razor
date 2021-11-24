@@ -1,0 +1,108 @@
+<!---- ROUTING ---->
+@page "/account/settings"
+
+<!---- USINGS ATTRIBUTES AND INJECTIONS  ---->
+@inject NavigationManager uriHelper;
+
+<PageTitle>Settings</PageTitle>
+
+<h2>Profile:</h2>
+<RadzenFieldset class="mb-4">
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Name:" />
+        </div>
+        <div class="col-md-9">
+            <RadzenTextBox Disabled=true Placeholder=@userName style="width: 50%;" Name="Name"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Email:" />
+        </div>
+        <div class="col-md-9">
+            <RadzenTextBox Disabled=true Placeholder=@userEmail style="width: 50%;" Name="Email"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Role:" />
+        </div>
+        <div class="col-md-9">
+            <RadzenDropDown @bind-value="currentRole" Disabled=@editing AllowClear="true" TValue="string" Style="width:300px" Data=@roleArray/>
+        </div>
+    </div>
+</RadzenFieldset>
+
+<RadzenButton Click=@Edit Text="Edit profile"/>
+<RadzenButton style="width: 160px" IsBusy=@busyProfile Click=@OnBusyClickProfile Text="Save" />
+
+<div class="row">
+    <div class="col-xl-6">
+        <h3 style="margin-top: 2rem">Change password:</h3>
+    </div>
+</div>
+
+<RadzenFieldset class="mb-4">
+    <div class="row mb-4">
+        <div class="align-items-center d-flex col-md-3">
+                <RadzenPassword Placeholder="Enter current password..."/>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenPassword Placeholder="Enter new pasword..."/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenPassword Placeholder="Repeat new password..."/>
+        </div>
+    </div>
+</RadzenFieldset>
+
+<RadzenButton style="width: 160px" IsBusy=@busyPassword Click=@OnBusyClickPassword Text="Save" />
+    
+@code {
+
+    //VARIABLES
+    bool editing = true;
+    bool busyProfile;
+    bool busyPassword;
+
+    //DATA NOT YET LINKED TO CONTEXT
+    string[] roleArray = new string[] {"Student", "Supervisor"};
+    
+    string userName = "ABC";
+    string userEmail = "abc@itu.dk";
+    string currentRole = "Student";
+    
+    //PAGE SCRIPTS
+    void Edit()
+    {
+        editing = !editing;
+    }
+
+    async Task OnBusyClickProfile()
+    {
+        busyProfile = true;
+        await Task.Delay(2000);
+        UpdateProfile();
+        busyProfile = false;
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+    }
+
+    async Task OnBusyClickPassword()
+    {
+        busyPassword = true;
+        await Task.Delay(2000);
+        UpdateProfile();
+        busyPassword = false;
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+    }
+
+    void UpdateProfile()
+    {
+        //...
+    }
+}

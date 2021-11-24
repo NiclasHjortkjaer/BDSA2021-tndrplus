@@ -4,7 +4,7 @@ namespace Core;
 
 public record ProjectDto(
     int Id,
-    SupervisorDto? Author,
+    AccountDto? Author,
     string Type,
     string Title,
     IEnumerable<KeywordDto> Keyword,
@@ -16,7 +16,7 @@ public record ProjectDto(
 
 public record ProjectCreateDto
 {
-    public SupervisorDto? Author { get; init; }
+    public AccountDto? Author { get; init; }
     
     [StringLength(50)]
     public string Type { get; init; }
