@@ -143,3 +143,47 @@ main[b-x2ogf7iy3i] {
         display: block;
     }
 }
+
+hr{
+    background-color:#d7d7d7;
+    width: 80%;
+    margin: 0 10% 0 10%;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform: -webkit-translate(-50%, -50%);
+    transform: -moz-translate(-50%, -50%);
+    transform: -ms-translate(-50%, -50%);
+    color:darkred;
+  }
+
+  
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #212121;
+    opacity: 1; /* Firefox */
+}
+      
+::-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #212121;
+}
+      
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: #212121;
+}
+
+.favoriteList ul{
+    color: #d7d7d7;
+    cursor: pointer;
+    margin-top: 2%;
+    margin-bottom: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.favoriteList ul:hover{
+    color: #fff;
+}

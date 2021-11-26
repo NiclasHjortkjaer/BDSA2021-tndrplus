@@ -15,15 +15,15 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
+            <NavLink class="nav-link" href="search">
                 <span class="oi oi-magnifying-glass" aria-hidden="true"></span> Search
             </NavLink>
         </div>
-        <div class="nav-item px-3">
+        @*<div class="nav-item px-3">
             <NavLink class="nav-link" href="fetchdata">
                 <span class="oi oi-wrench" aria-hidden="true"></span> Settings
             </NavLink>
-        </div>
+        </div>*@
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="account/settings">
                 <span class="oi oi-pencil" aria-hidden="true"></span> Settings
@@ -31,8 +31,25 @@
         </div>
     </nav>
 </div>
+<hr>
+<br>
+<div class="favoriteList" >
+    @if (favorites == null)
+    {
+        
+    }else{
+        @foreach (var favorite in favorites)
+        {
+            <ul onclick="window.open(https://youtube.com)">@favorite</ul>   
+        }
+    }
+</div>
 
 @code {
+    private string[]? favorites = {"Test", "Fun", "øl-tid"};
+
+
+
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -41,4 +58,7 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    
+
 }
