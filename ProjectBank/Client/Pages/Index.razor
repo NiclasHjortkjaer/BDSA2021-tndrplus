@@ -2,8 +2,20 @@
 
 <PageTitle>ProjectBank - Browse</PageTitle>
 
-<h1>Hello, world!</h1>
+    @if (keywords == null)
+    {
+        
+    }else{
+        <div class="grid-container">
+            @foreach (var keyword in keywords)
+            {
+                <button class="grid-item" style="background: rgb ((new Random().Next(0, 255), (new Random().Next(0, 255), (new Random().Next(0, 255)))" >@keyword</button> @*Random color generat not working!*@
+            }
+        </div>
+    }
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    private string[]? keywords = {"AI", "Software", "Database", "Security",
+         "Machine Learning", "API", ".Net", "Keyword1", "Keyword2", "Keyword3", 
+         "Keyword4", "Keyword5", "Keyword6", "Keyword7", "Keyword8", "Keyword9"};
+}
