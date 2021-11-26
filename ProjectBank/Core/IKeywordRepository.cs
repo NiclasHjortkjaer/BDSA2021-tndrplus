@@ -5,6 +5,6 @@ public interface IKeywordRepository
     Task<KeywordDto> CreateAsync(KeywordCreateDto keyword);
     Task<KeywordDto> ReadAsync(int keywordId);
     Task<IReadOnlyCollection<KeywordDto>> ReadAllAsync();
-    Task<Status> Update(int id, KeywordUpdateDto keyword);
-    Task<Status> Delete(int keywordId);
+    Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword);
+    Task<Status> DeleteAsync(int keywordId);
 }
