@@ -8,7 +8,7 @@ public class ProjectBankContext : DbContext, IProjectBankContext
     public DbSet<Keyword> Keywords => Set<Keyword>();
     public DbSet<Project> Projects => Set<Project>();
 
-    public ProjectBankContext(DbContextOptions<ProjectBankContext> options) : base(options){}
+    public ProjectBankContext(DbContextOptions<ProjectBankContext> options) : base(options){ }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
