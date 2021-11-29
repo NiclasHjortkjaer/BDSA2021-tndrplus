@@ -17,10 +17,11 @@ public class ProjectRepository : IProjectRepository
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync() =>
+        (await _context.Projects
+            .Select(p => new ProjectDto(p.Id, p.Author.AzureAdToken, p.Title, p.Description))
+            .ToListAsync())
+            .AsReadOnly();
 
     public Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
     {
