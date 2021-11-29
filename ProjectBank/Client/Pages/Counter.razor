@@ -1,18 +1,23 @@
-﻿@page "/counter"
+﻿@page "/search"
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>ProjectBank - Search</PageTitle>
 
-<h1>Counter</h1>
+<div class="searchBar_wrapper">
+    <input type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
+    <button class="btn_search" onclick="#"> <span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
+</div>
+
+
+
+@* <h1>Counter</h1>
 
 <p role="status">Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
 
 @code {
-    private int currentCount = 0;
+    @*private void search(string i){
+        string input = i;
 
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
+    }*@
 }
