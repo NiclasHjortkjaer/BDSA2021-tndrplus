@@ -10,7 +10,7 @@ public record AccountDetailsDto(
     int Id,
     string AzureAdToken,
     AccountType AccountType,
-    ISet<string> SavedProjects
+    ISet<string>? SavedProjects
 );
 
 public record AccountCreateDto
@@ -19,7 +19,7 @@ public record AccountCreateDto
     
     public AccountType AccountType { get; init; }
     
-    public ISet<string> SavedProjects { get; init; } = null!;
+    public ISet<string>? SavedProjects { get; init; }
 
 }
 

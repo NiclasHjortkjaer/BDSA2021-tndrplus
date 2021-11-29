@@ -20,18 +20,24 @@ public class KeywordRepositoryTests : IDisposable
         context.Database.EnsureCreated();
 
         //seed some data
-        var unknownAccount = new Account("UnknownToken") {Id = 1};
+        var unknownAccount = new Account("UnknownToken") {Id = 1, AccountType = AccountType.Student};
         var aiKeyword = new Keyword("AI") {Id = 1};
         var machineLearnKey = new Keyword("Machine Learning") {Id = 2};
+        var saveListAccount = new Account("AuthorToken") {Id = 3,  AccountType = AccountType.Student};
         var aiProject = new Project("Artificial Intelligence 101")
-        {
-            Id = 1, AuthorId = 1, Author = unknownAccount, Keywords = new[] {aiKeyword, machineLearnKey}, Ects = 7,
-            Description = "A dummies guide to AI. Make your own AI friend today"
+        { 
+            Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey},
+            Ects = 7, Description = "A dummies guide to AI. Make your own AI friend today", Created = DateTime.Now, Accounts = new[] {saveListAccount}
         };
-        var saveListAccount = new Account("AuthorToken") {Id = 3, SavedProjects = new[] {aiProject}};
-        context.Projects.Add(aiProject);
-        context.Accounts.AddRange(saveListAccount, new Account("Token2") {Id = 2});
+        var mlProject = new Project("Machine Learning for dummies")
+        {
+            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, Created = DateTime.Now
+            ,Keywords = new[] {machineLearnKey}
+             
+        };
+        context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
+        context.Accounts.Add( new Account("Token2") { Id = 2 , AccountType = AccountType.Supervisor});
         context.SaveChanges();
 
         //init dbContext and Repo
