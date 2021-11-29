@@ -7,14 +7,7 @@ public record KeywordDetailsDto(
     int Id,
     string Word,
     ISet<ProjectDto> Projects);
-public record KeywordCreateDto
-{
-    [StringLength(50)]
-    public string Word { get; init; }
 
-    private ISet<ProjectDto> Projects { get; init; } = null!;
-}
+public record KeywordCreateDto([Required, StringLength(50)] string word);
 
-public record KeywordUpdateDto : KeywordCreateDto {
-    public int Id { get; init; }
-}
+public record KeywordUpdateDto(int Id, [Required, StringLength(50)] string word ) : KeywordCreateDto(word);
