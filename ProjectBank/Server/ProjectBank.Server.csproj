@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>ProjectBank.Server-8CDC7A44-CD58-4332-8C34-28D0F904B9A1</UserSecretsId>
     <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
+    <UserSecretsId>3ae7e6a8-22f2-46bc-9919-13c3cf27cd17</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Core\ProjectBank.Core.csproj" />
     <ProjectReference Include="..\Client\ProjectBank.Client.csproj" />
     <ProjectReference Include="..\Shared\ProjectBank.Shared.csproj" />
+    <ProjectReference Include="..\Infrastructure\ProjectBank.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

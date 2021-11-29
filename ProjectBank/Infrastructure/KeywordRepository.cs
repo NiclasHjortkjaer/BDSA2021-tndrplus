@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace ProjectBank.Infrastructure;
 
 public class KeywordRepository : IKeywordRepository
@@ -8,28 +10,84 @@ public class KeywordRepository : IKeywordRepository
     {
         _context = context;
     }
-    public Task<KeywordDto> CreateAsync(KeywordCreateDto keyword)
+    public async Task<KeywordDto> CreateAsync(KeywordCreateDto keyword)
     {
-        throw new NotImplementedException();
+        var conflict = await _context.Keywords
+            .Where(k => k.Word == keyword.word)
+            .Select(k => new KeywordDto(k.Id, k.Word))
+            .FirstOrDefaultAsync();
+
+        if (conflict != null)
+        {
+            return null!;
+        }
+        var entity = new Keyword(keyword.word);
+        _context.Keywords.Add(entity);
+        await _context.SaveChangesAsync();
+        return new KeywordDto(entity.Id, entity.Word);
     }
 
-    public Task<KeywordDto> ReadAsync(int keywordId)
+    public async Task<KeywordDto> ReadAsync(int keywordId)
     {
-        throw new NotImplementedException();
+        var keywords = from k in _context.Keywords
+            where k.Id == keywordId
+            select new KeywordDto(
+                k.Id,
+                k.Word
+            );
+
+        return await keywords.FirstOrDefaultAsync();
     }
 
-    public Task<IReadOnlyCollection<KeywordDto>> ReadAllAsync()
+    public async Task<IReadOnlyCollection<KeywordDto>> ReadAllAsync() =>
+        (await _context.Keywords
+            .Select(k => new KeywordDto(k.Id, k.Word))
+            .ToListAsync())
+            .AsReadOnly();
+    
+
+    public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
     {
-        throw new NotImplementedException();
+        var conflict = await _context.Keywords
+            .Where(k => k.Id != keyword.Id)
+            .Where(k => k.Word == keyword.word)
+            .Select(k => new KeywordDto(k.Id, k.Word))
+            .AnyAsync();
+        if (conflict)
+        {
+            return Status.Conflict;
+        }
+
+        var entity = await _context.Keywords.FirstOrDefaultAsync(k => k.Id == id);
+        
+        if (entity == default)
+        {
+            return Status.NotFound;
+        }
+
+        entity.Word = keyword.word;
+        await _context.SaveChangesAsync();
+        return Status.Updated;
     }
 
-    public Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
+    public async Task<Status> DeleteAsync(int keywordId)
     {
-        throw new NotImplementedException();
-    }
+        var keyword = 
+            await _context.Keywords
+                .Include(k => k.Projects)
+                .FirstOrDefaultAsync(k => k.Id == keywordId);
+        if (keyword == null)
+        {
+            return Status.NotFound;
+        }
 
-    public Task<Status> DeleteAsync(int keywordId)
-    {
-        throw new NotImplementedException();
+        if (keyword.Projects.Any())
+        {
+            return Status.Conflict;
+        }
+        _context.Keywords.Remove(keyword);
+        await _context.SaveChangesAsync();
+        
+        return Status.Deleted;
     }
 }
