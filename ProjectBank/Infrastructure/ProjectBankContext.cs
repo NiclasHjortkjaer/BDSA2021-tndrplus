@@ -29,6 +29,15 @@ public class ProjectBankContext : DbContext, IProjectBankContext
             .Entity<Keyword>()
             .HasIndex(k => k.Word)
             .IsUnique();
+        modelBuilder
+            .Entity<Project>()
+            .HasOne(p => p.Author)
+            .WithMany(a => a.AuthoredProjects)
+            .HasForeignKey(p => p.AuthorId);
+        modelBuilder
+            .Entity<Account>()
+            .HasMany(a => a.SavedProjects)
+            .WithMany(p => p.Accounts);
     }
 
 }

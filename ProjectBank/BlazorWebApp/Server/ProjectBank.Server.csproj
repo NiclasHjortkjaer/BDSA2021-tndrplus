@@ -17,17 +17,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\ProjectBank.Core.csproj" />
-    <ProjectReference Include="..\Client\ProjectBank.Client.csproj" />
-    <ProjectReference Include="..\Shared\ProjectBank.Shared.csproj" />
-    <ProjectReference Include="..\Infrastructure\ProjectBank.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.0" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.Identity.Web" Version="1.16.0" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\ProjectBank.Core.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\ProjectBank.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Shared\ProjectBank.Shared.csproj" />
+    <ProjectReference Include="..\Client\ProjectBank.Client.csproj" />
   </ItemGroup>
 
 </Project>
