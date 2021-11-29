@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>ProjectBank</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
     <base href="/" />
+    <link rel="stylesheet" href="./loader.css">
+    <link rel="stylesheet" href="searchbar.css">
+    <link rel="stylesheet" href="browse.css">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
     <link href="ProjectBank.Client.styles2.css" rel="stylesheet" />
-    <!-- Snippet for including Radzen theme. -->
-    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default.css">
+    
+
+    <link rel="icon" href="Icon(New).png">
+    <title>ProjectBank</title>
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="centered">
+            <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -24,8 +33,6 @@
     </div>
     <script src="_content/Microsoft.Authentication.WebAssembly.Msal/AuthenticationService.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
-    <!-- Snippet for including Radzen js. -->
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 </body>
-
 </html>
