@@ -13,7 +13,7 @@ public class AccountRepository : IAccountRepository
         var newAccount = new Account(account.AzureAAdToken)
         {
             AccountType = account.AccountType,
-            SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync();//Ved ikke hvad der er galt her
+            SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync()
         };
         _context.Accounts.Add(newAccount);
         await _context.SaveChangesAsync();
@@ -43,15 +43,37 @@ public class AccountRepository : IAccountRepository
             .ToListAsync())
             .AsReadOnly();
 
-    public Task<Status> UpdateAsync(int id, AccountUpdateDto account)
+    public async Task<Status> UpdateAsync(int id, AccountUpdateDto account)
     {
-        throw new NotImplementedException();
+        var entitiy = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+
+        if (entitiy == null)
+        {
+            return Status.NotFound;
+        }
+
+        entitiy.AccountType = account.AccountType;
+        entitiy.AzureAdToken = account.AzureAAdToken;
+        entitiy.SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync();
+        
+        await _context.SaveChangesAsync();
+        return Status.Updated;
     }
 
-    public Task<Status> DeleteAsync(int accountId)
+    public async Task<Status> DeleteAsync(int accountId)
     {
-        throw new NotImplementedException();
+        var account = await _context.Accounts.FindAsync(accountId);
+        if (account == null)
+        {
+            return Status.NotFound;
+        }
+
+        _context.Accounts.Remove(account);
+        await _context.SaveChangesAsync();
+        
+        return Status.Deleted;
     }
+    
     private async IAsyncEnumerable<Project> GetSavedProjectsAsync(IEnumerable<string> projects)
     {
         var existing = await _context.Projects.Where(p => projects.Contains(p.Title)).ToDictionaryAsync(p => p.Title);

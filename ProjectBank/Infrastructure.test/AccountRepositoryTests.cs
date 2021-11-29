@@ -1,10 +1,15 @@
-
 namespace ProjectBank.Infrastructure.test;
 
 public class AccountRepositoryTests
 {
     private readonly IProjectBankContext _context;
+    
     private readonly IAccountRepository _repo;
+    
+    //detect redundant calls
+    private bool _disposedValue;
+
+    ~AccountRepositoryTests() => Dispose(false);
     public AccountRepositoryTests()
     {
         //establish connection
@@ -72,5 +77,82 @@ public class AccountRepositoryTests
         Assert.Equal("Create", account.AzureAdToken);
         Assert.Equal(AccountType.Supervisor, account.AccountType);
         Assert.True(account.SavedProjects.SetEquals(new[] {"Ez OOP"}));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_returnes_notfound_given_invalid_Id()
+    {
+        var actual = await _repo.DeleteAsync(111);
+        
+        Assert.Equal(Status.NotFound, actual);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_returns_deleted_given_id()
+    {
+        var actual = await _repo.DeleteAsync(1);
+        Assert.Equal(Status.Deleted, actual);
+    }
+    [Fact]
+    public async Task DeleteAsync_Deletes_given_valid_id()
+    {
+        var status = await _repo.DeleteAsync(1);
+
+        Assert.Equal(Status.Deleted, status);
+        
+        Assert.Null(await _context.Accounts.FindAsync(1));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_given_invalid_Account_returns_notFound()
+    {
+        var account = new AccountUpdateDto
+        {
+            Id = 111,
+            AzureAAdToken = "UpdateToken",
+            AccountType = AccountType.Supervisor,
+            SavedProjects = new HashSet<string>()
+        };
+        var status = await _repo.UpdateAsync(111, account);
+        Assert.Equal(Status.NotFound, status);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_given_valid_Id_Updates_account()
+    {
+        var account = new AccountUpdateDto
+        {
+            Id = 1,
+            AzureAAdToken = "UpdatedToken",
+            AccountType = AccountType.Student,
+            SavedProjects = new HashSet<string>()
+        };
+        var status = await _repo.UpdateAsync(1, account);
+        Assert.Equal(Status.Updated, status);
+        var actual = await _repo.ReadAsync(1);
+
+        Assert.Equal(account.AccountType, actual.AccountType);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing)
+            {
+                // dispose managed state (managed objects)
+                _context.Dispose();
+            }
+            // free unmanaged resources (unmanaged objects) and override finalizer
+            // set large fields to null
+            _disposedValue = true;
+        }
+    }
+
+    //From BDSA2021.
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
