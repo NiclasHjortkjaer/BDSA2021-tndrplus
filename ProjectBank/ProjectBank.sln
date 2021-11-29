@@ -2,9 +2,9 @@
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 16.0.0.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBank.Server", "BlazorWebApp\Server\ProjectBank.Server.csproj", "{C7A7526C-3874-4581-BA4C-C652E5799D8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBank.Server", "Server\ProjectBank.Server.csproj", "{C7A7526C-3874-4581-BA4C-C652E5799D8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBank.Client", "BlazorWebApp\Client\ProjectBank.Client.csproj", "{849D5A52-B19E-4503-9871-440B52312ACF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBank.Client", "Client\ProjectBank.Client.csproj", "{849D5A52-B19E-4503-9871-440B52312ACF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBank.Shared", "Shared\ProjectBank.Shared.csproj", "{55B0DBE4-55BA-4A8B-9FA3-9521595BE325}"
 EndProject

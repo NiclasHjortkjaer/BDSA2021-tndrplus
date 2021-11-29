@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\search(colored).png" />
+    <ProjectReference Include="..\Shared\ProjectBank.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\ProjectBank.Shared.csproj" />
+    <Content Remove="wwwroot\search(colored).png" />
   </ItemGroup>
 
 </Project>
