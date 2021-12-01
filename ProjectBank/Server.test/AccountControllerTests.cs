@@ -10,7 +10,7 @@ public class AccountControllerTests
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var toCreate = new AccountCreateDto();
-        var created = new AccountDto(1, "AzureAdToken", AccountType.Supervisor, new HashSet<ProjectDto>());
+        var created = new AccountDetailsDto(1, "AzureAdToken", AccountType.Supervisor, new HashSet<string>());
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
         var controller = new AccountController(logger.Object, repository.Object);
@@ -47,14 +47,14 @@ public class AccountControllerTests
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
-        repository.Setup(m => m.ReadAsync(42)).ReturnsAsync(default(AccountDto));
+        repository.Setup(m => m.ReadAsync(42)).ReturnsAsync(default(AccountDetailsDto));
         var controller = new AccountController(logger.Object, repository.Object);
 
         // Act
         var response = await controller.Get(42);
 
         // Assert
-        Assert.IsType<NotFoundResult>(response.Result);
+        Assert.Null(response);
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class AccountControllerTests
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
-        var account = new AccountDto(1, "AzureAdToken", AccountType.Supervisor, new HashSet<ProjectDto>());
+        var account = new AccountDetailsDto(1, "AzureAdToken", AccountType.Supervisor, new HashSet<string>());
         repository.Setup(m => m.ReadAsync(1)).ReturnsAsync(account);
         var controller = new AccountController(logger.Object, repository.Object);
 
@@ -71,7 +71,7 @@ public class AccountControllerTests
         var response = await controller.Get(1);
 
         // Assert
-        Assert.Equal(account, response.Value);
+        Assert.Equal(account, response);
     }
 
     [Fact]

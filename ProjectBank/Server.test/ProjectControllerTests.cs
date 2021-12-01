@@ -10,7 +10,7 @@ public class ProjectControllerTests
         // Arrange
         var logger = new Mock<ILogger<ProjectController>>();
         var toCreate = new ProjectCreateDto();
-        var created = new ProjectDetailsDto(1, new AccountDto(1, "AzureAdToken", AccountType.Supervisor, new HashSet<ProjectDto>()), Degree.Bachelor, "Title", "Description", "ImageUrl", "Body", 15, new HashSet<KeywordDto>());
+        var created = new ProjectDetailsDto(1, "Author", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
         var controller = new ProjectController(logger.Object, repository.Object);
@@ -54,7 +54,7 @@ public class ProjectControllerTests
         var response = await controller.Get(42);
 
         // Assert
-        Assert.IsType<NotFoundResult>(response.Result);
+        Assert.Null(response);
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class ProjectControllerTests
         // Arrange
         var logger = new Mock<ILogger<ProjectController>>();
         var repository = new Mock<IProjectRepository>();
-        var project = new ProjectDetailsDto(1, new AccountDto(1, "AzureAdToken", AccountType.Supervisor, new HashSet<ProjectDto>()), Degree.Bachelor, "Title", "Description", "ImageUrl", "Body", 15, new HashSet<KeywordDto>());
+        var project = new ProjectDetailsDto(1, "Author", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadAsync(1)).ReturnsAsync(project);
         var controller = new ProjectController(logger.Object, repository.Object);
 
@@ -71,7 +71,7 @@ public class ProjectControllerTests
         var response = await controller.Get(1);
 
         // Assert
-        Assert.Equal(project, response.Value);
+        Assert.Equal(project, response);
     }
 
     [Fact]

@@ -24,9 +24,8 @@ public class AccountController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
-    public async Task<ActionResult<AccountDto>> Get(int accountId)
-       => throw new NotImplementedException();
-       // => (await _repository.ReadAsync(accountId)).ToActionResult();
+    public async Task<AccountDetailsDto>? Get(int accountId)
+       => await _repository.ReadAsync(accountId);
 
     [Authorize]
     [HttpPost]

@@ -24,9 +24,8 @@ public class KeywordController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(KeywordDto), 200)]
-    public async Task<ActionResult<KeywordDto>> Get(int keywordId)
-       => throw new NotImplementedException();
-       // => (await _repository.ReadAsync(keywordId)).ToActionResult();
+    public async Task<KeywordDto>? Get(int keywordId)
+       => await _repository.ReadAsync(keywordId);
 
     [Authorize]
     [HttpPost]

@@ -9,7 +9,7 @@ public class KeywordControllerTests
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
-        var toCreate = new KeywordCreateDto();
+        var toCreate = new KeywordCreateDto("Word");
         var created = new KeywordDto(1, "Word");
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
@@ -54,7 +54,7 @@ public class KeywordControllerTests
         var response = await controller.Get(42);
 
         // Assert
-        Assert.IsType<NotFoundResult>(response.Result);
+        Assert.Null(response);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class KeywordControllerTests
         var response = await controller.Get(1);
 
         // Assert
-        Assert.Equal(keyword, response.Value);
+        Assert.Equal(keyword, response);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class KeywordControllerTests
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
-        var keyword = new KeywordUpdateDto();
+        var keyword = new KeywordUpdateDto(1, "Word");
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.UpdateAsync(1, keyword)).ReturnsAsync(NotFound);
         var controller = new KeywordController(logger.Object, repository.Object);
@@ -96,7 +96,7 @@ public class KeywordControllerTests
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
-        var keyword = new KeywordUpdateDto();
+        var keyword = new KeywordUpdateDto(1, "Word");
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.UpdateAsync(1, keyword)).ReturnsAsync(Updated);
         var controller = new KeywordController(logger.Object, repository.Object);
