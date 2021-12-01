@@ -13,7 +13,7 @@ public class KeywordRepository : IKeywordRepository
     public async Task<KeywordDto> CreateAsync(KeywordCreateDto keyword)
     {
         var conflict = await _context.Keywords
-            .Where(k => k.Word == keyword.word)
+            .Where(k => k.Word == keyword.Word)
             .Select(k => new KeywordDto(k.Id, k.Word))
             .FirstOrDefaultAsync();
 
@@ -21,7 +21,7 @@ public class KeywordRepository : IKeywordRepository
         {
             return null!;
         }
-        var entity = new Keyword(keyword.word);
+        var entity = new Keyword(keyword.Word);
         _context.Keywords.Add(entity);
         await _context.SaveChangesAsync();
         return new KeywordDto(entity.Id, entity.Word);
@@ -50,7 +50,7 @@ public class KeywordRepository : IKeywordRepository
     {
         var conflict = await _context.Keywords
             .Where(k => k.Id != keyword.Id)
-            .Where(k => k.Word == keyword.word)
+            .Where(k => k.Word == keyword.Word)
             .Select(k => new KeywordDto(k.Id, k.Word))
             .AnyAsync();
         if (conflict)
@@ -65,7 +65,7 @@ public class KeywordRepository : IKeywordRepository
             return Status.NotFound;
         }
 
-        entity.Word = keyword.word;
+        entity.Word = keyword.Word;
         await _context.SaveChangesAsync();
         return Status.Updated;
     }
