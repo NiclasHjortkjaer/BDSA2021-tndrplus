@@ -15,7 +15,7 @@ public record AccountDetailsDto(
 
 public record AccountCreateDto
 {
-    public string AzureAAdToken { get; init; }
+    public string AzureAAdToken { get; init; } = null!;
     
     public AccountType AccountType { get; init; }
     
