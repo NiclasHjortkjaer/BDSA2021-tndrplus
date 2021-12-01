@@ -4,8 +4,8 @@ public record AccountDto(
     int Id,
     string AzureAdToken,
     AccountType AccountType
-    //ISet<ProjectDto> SavedProjects
     );
+    
 public record AccountDetailsDto(
     int Id,
     string AzureAdToken,

@@ -3,6 +3,7 @@ namespace ProjectBank.Core;
 public record KeywordDto(
     int Id,
     string Word);
+    
 public record KeywordCreateDto(
     [Required, StringLength(50)] string Word);
 
