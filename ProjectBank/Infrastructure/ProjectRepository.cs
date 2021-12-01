@@ -7,6 +7,7 @@ public class ProjectRepository : IProjectRepository
     {
         _context = context;
     }
+
     public async Task<ProjectDetailsDto> CreateAsync(ProjectCreateDto project)
     {
         var newProject = new Project(project.Title)
@@ -36,6 +37,7 @@ public class ProjectRepository : IProjectRepository
             newProject.Keywords.Select(k => k.Word).ToHashSet()
         );
     }
+
 
     public async Task<ProjectDetailsDto> ReadAsync(int projectId)
     {
