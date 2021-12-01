@@ -7,12 +7,12 @@ public class ProjectRepository : IProjectRepository
     {
         _context = context;
     }
-    public Task<ProjectDto> CreateAsync(ProjectCreateDto project)
+    public Task<ProjectDetailsDto> CreateAsync(ProjectCreateDto project)
     {
         throw new NotImplementedException();
     }
 
-    public Task<KeywordDto> ReadAsync(int projectId)
+    public Task<ProjectDetailsDto> ReadAsync(int projectId)
     {
         throw new NotImplementedException();
     }
