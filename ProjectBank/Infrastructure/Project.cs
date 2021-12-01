@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace ProjectBank.Infrastructure;
 
 public class Project
@@ -29,7 +31,10 @@ public class Project
 
     
     public float? Ects { get; set; }
-    
+    public DateTime LastUpdated { get; set; }
+
+    public ICollection<Account>? Accounts { get; set; }
+
     public ICollection<Keyword> Keywords { get; set; } = null!;
     
 }
