@@ -8,6 +8,7 @@ public static class Extensions
                 Deleted => new NoContentResult(),
                 NotFound => new NotFoundResult(),
                 Conflict => new ConflictResult(),
+                BadRequest => new BadRequestResult(),
                 _ => throw new NotSupportedException($"{status} not supported")
             };
 
