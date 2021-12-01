@@ -73,10 +73,12 @@ public class AccountRepository : IAccountRepository
         
         return Status.Deleted;
     }
-    
+    //-----------------------Private helper methods---------------------------//
     private async IAsyncEnumerable<Project> GetSavedProjectsAsync(IEnumerable<string> projects)
     {
-        var existing = await _context.Projects.Where(p => projects.Contains(p.Title)).ToDictionaryAsync(p => p.Title);
+        var existing = await _context.Projects
+            .Where(p => projects.Contains(p.Title))
+            .ToDictionaryAsync(p => p.Title);
 
         foreach (var project in projects)
         {

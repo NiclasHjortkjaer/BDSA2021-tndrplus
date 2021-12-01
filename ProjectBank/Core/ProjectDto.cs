@@ -9,14 +9,14 @@ public record ProjectDto(
 public record ProjectDetailsDto(
     int Id,
     string? Author,
-    Degree Degree,
     string Title,
     string? Description,
+    Degree? Degree,
     string? ImageUrl,
     string? Body,
     float? Ects,
-    DateTime Created,
-    ISet<KeywordDto> Keywords
+    DateTime LastUpdated,
+    ISet<string> Keywords
 ) : ProjectDto(Id, Author, Title, Description);
 
 
@@ -39,7 +39,9 @@ public record ProjectCreateDto
     [StringLength(10000)]
     public string? Body { get; init; }
 
-    
+    public DateTime LastUpdated { get; init; }
+
+
     public float? Ects { get; init; }
 
     public ISet<string> Keywords { get; init; } = null!;

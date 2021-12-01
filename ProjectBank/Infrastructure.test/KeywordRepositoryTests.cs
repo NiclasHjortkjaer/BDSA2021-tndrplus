@@ -26,14 +26,12 @@ public class KeywordRepositoryTests : IDisposable
         var saveListAccount = new Account("AuthorToken") {Id = 3,  AccountType = AccountType.Student};
         var aiProject = new Project("Artificial Intelligence 101")
         { 
-            Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey},
-            Ects = 7, Description = "A dummies guide to AI. Make your own AI friend today", Created = DateTime.Now, Accounts = new[] {saveListAccount}
+            Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
+            Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow, Accounts = new[] {saveListAccount}
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, Created = DateTime.Now
-            ,Keywords = new[] {machineLearnKey}
-             
+            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.Now
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
@@ -45,6 +43,23 @@ public class KeywordRepositoryTests : IDisposable
         _repo = new KeywordRepository(_context);
     }
 
+    [Fact]
+    public async Task CreateAsync_creates_new_keyword_with_generated_Id()
+    {
+        var keyword = await _repo.CreateAsync(new KeywordCreateDto("OOP"));
+        var expectedId = 4;
+        var actual = await _context.Keywords.FindAsync(expectedId);
+        Assert.Equal(expectedId, actual.Id);
+        Assert.Equal("OOP", actual.Word);
+    }
+
+    [Fact]
+    public async Task CreateAsync_given_existing_keyword_returns_null()
+    {
+        var keyword = await _repo.CreateAsync(new KeywordCreateDto("AI"));
+        Assert.Null(keyword);
+    }
+    
     [Fact]
     public async Task ReadAllAsync_Returns_All_Keywords()
     {
@@ -71,22 +86,35 @@ public class KeywordRepositoryTests : IDisposable
         
         Assert.Equal(expected, keyword);
     }
-
+    
     [Fact]
-    public async Task CreateAsync_creates_new_keyword_with_generated_Id()
+    public async Task UpdateAsync_given_invalid_Keyword_returns_notFound()
     {
-        var keyword = await _repo.CreateAsync(new KeywordCreateDto("OOP"));
-        var expectedId = 4;
-        var actual = await _context.Keywords.FindAsync(expectedId);
-        Assert.Equal(expectedId, actual.Id);
-        Assert.Equal("OOP", actual.Word);
+        var keyword = new KeywordUpdateDto(111, "ChangedWord");
+        
+        var status = await _repo.UpdateAsync(111, keyword);
+        Assert.Equal(Status.NotFound, status);
     }
 
     [Fact]
-    public async Task CreateAsync_given_existing_keyword_returns_null()
+    public async Task UpdateAsync_given_valid_Id_Updates_Keyword()
     {
-        var keyword = await _repo.CreateAsync(new KeywordCreateDto("AI"));
-        Assert.Null(keyword);
+        var keyword = new KeywordUpdateDto(1, "UpdatedWord");
+        
+        var status = await _repo.UpdateAsync(1, keyword);
+        Assert.Equal(Status.Updated, status);
+        
+        var actual = await _repo.ReadAsync(1);
+
+        Assert.Equal(keyword.Word, actual.Word);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_given_existing_word_returns_conflict()
+    {
+        var keyword = new KeywordUpdateDto(3, "AI");
+        var status = await _repo.UpdateAsync(3, keyword);
+        Assert.Equal(Status.Conflict, status);
     }
     [Fact]
     public async Task DeleteAsync_returnes_notfound_given_invalid_Id()
@@ -120,38 +148,8 @@ public class KeywordRepositoryTests : IDisposable
         Assert.Equal(Status.Conflict, status);
         Assert.NotNull(await _context.Keywords.FindAsync(1));
     }
-    [Fact]
-    public async Task UpdateAsync_given_invalid_Keyword_returns_notFound()
-    {
-        var keyword = new KeywordUpdateDto(111, "ChangedWord");
-        
-        var status = await _repo.UpdateAsync(111, keyword);
-        Assert.Equal(Status.NotFound, status);
-    }
-
-    [Fact]
-    public async Task UpdateAsync_given_valid_Id_Updates_Keyword()
-    {
-        var keyword = new KeywordUpdateDto(1, "UpdatedWord");
-        
-        var status = await _repo.UpdateAsync(1, keyword);
-        Assert.Equal(Status.Updated, status);
-        
-        var actual = await _repo.ReadAsync(1);
-
-        Assert.Equal(keyword.word, actual.Word);
-    }
-
-    [Fact]
-    public async Task UpdateAsync_given_existing_word_returns_conflict()
-    {
-        var keyword = new KeywordUpdateDto(3, "AI");
-        var status = await _repo.UpdateAsync(3, keyword);
-        Assert.Equal(Status.Conflict, status);
-    }
-
-
-
+    
+    //Disposable methods-------------------------------------
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)

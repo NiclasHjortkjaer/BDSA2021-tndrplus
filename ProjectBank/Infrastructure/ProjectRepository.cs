@@ -7,29 +7,112 @@ public class ProjectRepository : IProjectRepository
     {
         _context = context;
     }
-    public Task<ProjectDto> CreateAsync(ProjectCreateDto project)
+    public async Task<ProjectDetailsDto> CreateAsync(ProjectCreateDto project)
     {
-        throw new NotImplementedException();
+        var newProject = new Project(project.Title)
+        {
+            Description = project.Description,
+            Body = project.Body,
+            LastUpdated = project.LastUpdated,
+            Degree = project.Degree,
+            Ects = project.Ects,
+            ImageUrl = project.ImageUrl,
+            Author = await GetAuthorAsync(project.Author),
+            Keywords = await GetKeywordsAsync(project.Keywords).ToListAsync()
+        };
+        _context.Projects.Add(newProject);
+        await _context.SaveChangesAsync();
+
+        return new ProjectDetailsDto(
+            newProject.Id,
+            newProject.Author?.AzureAdToken,
+            newProject.Title,
+            newProject.Description,
+            newProject.Degree,
+            newProject.ImageUrl,
+            newProject.Body,
+            newProject.Ects,
+            newProject.LastUpdated,
+            newProject.Keywords.Select(k => k.Word).ToHashSet()
+        );
     }
 
-    public Task<KeywordDto> ReadAsync(int projectId)
+    public async Task<ProjectDetailsDto> ReadAsync(int projectId)
     {
-        throw new NotImplementedException();
+        var projects = from p in _context.Projects
+            where p.Id == projectId
+            select new ProjectDetailsDto(
+                p.Id,
+                p.Author == null ? null : p.Author.AzureAdToken,
+                p.Title,
+                p.Description,
+                p.Degree,
+                p.ImageUrl,
+                p.Body,
+                p.Ects,
+                p.LastUpdated,
+                p.Keywords.Select(k => k.Word).ToHashSet()
+            );
+        return await projects.FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync() =>
         (await _context.Projects
-            .Select(p => new ProjectDto(p.Id, p.Author.AzureAdToken, p.Title, p.Description))
+            .Select(p => new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Title, p.Description))
             .ToListAsync())
             .AsReadOnly();
 
-    public Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
+    public async Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Projects
+            .Include(p => p.Keywords)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        if (entity == null)
+        {
+            return Status.NotFound;
+        }
+
+        entity.Title = project.Title;
+        entity.Author = await GetAuthorAsync(project.Author);
+        entity.Degree = project.Degree;
+        entity.Description = project.Description;
+        entity.Ects = project.Ects;
+        entity.Body = project.Body;
+        entity.ImageUrl = project.ImageUrl;
+        entity.LastUpdated = DateTime.UtcNow;
+        entity.Keywords = await GetKeywordsAsync(project.Keywords).ToListAsync();
+        
+        await _context.SaveChangesAsync();
+        return Status.Updated;
     }
 
-    public Task<Status> DeleteAsync(int projectId)
+    public async Task<Status> DeleteAsync(int projectId)
     {
-        throw new NotImplementedException();
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+        if (project == null)
+        {
+            return Status.NotFound;
+        }
+        _context.Projects.Remove(project);
+        await _context.SaveChangesAsync();
+        return Status.Deleted;
+    }
+    //----------Private helper methods---------------------------//
+    //Get Author object from DTO Author string
+    private async Task<Account?> GetAuthorAsync(string? azureAadToken) =>
+        string.IsNullOrWhiteSpace(azureAadToken) ? null
+            : await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureAadToken) ??
+              new Account(azureAadToken);
+    
+    //Get collectino of keyword objects from the keywords collection of strings in the DTOs
+    private async IAsyncEnumerable<Keyword> GetKeywordsAsync(IEnumerable<string> keywords)
+    {
+        var existing = await _context.Keywords.Where(k => keywords.Contains(k.Word)).ToDictionaryAsync(k => k.Word);
+
+        foreach (var keyword in keywords)
+        {
+            yield return existing.TryGetValue(keyword, out var p) ? p : new Keyword(keyword);
+        }
     }
 }
+
