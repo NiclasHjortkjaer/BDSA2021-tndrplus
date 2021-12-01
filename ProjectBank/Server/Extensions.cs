@@ -11,7 +11,4 @@ public static class Extensions
                 BadRequest => new BadRequestResult(),
                 _ => throw new NotSupportedException($"{status} not supported")
             };
-
-    public static ActionResult<T> ToActionResult<T>(this Option<T> option) where T : class
-        => option.IsSome ? option.Value : new NotFoundResult();
 }
