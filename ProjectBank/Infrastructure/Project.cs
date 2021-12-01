@@ -31,8 +31,7 @@ public class Project
 
     
     public float? Ects { get; set; }
-    [Timestamp]
-    public DateTime? Created { get; set; }
+    public DateTime LastUpdated { get; set; }
 
     public ICollection<Account>? Accounts { get; set; }
 
