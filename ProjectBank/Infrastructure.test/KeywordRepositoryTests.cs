@@ -87,7 +87,7 @@ public class KeywordRepositoryTests : IDisposable
         Assert.Equal(expected, keyword);
     }
     
-    [Fact]
+    /* [Fact]
     public async Task UpdateAsync_given_invalid_Keyword_returns_notFound()
     {
         var keyword = new KeywordUpdateDto(111, "ChangedWord");
@@ -115,7 +115,8 @@ public class KeywordRepositoryTests : IDisposable
         var keyword = new KeywordUpdateDto(3, "AI");
         var status = await _repo.UpdateAsync(3, keyword);
         Assert.Equal(Status.Conflict, status);
-    }
+    } */
+
     [Fact]
     public async Task DeleteAsync_returnes_notfound_given_invalid_Id()
     {

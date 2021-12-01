@@ -74,7 +74,7 @@ public class KeywordControllerTests
         Assert.Equal(keyword, response);
     }
 
-    [Fact]
+    /* [Fact]
     public async Task Put_given_unknown_id_returns_NotFound()
     {
         // Arrange
@@ -106,7 +106,7 @@ public class KeywordControllerTests
 
         // Assert
         Assert.IsType<NoContentResult>(response);
-    }
+    } */
 
     [Fact]
     public async Task Delete_given_non_existing_returns_NotFound()

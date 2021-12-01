@@ -37,12 +37,12 @@ public class KeywordController : ControllerBase
         return CreatedAtRoute(nameof(Get), new { created.Id }, created);
     }
 
-    [Authorize]
+    /* [Authorize]
     [HttpPut("{id}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Put(int id, [FromBody] KeywordUpdateDto keyword)
-        => (await _repository.UpdateAsync(id, keyword)).ToActionResult();
+        => (await _repository.UpdateAsync(id, keyword)).ToActionResult(); */
 
     [Authorize]
     [HttpDelete("{id}")]

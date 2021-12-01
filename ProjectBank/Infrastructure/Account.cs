@@ -13,5 +13,6 @@ public class Account
     public AccountType AccountType { get; set; }
     
     public ICollection<Project>? AuthoredProjects { get; set; }
+    
     public ICollection<Project>? SavedProjects { get; set; }
 }
