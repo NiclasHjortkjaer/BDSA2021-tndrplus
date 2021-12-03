@@ -4,7 +4,7 @@
 
 .top-row {
     height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    background-color: none;
 }
 
 .navbar-brand {
@@ -60,3 +60,17 @@
         display: block;
     }
 }
+.favoriteList ul{
+    color: #d7d7d7;
+    cursor: pointer;
+    margin-top: 2%;
+    margin-bottom: 0;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.favoriteList ul:hover{
+    color: #fff;
+}
+
+
