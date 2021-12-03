@@ -15,11 +15,6 @@ public class ProjectBankContext : DbContext, IProjectBankContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .Entity<Account>()
-            .Property(e => e.AccountType)
-            .HasMaxLength(50)
-            .HasConversion(new EnumToStringConverter<AccountType>());
-        modelBuilder
             .Entity<Project>()
             .Property(e => e.Degree)
             .HasMaxLength(100)
@@ -28,6 +23,10 @@ public class ProjectBankContext : DbContext, IProjectBankContext
         modelBuilder
             .Entity<Keyword>()
             .HasIndex(k => k.Word)
+            .IsUnique();
+        modelBuilder
+            .Entity<Account>()
+            .HasIndex(k => k.AzureAdToken)
             .IsUnique();
         modelBuilder
             .Entity<Project>()

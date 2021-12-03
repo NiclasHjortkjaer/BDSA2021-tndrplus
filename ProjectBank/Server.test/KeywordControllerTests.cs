@@ -9,7 +9,7 @@ public class KeywordControllerTests
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
-        var toCreate = new KeywordCreateDto("Word");
+        var toCreate = new KeywordCreateDto{ Word = "Word", Projects = new HashSet<string>()};
         var created = new KeywordDto(1, "Word");
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);

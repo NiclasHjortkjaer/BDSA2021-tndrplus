@@ -1,4 +1,6 @@
+using System.Diagnostics.Tracing;
 using System.Runtime.InteropServices;
+using SQLitePCL;
 
 namespace ProjectBank.Infrastructure;
 
@@ -44,7 +46,23 @@ public class KeywordRepository : IKeywordRepository
             .Select(k => new KeywordDto(k.Id, k.Word))
             .ToListAsync())
             .AsReadOnly();
-    
+
+    public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordAsync(KeywordDto keyword)
+    {
+        var projects = await _context.Keywords
+            .Where(k => k.Word == keyword.Word)
+            .Select(k => k.Projects).ToListAsync();
+        
+        var list = new List<ProjectDto>();
+        foreach (var p in projects[0])
+        {
+            list.Add( new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Title, p.Description));
+        }
+
+        return list.AsReadOnly();
+    }
+
+
 
     /* public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
     {
@@ -89,5 +107,16 @@ public class KeywordRepository : IKeywordRepository
         await _context.SaveChangesAsync();
         
         return Status.Deleted;
+    }
+    private async IAsyncEnumerable<Project> GetSavedProjectsAsync(IEnumerable<string> projects)
+    {
+        var existing = await _context.Projects
+            .Where(p => projects.Contains(p.Title))
+            .ToDictionaryAsync(p => p.Title);
+
+        foreach (var project in projects)
+        {
+            yield return existing.TryGetValue(project, out var p) ? p : new Project(project);
+        }
     }
 }

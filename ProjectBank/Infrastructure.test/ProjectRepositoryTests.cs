@@ -23,10 +23,10 @@ public class ProjectRepositoryTests
         context.Database.EnsureCreated();
         
         //seed some data
-        var unknownAccount = new Account("UnknownToken") {Id = 1, AccountType = AccountType.Student};
+        var unknownAccount = new Account("UnknownToken") {Id = 1};
         var aiKeyword = new Keyword("AI") {Id = 1};
         var machineLearnKey = new Keyword("Machine Learning") {Id = 2};
-        var saveListAccount = new Account("AuthorToken") {Id = 3,  AccountType = AccountType.Student};
+        var saveListAccount = new Account("AuthorToken") {Id = 3};
         var aiProject = new Project("Artificial Intelligence 101")
         { 
             Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
@@ -38,7 +38,7 @@ public class ProjectRepositoryTests
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
-        context.Accounts.Add( new Account("Token2") { Id = 2 , AccountType = AccountType.Supervisor});
+        context.Accounts.Add( new Account("Token2") { Id = 2 });
         context.SaveChanges();
         
         //init dbContext and Repo
@@ -81,6 +81,7 @@ public class ProjectRepositoryTests
         );
     }
 
+
     [Fact]
     public async Task ReadAsync_returns_null_given_invalid_Id()
     {
@@ -101,7 +102,7 @@ public class ProjectRepositoryTests
         Assert.Equal(expected.Title, project.Title);
         Assert.Equal(expected.Description, expected.Description);
         Assert.Equal(expected.ImageUrl, project.ImageUrl);
-        Assert.Equal(expected.Body, project.Body);
+        Assert.Equal(expected.FileUrl, project.FileUrl);
         Assert.Equal(expected.LastUpdated, project.LastUpdated, TimeSpan.FromSeconds(5));
         Assert.True(project.Keywords.SetEquals(new []{"AI", "Machine Learning"}));
     }
@@ -114,7 +115,7 @@ public class ProjectRepositoryTests
         {
             Id = 111,
             Author = "UpdatedToken",
-            Body = "Im the new body",
+            FileUrl = "Im the new body",
             Degree = Degree.PHD,
             Description = "Very easy guide just for you",
             Title = "Machine Learning for dummies",
@@ -132,7 +133,7 @@ public class ProjectRepositoryTests
             Id = 2,
             Title = "Machine Learning for dummies",
             Author = "UpdatedToken",
-            Body = "Im the new body",
+            FileUrl = "Im the new body",
             Degree = Degree.PHD,
             Description = "Very easy guide just for you",
             Ects = 15,
@@ -145,7 +146,7 @@ public class ProjectRepositoryTests
         Assert.Equal("Machine Learning for dummies", updatedProject.Title);
         Assert.Equal(DateTime.UtcNow, updatedProject.LastUpdated, TimeSpan.FromSeconds(5));
         Assert.Equal(project.Author, updatedProject.Author);
-        Assert.Equal(project.Body, updatedProject.Body);
+        Assert.Equal(project.FileUrl, updatedProject.FileUrl);
         Assert.Empty(updatedProject.Keywords);
 
     }

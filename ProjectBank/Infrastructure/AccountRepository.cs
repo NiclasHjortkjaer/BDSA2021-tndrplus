@@ -12,7 +12,6 @@ public class AccountRepository : IAccountRepository
     {
         var newAccount = new Account(account.AzureAAdToken)
         {
-            AccountType = account.AccountType,
             SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync()
         };
         _context.Accounts.Add(newAccount);
@@ -20,7 +19,6 @@ public class AccountRepository : IAccountRepository
         return new AccountDetailsDto(
             newAccount.Id,
             newAccount.AzureAdToken,
-            newAccount.AccountType,
             newAccount.SavedProjects.Select(a => a.Title).ToHashSet());
     }
 
@@ -31,7 +29,6 @@ public class AccountRepository : IAccountRepository
             select new AccountDetailsDto(
                 a.Id,
                 a.AzureAdToken,
-                a.AccountType,
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
@@ -39,7 +36,7 @@ public class AccountRepository : IAccountRepository
     }
     public async Task<IReadOnlyCollection<AccountDto>> ReadAllAsync() =>
         (await _context.Accounts
-            .Select(a => new AccountDto(a.Id, a.AzureAdToken, a.AccountType))
+            .Select(a => new AccountDto(a.Id, a.AzureAdToken))
             .ToListAsync())
             .AsReadOnly();
 
@@ -51,8 +48,7 @@ public class AccountRepository : IAccountRepository
         {
             return Status.NotFound;
         }
-
-        entitiy.AccountType = account.AccountType;
+        
         entitiy.AzureAdToken = account.AzureAAdToken;
         entitiy.SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync();
         
