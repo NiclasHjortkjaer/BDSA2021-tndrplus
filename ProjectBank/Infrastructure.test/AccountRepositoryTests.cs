@@ -21,10 +21,10 @@ public class AccountRepositoryTests
         context.Database.EnsureCreated();
         
         //seed some data
-        var unknownAccount = new Account("UnknownToken") {Id = 1, AccountType = AccountType.Student};
+        var unknownAccount = new Account("UnknownToken") {Id = 1};
         var aiKeyword = new Keyword("AI") {Id = 1};
         var machineLearnKey = new Keyword("Machine Learning") {Id = 2};
-        var saveListAccount = new Account("AuthorToken") {Id = 3,  AccountType = AccountType.Student};
+        var saveListAccount = new Account("AuthorToken") {Id = 3};
         var aiProject = new Project("Artificial Intelligence 101")
         { 
             Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
@@ -36,7 +36,7 @@ public class AccountRepositoryTests
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
-        context.Accounts.Add( new Account("Token2") { Id = 2 , AccountType = AccountType.Supervisor});
+        context.Accounts.Add( new Account("Token2") { Id = 2 });
         context.SaveChanges();
         
         //init dbContext and Repo
@@ -49,13 +49,11 @@ public class AccountRepositoryTests
         var created = new AccountCreateDto
         {
             AzureAAdToken = "Create",
-            AccountType = AccountType.Supervisor,
             SavedProjects = new HashSet<string> {"Ez OOP"}
         };
         var account = await _repo.CreateAsync(created);
         Assert.Equal(4, account.Id);
         Assert.Equal("Create", account.AzureAdToken);
-        Assert.Equal(AccountType.Supervisor, account.AccountType);
         Assert.True(account.SavedProjects.SetEquals(new[] {"Ez OOP"}));
     }
     
@@ -64,9 +62,9 @@ public class AccountRepositoryTests
     {
         var accounts = await _repo.ReadAllAsync();
         Assert.Collection(accounts,
-            account => Assert.Equal(new AccountDto(1, "UnknownToken", AccountType.Student),account),
-            account => Assert.Equal(new AccountDto(2, "Token2", AccountType.Supervisor),account),
-            account => Assert.Equal(new AccountDto(3, "AuthorToken", AccountType.Student),account)
+            account => Assert.Equal(new AccountDto(1, "UnknownToken"),account),
+            account => Assert.Equal(new AccountDto(2, "Token2"),account),
+            account => Assert.Equal(new AccountDto(3, "AuthorToken"),account)
             );
     }
     [Fact]
@@ -76,7 +74,6 @@ public class AccountRepositoryTests
         
         Assert.Equal(3, account.Id);
         Assert.Equal("AuthorToken", account.AzureAdToken);
-        Assert.Equal(AccountType.Student, account.AccountType);
         Assert.True(account.SavedProjects.SetEquals(new []{"Artificial Intelligence 101"}));
     }
     [Fact]
@@ -92,7 +89,6 @@ public class AccountRepositoryTests
         {
             Id = 111,
             AzureAAdToken = "UpdateToken",
-            AccountType = AccountType.Supervisor,
             SavedProjects = new HashSet<string>()
         };
         var status = await _repo.UpdateAsync(111, account);
@@ -106,14 +102,11 @@ public class AccountRepositoryTests
         {
             Id = 1,
             AzureAAdToken = "UpdatedToken",
-            AccountType = AccountType.Student,
             SavedProjects = new HashSet<string>()
         };
         var status = await _repo.UpdateAsync(1, account);
         Assert.Equal(Status.Updated, status);
         var actual = await _repo.ReadAsync(1);
-
-        Assert.Equal(account.AccountType, actual.AccountType);
     }
     
     [Fact]

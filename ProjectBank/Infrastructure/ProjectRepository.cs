@@ -13,7 +13,7 @@ public class ProjectRepository : IProjectRepository
         var newProject = new Project(project.Title)
         {
             Description = project.Description,
-            Body = project.Body,
+            FileUrl = project.FileUrl,
             LastUpdated = project.LastUpdated,
             Degree = project.Degree,
             Ects = project.Ects,
@@ -31,7 +31,7 @@ public class ProjectRepository : IProjectRepository
             newProject.Description,
             newProject.Degree,
             newProject.ImageUrl,
-            newProject.Body,
+            newProject.FileUrl,
             newProject.Ects,
             newProject.LastUpdated,
             newProject.Keywords.Select(k => k.Word).ToHashSet()
@@ -50,7 +50,7 @@ public class ProjectRepository : IProjectRepository
                 p.Description,
                 p.Degree,
                 p.ImageUrl,
-                p.Body,
+                p.FileUrl,
                 p.Ects,
                 p.LastUpdated,
                 p.Keywords.Select(k => k.Word).ToHashSet()
@@ -63,7 +63,7 @@ public class ProjectRepository : IProjectRepository
             .Select(p => new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Title, p.Description))
             .ToListAsync())
             .AsReadOnly();
-
+    
     public async Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
     {
         var entity = await _context.Projects
@@ -79,7 +79,7 @@ public class ProjectRepository : IProjectRepository
         entity.Degree = project.Degree;
         entity.Description = project.Description;
         entity.Ects = project.Ects;
-        entity.Body = project.Body;
+        entity.FileUrl = project.FileUrl;
         entity.ImageUrl = project.ImageUrl;
         entity.LastUpdated = DateTime.UtcNow;
         entity.Keywords = await GetKeywordsAsync(project.Keywords).ToListAsync();

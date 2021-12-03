@@ -2,24 +2,19 @@ namespace ProjectBank.Core;
 
 public record AccountDto(
     int Id,
-    string AzureAdToken,
-    AccountType AccountType
-    );
+    string AzureAdToken
+);
     
 public record AccountDetailsDto(
     int Id,
     string AzureAdToken,
-    AccountType AccountType,
-    ISet<string>? SavedProjects
+    ISet<string> SavedProjects
 );
 
 public record AccountCreateDto
 {
     public string AzureAAdToken { get; init; } = null!;
-    
-    public AccountType AccountType { get; init; }
-    
-    public ISet<string>? SavedProjects { get; init; }
+    public ISet<string> SavedProjects { get; init; } = new HashSet<string>();
 
 }
 

@@ -13,7 +13,7 @@ public record ProjectDetailsDto(
     string? Description,
     Degree? Degree,
     string? ImageUrl,
-    string? Body,
+    string? FileUrl,
     float? Ects,
     DateTime LastUpdated,
     ISet<string> Keywords
@@ -22,29 +22,28 @@ public record ProjectDetailsDto(
 
 public record ProjectCreateDto
 {
-    public string? Author { get; init; }
-    
-    public Degree? Degree { get; init; }
-    
+    public string? Author { get; init; } = null!;
+
     [StringLength(100)]
     public string Title { get; init; } = null!;
-
+    
     [StringLength(500)]
     public string? Description { get; init; }
+    public Degree? Degree { get; init; }
 
     [StringLength(250)]
     [Url]
     public string? ImageUrl { get; init; }
 
-    [StringLength(10000)]
-    public string? Body { get; init; }
+    [StringLength(250)]
+    [Url]
+    public string? FileUrl { get; init; }
 
     public DateTime LastUpdated { get; init; }
-
-
+    
     public float? Ects { get; init; }
 
-    public ISet<string> Keywords { get; init; } = null!;
+    public ISet<string> Keywords { get; init; } = new HashSet<string>();
     
 }
 

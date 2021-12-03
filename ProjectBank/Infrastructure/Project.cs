@@ -27,15 +27,16 @@ public class Project
     [Url]
     public string? ImageUrl { get; set; }
 
-    [StringLength(10000)]
-    public string? Body { get; set; }
+    [StringLength(250)]
+    [Url]
+    public string? FileUrl { get; set; }
 
     
     public float? Ects { get; set; }
 
     public DateTime LastUpdated { get; set; }
 
-    public ICollection<Account>? Accounts { get; set; }
+    public ICollection<Account> Accounts { get; set; } = null!;
 
     public ICollection<Keyword> Keywords { get; set; } = null!;
 

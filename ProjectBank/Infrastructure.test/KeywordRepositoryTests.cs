@@ -20,10 +20,10 @@ public class KeywordRepositoryTests : IDisposable
         context.Database.EnsureCreated();
 
         //seed some data
-        var unknownAccount = new Account("UnknownToken") {Id = 1, AccountType = AccountType.Student};
+        var unknownAccount = new Account("UnknownToken") {Id = 1};
         var aiKeyword = new Keyword("AI") {Id = 1};
         var machineLearnKey = new Keyword("Machine Learning") {Id = 2};
-        var saveListAccount = new Account("AuthorToken") {Id = 3,  AccountType = AccountType.Student};
+        var saveListAccount = new Account("AuthorToken") {Id = 3};
         var aiProject = new Project("Artificial Intelligence 101")
         { 
             Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
@@ -35,7 +35,7 @@ public class KeywordRepositoryTests : IDisposable
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
-        context.Accounts.Add( new Account("Token2") { Id = 2 , AccountType = AccountType.Supervisor});
+        context.Accounts.Add( new Account("Token2") { Id = 2 });
         context.SaveChanges();
 
         //init dbContext and Repo
@@ -46,17 +46,17 @@ public class KeywordRepositoryTests : IDisposable
     [Fact]
     public async Task CreateAsync_creates_new_keyword_with_generated_Id()
     {
-        var keyword = await _repo.CreateAsync(new KeywordCreateDto("OOP"));
+        var keyword = await _repo.CreateAsync(new KeywordCreateDto{Word = "OOP", Projects = new HashSet<string>()});
         var expectedId = 4;
         var actual = await _context.Keywords.FindAsync(expectedId);
-        Assert.Equal(expectedId, actual.Id);
-        Assert.Equal("OOP", actual.Word);
+        Assert.Equal(expectedId, actual!.Id);
+        Assert.Equal(keyword.Word, actual.Word);
     }
 
     [Fact]
     public async Task CreateAsync_given_existing_keyword_returns_null()
     {
-        var keyword = await _repo.CreateAsync(new KeywordCreateDto("AI"));
+        var keyword = await _repo.CreateAsync(new KeywordCreateDto{Word = "AI"});
         Assert.Null(keyword);
     }
     
@@ -68,6 +68,16 @@ public class KeywordRepositoryTests : IDisposable
             keyword => Assert.Equal(new KeywordDto(1, "AI"), keyword),
             keyword => Assert.Equal(new KeywordDto(2, "Machine Learning"), keyword),
             keyword => Assert.Equal(new KeywordDto(3, "Design"), keyword)
+        );
+    }
+
+    [Fact]
+    public async Task ReadAllProjectsWithKeywordAsync_returns_all_allprojects_with_keyword()
+    {
+        var projects = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(4, "AI"));
+        Assert.Collection(projects,
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken","Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today"), project)
         );
     }
 
@@ -86,7 +96,7 @@ public class KeywordRepositoryTests : IDisposable
         
         Assert.Equal(expected, keyword);
     }
-    
+
     /* [Fact]
     public async Task UpdateAsync_given_invalid_Keyword_returns_notFound()
     {

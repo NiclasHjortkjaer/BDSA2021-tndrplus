@@ -9,10 +9,7 @@ public class Account
     public int Id { get; set;}
 
     public string AzureAdToken { get; set; }
+    public ICollection<Project> AuthoredProjects { get; set; } = null!;
 
-    public AccountType AccountType { get; set; }
-    
-    public ICollection<Project>? AuthoredProjects { get; set; }
-    
-    public ICollection<Project>? SavedProjects { get; set; }
+    public ICollection<Project> SavedProjects { get; set; } = null!;
 }

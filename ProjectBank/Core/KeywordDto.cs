@@ -2,12 +2,22 @@ namespace ProjectBank.Core;
 
 public record KeywordDto(
     int Id,
-    string Word);
-    
-public record KeywordCreateDto(
-    [Required, StringLength(50)] string Word);
+    string Word
+);
 
-public record KeywordUpdateDto(
-    int Id, 
-    [Required, StringLength(50)] string Word 
-    ) : KeywordCreateDto(Word);
+public record KeywordDetailsDto(
+    int Id,
+    string Word,
+    ISet<string> Keywords) : KeywordDto(Id, Word);
+
+public record KeywordCreateDto
+{
+    [Required, StringLength(50)] public string Word = null!;
+    public ISet<string> Projects = new HashSet<string>();
+}
+
+public record KeywordUpdateDto : KeywordCreateDto
+{
+    public int Id { get; init; }
+} 
+
