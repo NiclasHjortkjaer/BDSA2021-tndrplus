@@ -10,7 +10,7 @@ public class Keyword
     public int Id { get; set; }
 
     [StringLength(50)]
-    public string Word { get; set; }
+    public string Word { get; }
 
     public ICollection<Project> Projects { get; set; } = null!;
 }

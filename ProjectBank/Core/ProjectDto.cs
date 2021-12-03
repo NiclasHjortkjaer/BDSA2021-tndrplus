@@ -27,7 +27,7 @@ public record ProjectCreateDto
     public Degree? Degree { get; init; }
     
     [StringLength(100)]
-    public string Title { get; init; }
+    public string Title { get; init; } = null!;
 
     [StringLength(500)]
     public string? Description { get; init; }

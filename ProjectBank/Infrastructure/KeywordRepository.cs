@@ -46,7 +46,7 @@ public class KeywordRepository : IKeywordRepository
             .AsReadOnly();
     
 
-    public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
+    /* public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
     {
         var conflict = await _context.Keywords
             .Where(k => k.Id != keyword.Id)
@@ -68,7 +68,7 @@ public class KeywordRepository : IKeywordRepository
         entity.Word = keyword.Word;
         await _context.SaveChangesAsync();
         return Status.Updated;
-    }
+    } */
 
     public async Task<Status> DeleteAsync(int keywordId)
     {

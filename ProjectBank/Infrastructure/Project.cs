@@ -12,6 +12,7 @@ public class Project
     public int Id { get; set; }
 
     public int? AuthorId { get; set; }
+
     public Account? Author { get; set; }
 
     public Degree? Degree { get; set; }
@@ -31,10 +32,11 @@ public class Project
 
     
     public float? Ects { get; set; }
+
     public DateTime LastUpdated { get; set; }
 
     public ICollection<Account>? Accounts { get; set; }
 
     public ICollection<Keyword> Keywords { get; set; } = null!;
-    
+
 }
