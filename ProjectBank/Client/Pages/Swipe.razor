@@ -1,4 +1,4 @@
-@page "/swipe"
+@page "/swipe/{keyword}"
 
 <button id="GoBack_btn" onclick="location.href='/browse'">Go Back</button>
 @*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
@@ -20,3 +20,10 @@
         <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
     </div>
 </div>
+
+@code
+{
+    [Parameter]
+    public string keyword { get; set; }
+
+}
