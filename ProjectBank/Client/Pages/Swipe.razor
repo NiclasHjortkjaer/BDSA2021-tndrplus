@@ -1,4 +1,4 @@
-@page "/swipe"
+@page "/swipe/{keyword}"
 @using Radzen.Blazor.Rendering
 
 <button id="GoBack_btn" onclick="location.href='/browse'">
@@ -30,6 +30,7 @@
         <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
     </div>
 </div>
+
 <div class="like_and_dislike_btn_div">
     <button id="dislike_btn" onclick="">
         <label id="x_icon" class="oi oi-x"></label>
@@ -42,4 +43,9 @@
     </button>
 </div>
 
+@code
+{
+    [Parameter]
+    public string keyword { get; set; }
 
+}

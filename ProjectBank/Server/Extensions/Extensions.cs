@@ -1,4 +1,4 @@
-namespace ProjectBank.Server;
+namespace ProjectBank.Server.Extensions;
 public static class Extensions
 {
     public static IActionResult ToActionResult(this Status status) 
