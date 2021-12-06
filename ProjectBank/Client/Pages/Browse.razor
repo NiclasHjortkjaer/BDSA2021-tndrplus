@@ -12,13 +12,13 @@
         <div class="grid-container">
             @foreach (var keyword in keywords)
             {
-                <button class="grid-item" style="background: rgb ((new Random().Next(0, 255), (new Random().Next(0, 255), (new Random().Next(0, 255)))" >@keyword</button> @*Random color generat not working!*@
-            }
+                <button class="grid-item" onclick="location.href='/swipe'"> @keyword</button>
+            } 
         </div>
     }
 
 @code{
     private string[]? keywords = {"AI", "Software", "Database", "Security",
-         "Machine Learning", "API", ".Net", "Keyword1", "Keyword2", "Keyword3", 
+         "Machine Learning", "API", "DotNet", "Keyword1", "Keyword2", "Keyword3", 
          "Keyword4", "Keyword5", "Keyword6", "Keyword7", "Keyword8", "Keyword9"};
 }

@@ -1,0 +1,22 @@
+@page "/swipe"
+
+<button id="GoBack_btn" onclick="location.href='/browse'">Go Back</button>
+@*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
+<div class="project_builder" @*for="slider"*@>
+    <div class="project_content">
+        <div class="like_star">
+            <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
+            <label class="oi oi-star" id="star" for="star_checkbox"></label>
+        </div>
+        <div id="project_title">Title: _Project.title_ </div>
+        <div id="supervisor">by: <x onclick="">Supervisor</x></div>
+        <br/>
+        <hr/>
+        <br/>
+        <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
+        <br/>
+        <hr/>
+        <br/>
+        <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
+    </div>
+</div>
