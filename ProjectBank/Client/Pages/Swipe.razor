@@ -1,7 +1,17 @@
 @page "/swipe"
+@using Radzen.Blazor.Rendering
 
-<button id="GoBack_btn" onclick="location.href='/browse'">Go Back</button>
+<button id="GoBack_btn" onclick="location.href='/browse'">
+    <label class="oi oi-arrow-circle-left"></label>
+</button>
+<button id="info_btn" 
+        onclick="window.alert('Swipe Use-guide: \r\n \r\n ' +
+         'To Like a project; you must either swipe the project right or click the star. \r\n \r\n ' +
+          'To skip a project; you must swipe the project left or click the`X` \r\n \r\n' +
+          'To regret/undo a decision; you can click the button in the middle, displayed with a circled arrow.')">i
+</button>
 @*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
+
 <div class="project_builder" @*for="slider"*@>
     <div class="project_content">
         <div class="like_star">
@@ -20,3 +30,16 @@
         <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
     </div>
 </div>
+<div class="like_and_dislike_btn_div">
+    <button id="dislike_btn" onclick="">
+        <label id="x_icon" class="oi oi-x"></label>
+    </button>
+    <button id="re-watch_btn" onclick="">
+        <label id="re-watch_icon" class="oi oi-action-undo"></label>
+    </button>
+    <button id="like_btn" onclick="">
+        <label id="star_icon" class="oi oi-star"></label>
+    </button>
+</div>
+
+
