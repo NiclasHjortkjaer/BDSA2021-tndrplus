@@ -1,3 +1,5 @@
+using ProjectBank.Server.Extensions;
+
 namespace ProjectBank.Server.Controllers;
 
 [Authorize]
