@@ -8,7 +8,7 @@ public record KeywordDto(
 public record KeywordDetailsDto(
     int Id,
     string Word,
-    ISet<string> Keywords) : KeywordDto(Id, Word);
+    ISet<string> Projects) : KeywordDto(Id, Word);
 
 public record KeywordCreateDto
 {
