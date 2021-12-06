@@ -1,29 +1,27 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Identity.Web;
-using Microsoft.OpenApi.Models;
-using ProjectBank.Infrastructure;
-using ProjectBank.Server.Extensions;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+    .AddMicrosoftIdentityWebApi(options =>
+        {
+            builder.Configuration.Bind("AzureAd", options);
+            options.TokenValidationParameters.RoleClaimType =
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+        },
+        options =>
+        {
+            builder.Configuration.Bind("AzureAd", options);
+        });
+
 builder.Services.Configure<JwtBearerOptions>(
     JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.TokenValidationParameters.NameClaimType = "name";
     });
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+//Configure swagger API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -37,6 +35,11 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IKeywordRepository, KeywordRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
+//Azure storage blob stuff
+/*var blobContainerUri = new Uri(builder.Configuration["BlobContainerUri"]);
+
+builder.Services.AddScoped<BlobContainerClient>(_ => new BlobContainerClient(blobContainerUri, new DefaultAzureCredential()));
+builder.Services.AddScoped<IImageRepository, ImageRepository>();*/
 
 var app = builder.Build();
 
@@ -76,3 +79,5 @@ if (!app.Environment.IsEnvironment("Integration"))
 }
 
 app.Run();
+
+public partial class Program { }
