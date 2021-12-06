@@ -1,6 +1,7 @@
 @page "/browse"
 @using System.Net
 @inject HttpClient Http
+@inject NavigationManager navigationManager
 @* @page "/" burde redirect til page "/browse"* *@
 
 
@@ -13,7 +14,7 @@
         <div class="grid-container">
             @foreach (var keyword in keywords)
             {
-                <button class="grid-item" onclick="location.href='/swipe'" >@keyword.Word</button>
+                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))" >@keyword.Word</button>
             }
 
         </div>
@@ -21,19 +22,22 @@
 
 @code{
 
-    /*private string[]? keywords = {"Software", "Database", "Security",
-        "API", ".Net", "Keyword1", "Keyword2", "Keyword3", 
-         "Keyword4", "Keyword5", "Keyword6", "Keyword7", "Keyword8", "Keyword9"};*/
-
     private KeywordDto[]? keywords;
     
     protected override async Task OnInitializedAsync()
     {
-       keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
+       //keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
+        keywords = new KeywordDto[] {new KeywordDto(2, "API")};
     }
     private async Task Create(string keyword) // doesnt work
     {
         var response = await Http.PostAsJsonAsync("api/Keyword", new KeywordCreateDto() {Projects = new HashSet<string>(), Word = keyword});
         Console.WriteLine(response);
     }
+
+    private void redirectToSwipePage(string keyword)
+    {
+        navigationManager.NavigateTo("swipe/"+keyword);
+    }
+
 }
