@@ -1,4 +1,5 @@
 @page "/swipe/{keyword}"
+@inject HttpClient Http
 @using Radzen.Blazor.Rendering
 
 <button id="GoBack_btn" onclick="location.href='/browse'">
@@ -47,5 +48,14 @@
 {
     [Parameter]
     public string keyword { get; set; }
+
+    private IEnumerable<ProjectDto> _projects;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+        //_projects = await Http.GetFromJsonAsync<IReadOnlyCollection<ProjectDto>>("/api/keywordString");
+        //projects = new KeywordDto[] {new KeywordDto(2, "API")};
+        
+    //}
 
 }

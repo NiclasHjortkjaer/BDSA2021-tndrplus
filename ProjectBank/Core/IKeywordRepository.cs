@@ -9,4 +9,5 @@ public interface IKeywordRepository
     Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordAsync(KeywordDto keyword);
     // Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword);
     Task<Status> DeleteAsync(int keywordId);
+    Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordStringAsync(string keyword);
 }
