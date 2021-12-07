@@ -80,6 +80,16 @@ public class KeywordRepositoryTests : IDisposable
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );
     }
+    
+    [Fact]
+    public async Task ReadAllProjectsWithKeywordStringAsync_returns_all_allprojects_with_keyword()
+    {
+        var projects = await _repo.ReadAllProjectsWithKeywordStringAsync("AI");
+        Assert.Collection(projects,
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken","Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today"), project)
+        );
+    }
 
     [Fact]
     public async Task ReadAsync_given_invalid_id_returns_null()
