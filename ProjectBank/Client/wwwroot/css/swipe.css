@@ -4,6 +4,7 @@
     font-size: 20px;
     float: top;
     border: none;
+    z-index: 100000;
 }
 
 #GoBack_btn label{
@@ -16,15 +17,19 @@
     color: #ffffff;
 }
 
+.outer_box{
+    position: relative;
+    height: 500px;
+}
 .project_builder{
     background: #d7d7d7;
     height: 500px;
     width: 400px;
     border-radius: 10px;
-    position: relative;
+    position: absolute;
     left: 31%;
-    top: 25%;
 }
+
 
 .project_builder .project_content{
     color: #1a1e21;
@@ -132,6 +137,7 @@
 }
 
 #info_btn{
+    z-index: 100000;
     background-color: #d7d7d7;
     color: #1a1e21;
     text-align: center;

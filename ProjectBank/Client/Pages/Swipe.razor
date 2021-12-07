@@ -1,5 +1,6 @@
 @page "/swipe/{keyword}"
 @using Radzen.Blazor.Rendering
+@using System.Security.Principal
 
 <button id="GoBack_btn" onclick="location.href='/browse'">
     <label class="oi oi-arrow-circle-left"></label>
@@ -12,25 +13,34 @@
 </button>
 @*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
 
-<div class="project_builder" @*for="slider"*@>
-    <div class="project_content">
-        <div class="like_star">
-            <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
-            <label class="oi oi-star" id="star" for="star_checkbox"></label>
+<div class="outer_box">
+@foreach (var project in _Test)
+{
+    if (_Test == null)
+    {
+        <h1>no project to show</h1>
+    }
+    else
+    {
+        <div class="project_builder" id="p_@_idCounter" style="z-index: @_i;">
+            <div class="project_content">
+                <div id="project_title">Title: @project </div>
+                <div id="supervisor">by: <x onclick="">Supervisor</x></div>
+                <br/>
+                <hr/>
+                <br/>
+                <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
+                <br/>
+                <hr/>
+                <br/>
+                <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
+            </div>
         </div>
-        <div id="project_title">Title: _Project.title_ </div>
-        <div id="supervisor">by: <x onclick="">Supervisor</x></div>
-        <br/>
-        <hr/>
-        <br/>
-        <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
-        <br/>
-        <hr/>
-        <br/>
-        <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
-    </div>
+        _i += 10;
+        _idCounter += 1;
+    }
+}
 </div>
-
 <div class="like_and_dislike_btn_div">
     <button id="dislike_btn" onclick="">
         <label id="x_icon" class="oi oi-x"></label>
@@ -48,4 +58,15 @@
     [Parameter]
     public string keyword { get; set; }
 
+    private string[]? _Test = {"Project1", "Project2", "Project3"};
+    
+    private int _i = 0;
+
+    private int _idCounter = 1;
 }
+
+
+@*<div class="like_star">
+                    <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
+                    <label class="oi oi-star" id="star" for="star_checkbox"></label>
+                </div>*@
