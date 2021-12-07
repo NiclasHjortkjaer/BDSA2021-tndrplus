@@ -1,4 +1,5 @@
 @page "/swipe/{keyword}"
+@inject HttpClient Http
 @using Radzen.Blazor.Rendering
 @using System.Security.Principal
 
@@ -63,6 +64,15 @@
     private int _i = 0;
 
     private int _idCounter = 1;
+    private IEnumerable<ProjectDto> _projects;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+        //_projects = await Http.GetFromJsonAsync<IReadOnlyCollection<ProjectDto>>("/api/keywordString");
+        //projects = new KeywordDto[] {new KeywordDto(2, "API")};
+        
+    //}
+
 }
 
 

@@ -29,6 +29,13 @@ public class KeywordController : ControllerBase
     public async Task<KeywordDto>? Get(int keywordId)
        => await _repository.ReadAsync(keywordId);
 
+    [AllowAnonymous]
+    [HttpGet("{keywordString}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
+    public async Task<IReadOnlyCollection<ProjectDto>> Get(string keyword)
+        => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
+
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(KeywordDto), 201)]
