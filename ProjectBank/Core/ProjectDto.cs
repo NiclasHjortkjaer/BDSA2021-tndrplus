@@ -27,7 +27,11 @@ public record ProjectDetailsDto(
 public record ProjectCreateDto
 {
     public string? AuthorToken { get; init; } = null!;
+    
+    [StringLength(50)]
     public string? AuthorFirstName { get; init; } = null!;
+
+    [StringLength(50)]
     public string? AuthorLastName { get; init; } = null!;
 
     [StringLength(100)]
