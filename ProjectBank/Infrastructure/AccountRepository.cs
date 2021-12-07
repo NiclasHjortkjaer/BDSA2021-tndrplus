@@ -10,7 +10,7 @@ public class AccountRepository : IAccountRepository
 
     public async Task<AccountDetailsDto> CreateAsync(AccountCreateDto account)
     {
-        var newAccount = new Account(account.AzureAAdToken)
+        var newAccount = new Account(account.AzureAAdToken, account.FirstName, account.LastName)
         {
             SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync()
         };
@@ -19,6 +19,8 @@ public class AccountRepository : IAccountRepository
         return new AccountDetailsDto(
             newAccount.Id,
             newAccount.AzureAdToken,
+            newAccount.FirstName,
+            newAccount.LastName,
             newAccount.SavedProjects.Select(a => a.Title).ToHashSet());
     }
 
@@ -29,6 +31,8 @@ public class AccountRepository : IAccountRepository
             select new AccountDetailsDto(
                 a.Id,
                 a.AzureAdToken,
+                a.FirstName,
+                a.LastName,
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
@@ -36,7 +40,7 @@ public class AccountRepository : IAccountRepository
     }
     public async Task<IReadOnlyCollection<AccountDto>> ReadAllAsync() =>
         (await _context.Accounts
-            .Select(a => new AccountDto(a.Id, a.AzureAdToken))
+            .Select(a => new AccountDto(a.Id, a.AzureAdToken, a.FirstName, a.LastName))
             .ToListAsync())
             .AsReadOnly();
 
