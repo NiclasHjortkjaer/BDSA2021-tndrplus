@@ -3,7 +3,10 @@
 
 <!---- USINGS ATTRIBUTES AND INJECTIONS  ---->
 @inject NavigationManager uriHelper;
-@using Microsoft.AspNetCore.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+@using Microsoft.AspNetCore.Authorization;
+@using System.Security.Claims;
+
 @attribute [Authorize]
 
 <PageTitle>Settings</PageTitle>
@@ -15,7 +18,7 @@
             <RadzenLabel Text="Name:" />
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@userName style="width: 50%;" Name="Name"/>
+            <RadzenTextBox Disabled=true Placeholder=@name style="width: 50%;" Name="Name"/>
         </div>
     </div>
     <div class="row">
@@ -23,7 +26,7 @@
             <RadzenLabel Text="Email:" />
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@userEmail style="width: 50%;" Name="Email"/>
+            <RadzenTextBox Disabled=true Placeholder=@email style="width: 50%;" Name="Email"/>
         </div>
     </div>
     <div class="row">
@@ -72,12 +75,13 @@
     bool busyProfile;
     bool busyPassword;
 
+
     //DATA NOT YET LINKED TO CONTEXT
     string[] roleArray = new string[] {"Student", "Supervisor"};
     
-    string userName = "ABC";
-    string userEmail = "abc@itu.dk";
-    string currentRole = "Student";
+   private string name = "Unavailable";
+    private string email = "Unavailable";
+    string currentRole = "Unavail";
     
     //PAGE SCRIPTS
     void Edit()
@@ -85,8 +89,21 @@
         editing = !editing;
     }
 
+private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+   
+    protected override async Task OnInitializedAsync(){
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+       name = user.Identity.Name;
+       _claims = user.Claims;
+        currentRole = user.FindFirst(c => c.Type.Contains("roles"))?.Value;
+       email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
+       
+  }
+  
+
     async Task OnBusyClickProfile()
     {
+        
         busyProfile = true;
         await Task.Delay(2000);
         UpdateProfile();

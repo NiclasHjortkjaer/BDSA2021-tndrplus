@@ -1,6 +1,6 @@
 @page "/swipe/{keyword}"
+@inject HttpClient Http
 @using Radzen.Blazor.Rendering
-@using System.Security.Principal
 
 <button id="GoBack_btn" onclick="location.href='/browse'">
     <label class="oi oi-arrow-circle-left"></label>
@@ -41,6 +41,7 @@
     }
 }
 </div>
+
 <div class="like_and_dislike_btn_div">
     <button id="dislike_btn" onclick="">
         <label id="x_icon" class="oi oi-x"></label>
@@ -57,6 +58,15 @@
 {
     [Parameter]
     public string keyword { get; set; }
+
+    private IEnumerable<ProjectDto> _projects;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+        //_projects = await Http.GetFromJsonAsync<IReadOnlyCollection<ProjectDto>>("/api/keywordString");
+        //projects = new KeywordDto[] {new KeywordDto(2, "API")};
+        
+    //}
 
     private string[]? _Test = {"Project1", "Project2", "Project3"};
     
