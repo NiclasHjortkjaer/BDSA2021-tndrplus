@@ -89,6 +89,32 @@ public class ProjectRepository : IProjectRepository
         return await projects.ToListAsync();
     }
 
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAuthorAsync(string input) {
+        if (string.IsNullOrWhiteSpace(input)) {
+            return new List<ProjectDetailsDto>();
+        } else {
+            
+            var projects = from p in _context.Projects
+                where (p.Author!.FirstName.ToLower() + " " + p.Author!.LastName.ToLower()).Contains(input.ToLower())
+                select new ProjectDetailsDto(
+                    p.Id,
+                    p.Author == null ? null : p.Author.AzureAdToken,
+                    p.Author == null ? null : p.Author.FirstName,
+                    p.Author == null ? null : p.Author.LastName,
+                    p.Title,
+                    p.Description,
+                    p.Degree,
+                    p.ImageUrl,
+                    p.FileUrl,
+                    p.Ects,
+                    p.LastUpdated,
+                    p.Keywords.Select(k => k.Word).ToHashSet()
+                );
+            
+            return await projects.ToListAsync();
+        }
+    }
+
     public async Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
     {
         var entity = await _context.Projects
