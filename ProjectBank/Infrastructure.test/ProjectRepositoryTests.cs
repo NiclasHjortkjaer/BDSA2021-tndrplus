@@ -1,5 +1,3 @@
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-
 namespace ProjectBank.Infrastructure.test;
 
 public class ProjectRepositoryTests
@@ -34,7 +32,7 @@ public class ProjectRepositoryTests
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.Now
+            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
@@ -107,6 +105,55 @@ public class ProjectRepositoryTests
         Assert.True(project.Keywords.SetEquals(new []{"AI", "Machine Learning"}));
     }
 
+    [Fact]
+    public async Task ReadTitleAsync_returns_listWithMlProject_given_Machine_Learning()
+    {
+        var projects = await _repo.ReadTitleAsync("Machine Learning");
+
+        var mlProject = new ProjectDetailsDto(2, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+        
+        Assert.Equal(projects.Count(), 1);
+        Assert.Equal(projects.First().Id, 2);
+        Assert.Equal(projects.First().Author, mlProject.Author);
+        Assert.Equal(projects.First().Degree, mlProject.Degree);
+        Assert.Equal(projects.First().Title, mlProject.Title);
+        Assert.Equal(projects.First().Description, mlProject.Description);
+        Assert.Equal(projects.First().ImageUrl, mlProject.ImageUrl);
+        Assert.Equal(projects.First().FileUrl, mlProject.FileUrl);
+        Assert.Equal(projects.First().LastUpdated, mlProject.LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.True(projects.First().Keywords.SetEquals(new string[]{}));
+    }
+
+    [Fact]
+    public async Task ReadTitleAsync_returns_everything_given_emptystring()
+    {
+        var projects = await _repo.ReadTitleAsync("");
+
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+
+        Assert.Equal(projects.Count(), 2);
+        
+        Assert.Equal(projects.ElementAt(0).Id, 1);
+        Assert.Equal(projects.ElementAt(0).Author, aiProject.Author);
+        Assert.Equal(projects.ElementAt(0).Degree, aiProject.Degree);
+        Assert.Equal(projects.ElementAt(0).Title, aiProject.Title);
+        Assert.Equal(projects.ElementAt(0).Description, aiProject.Description);
+        Assert.Equal(projects.ElementAt(0).ImageUrl, aiProject.ImageUrl);
+        Assert.Equal(projects.ElementAt(0).FileUrl, aiProject.FileUrl);
+        Assert.Equal(projects.ElementAt(0).LastUpdated, aiProject.LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.True(projects.ElementAt(0).Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
+        
+        Assert.Equal(projects.ElementAt(1).Id, 2);
+        Assert.Equal(projects.ElementAt(1).Author, mlProject.Author);
+        Assert.Equal(projects.ElementAt(1).Degree, mlProject.Degree);
+        Assert.Equal(projects.ElementAt(1).Title, mlProject.Title);
+        Assert.Equal(projects.ElementAt(1).Description, mlProject.Description);
+        Assert.Equal(projects.ElementAt(1).ImageUrl, mlProject.ImageUrl);
+        Assert.Equal(projects.ElementAt(1).FileUrl, mlProject.FileUrl);
+        Assert.Equal(projects.ElementAt(1).LastUpdated, mlProject.LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.True(projects.ElementAt(1).Keywords.SetEquals(new string[]{}));
+    }
 
     [Fact]
     public async Task UpdateAsync_given_invalid_id_returns_notFound()
