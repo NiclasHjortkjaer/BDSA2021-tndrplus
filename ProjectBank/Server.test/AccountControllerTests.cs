@@ -10,7 +10,7 @@ public class AccountControllerTests
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var toCreate = new AccountCreateDto();
-        var created = new AccountDetailsDto(1, "AzureAdToken", new HashSet<string>());
+        var created = new AccountDetailsDto(1, "AzureAdToken", "Warren", "Buffet", new HashSet<string>());
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
         var controller = new AccountController(logger.Object, repository.Object);
@@ -63,7 +63,7 @@ public class AccountControllerTests
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
-        var account = new AccountDetailsDto(1, "AzureAdToken",  new HashSet<string>());
+        var account = new AccountDetailsDto(1, "AzureAdToken", "Warren", "Buffet", new HashSet<string>());
         repository.Setup(m => m.ReadAsync(1)).ReturnsAsync(account);
         var controller = new AccountController(logger.Object, repository.Object);
 
