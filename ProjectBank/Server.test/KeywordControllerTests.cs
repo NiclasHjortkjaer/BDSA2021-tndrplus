@@ -73,6 +73,26 @@ public class KeywordControllerTests
         // Assert
         Assert.Equal(keyword, response);
     }
+    [Fact]
+    public async Task Get_on_string_given_existing_returns_keyword()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<KeywordController>>();
+        var repository = new Mock<IKeywordRepository>();
+        //var keyword = new KeywordDto(1, "API");
+        
+        var keyList = new List<ProjectDto>(){new ProjectDto(1, "Hans", "AI", "Welcome young friends, here we will study..")};
+        //keyList.AsReadOnly();
+        
+        repository.Setup(m => m.ReadAllProjectsWithKeywordStringAsync("AI")).ReturnsAsync(keyList);
+        var controller = new KeywordController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Get("AI");
+
+        // Assert
+        Assert.Equal(keyList, response);
+    }
 
     /* [Fact]
     public async Task Put_given_unknown_id_returns_NotFound()
