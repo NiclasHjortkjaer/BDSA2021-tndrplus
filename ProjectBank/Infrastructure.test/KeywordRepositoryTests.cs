@@ -86,7 +86,7 @@ public class KeywordRepositoryTests : IDisposable
     {
         var projects = await _repo.ReadAllProjectsWithKeywordStringAsync("AI");
         Assert.Collection(projects,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken","Artificial Intelligence 101",
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );
     }
