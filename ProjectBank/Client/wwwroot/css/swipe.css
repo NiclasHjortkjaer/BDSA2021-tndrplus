@@ -1,14 +1,18 @@
 #GoBack_btn{
     background: none;
     position: absolute;
+    font-size: 20px;
     float: top;
-    padding-top: -500px;
     border: none;
+}
+
+#GoBack_btn label{
+    cursor: pointer;
     color: #d7d7d7;
     transition: all 0.2s ease;
 }
 
-#GoBack_btn:hover{
+#GoBack_btn label:hover{
     color: #ffffff;
 }
 
@@ -18,7 +22,7 @@
     width: 400px;
     border-radius: 10px;
     position: relative;
-    left: 25%;
+    left: 31%;
     top: 25%;
 }
 
@@ -63,6 +67,7 @@
 }
 
 .project_builder .project_content .like_star #star{
+    cursor: pointer;
     font-size: 20px;
     color: #1a1e21;
     transition: all 0.2s ease;
@@ -105,3 +110,41 @@
 /*#slider{
     display: none;
 }*/
+
+.like_and_dislike_btn_div{
+  text-align: center;
+  padding-top: 10px;
+}
+.like_and_dislike_btn_div button{
+    background-image: linear-gradient(15deg, #ff655b, #fd297b);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    font-size: 30px;
+}
+
+.like_and_dislike_btn_div label{
+    color: #1a1e21;
+    cursor: pointer;
+    height: 20px;
+    width: auto;
+}
+
+#info_btn{
+    background-color: #d7d7d7;
+    color: #1a1e21;
+    text-align: center;
+    border: none;
+    border-radius: 100%;
+    height: 20px;
+    width: 20px;
+    position: relative;
+    float: right;
+    transition: all 0.25s ease;
+}
+
+#info_btn:hover{
+    background-color: #ffffff;
+}
+
