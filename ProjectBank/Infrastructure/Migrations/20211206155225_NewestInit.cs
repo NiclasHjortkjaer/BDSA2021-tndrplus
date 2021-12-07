@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ProjectBank.Infrastructure.Migrations
 {
-    public partial class Initial : Migration
+    public partial class NewestInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,8 +15,7 @@ namespace ProjectBank.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AzureAdToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AccountType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    AzureAdToken = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,8 +46,9 @@ namespace ProjectBank.Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Body = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: true),
-                    Ects = table.Column<float>(type: "real", nullable: true)
+                    FileUrl = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Ects = table.Column<float>(type: "real", nullable: true),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,6 +58,30 @@ namespace ProjectBank.Infrastructure.Migrations
                         column: x => x.AuthorId,
                         principalTable: "Accounts",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountProject",
+                columns: table => new
+                {
+                    AccountsId = table.Column<int>(type: "int", nullable: false),
+                    SavedProjectsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountProject", x => new { x.AccountsId, x.SavedProjectsId });
+                    table.ForeignKey(
+                        name: "FK_AccountProject_Accounts_AccountsId",
+                        column: x => x.AccountsId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountProject_Projects_SavedProjectsId",
+                        column: x => x.SavedProjectsId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -84,6 +109,17 @@ namespace ProjectBank.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccountProject_SavedProjectsId",
+                table: "AccountProject",
+                column: "SavedProjectsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_AzureAdToken",
+                table: "Accounts",
+                column: "AzureAdToken",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_KeywordProject_ProjectsId",
                 table: "KeywordProject",
                 column: "ProjectsId");
@@ -102,6 +138,9 @@ namespace ProjectBank.Infrastructure.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccountProject");
+
             migrationBuilder.DropTable(
                 name: "KeywordProject");
 
