@@ -63,7 +63,26 @@ public class ProjectRepository : IProjectRepository
             .Select(p => new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Title, p.Description))
             .ToListAsync())
             .AsReadOnly();
-    
+
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadTitleAsync(string input) {
+        var projects = from p in _context.Projects
+            where p.Title.ToLower().Contains(input.ToLower())
+            select new ProjectDetailsDto(
+                p.Id,
+                p.Author == null ? null : p.Author.AzureAdToken,
+                p.Title,
+                p.Description,
+                p.Degree,
+                p.ImageUrl,
+                p.FileUrl,
+                p.Ects,
+                p.LastUpdated,
+                p.Keywords.Select(k => k.Word).ToHashSet()
+            );
+        
+        return await projects.ToListAsync();
+    }
+
     public async Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
     {
         var entity = await _context.Projects
