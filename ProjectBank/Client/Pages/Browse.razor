@@ -9,7 +9,7 @@
 
     @if (keywords == null)
     {
-        
+       <h1>Loading...</h1> 
     }else{
         <div class="grid-container">
             @foreach (var keyword in keywords)
@@ -26,8 +26,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-       //keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
-        keywords = new KeywordDto[] {new KeywordDto(2, "API")};
+        keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
     }
     private async Task Create(string keyword) // doesnt work
     {
