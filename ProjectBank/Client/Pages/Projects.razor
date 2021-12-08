@@ -1,0 +1,25 @@
+@page "/projects/{Id}"
+@inject HttpClient Http
+@inject NavigationManager navigationManager
+
+<h1>This is the blazor page for the "@Title" project</h1>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+    
+    private ProjectDetailsDto? project;
+    private string? Title;
+
+    protected override async Task OnInitializedAsync()
+    {
+        project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
+
+        if (project == null)
+        {
+            navigationManager.NavigateTo("/browse");
+        } else {
+            Title = project.Title;
+        }
+    }
+}
