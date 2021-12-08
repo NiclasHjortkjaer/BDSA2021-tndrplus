@@ -41,7 +41,7 @@ public class KeywordControllerTests
         Assert.Equal(expected, actual);
     }
 
-    /*[Fact]
+    [Fact]
     public async Task Get_given_non_existing_returns_NotFound()
     {
         // Arrange
@@ -55,9 +55,9 @@ public class KeywordControllerTests
 
         // Assert
         Assert.Null(response);
-    }*/
+    }
 
-    /*[Fact]
+    [Fact]
     public async Task Get_given_existing_returns_keyword()
     {
         // Arrange
@@ -72,7 +72,7 @@ public class KeywordControllerTests
 
         // Assert
         Assert.Equal(keyword, response);
-    }*/
+    }
     [Fact]
     public async Task Get_on_string_given_existing_returns_keyword()
     {

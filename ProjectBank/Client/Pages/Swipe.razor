@@ -49,10 +49,10 @@
 
 </div>
 <div class="like_and_dislike_btn_div">
-    <button id="dislike_btn" onclick="">
+    <button id="dislike_btn" @onclick="(() => CheckClick(ClickType.Dislike))">
         <label id="x_icon" class="oi oi-x"></label>
     </button>
-    <button id="re-watch_btn" onclick="">
+    <button id="re-watch_btn" @onclick="(() => CheckClick(ClickType.Rewatch))">
         <label id="re-watch_icon" class="oi oi-action-undo"></label>
     </button>
     <button id="like_btn" @onclick="addLiked">
@@ -99,7 +99,25 @@
         }
 
     }
+    
+    private enum ClickType
+    {
+        Like,
+        Dislike,
+        Rewatch
+    }
 
+    private void CheckClick(ClickType s)
+    {
+        if (s == ClickType.Like)
+        {
+            
+        }
+        if (s == ClickType.Rewatch)
+        {
+            
+        }
+    }
 }
     
 

@@ -22,22 +22,20 @@ public class KeywordController : ControllerBase
     public async Task<IReadOnlyCollection<KeywordDto>> Get()
         => await _repository.ReadAllAsync();
 
-    /*[AllowAnonymous] //den kan ikke finde forskel på de to forskellige HttpGet med template
+    [AllowAnonymous]
     [HttpGet("{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(KeywordDto), 200)]
     public async Task<KeywordDto>? Get(int keywordId)
-       => await _repository.ReadAsync(keywordId);*/
+       => await _repository.ReadAsync(keywordId);
 
     [AllowAnonymous]
-    [HttpGet("{key}")]
+    [HttpGet("{keywordString}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
-    public async Task<IReadOnlyCollection<ProjectDto>>? Get(string key)
-        => await _repository.ReadAllProjectsWithKeywordStringAsync(key); 
+    public async Task<IReadOnlyCollection<ProjectDto>> Get(string keyword)
+        => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
 
-    
-    
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(KeywordDto), 201)]
