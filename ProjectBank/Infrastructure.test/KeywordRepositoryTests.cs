@@ -20,10 +20,10 @@ public class KeywordRepositoryTests : IDisposable
         context.Database.EnsureCreated();
 
         //seed some data
-        var unknownAccount = new Account("UnknownToken", "Elon", "Musk") {Id = 1};
+        var unknownAccount = new Account("UnknownToken", "Elon Musk") {Id = 1};
         var aiKeyword = new Keyword("AI") {Id = 1};
         var machineLearnKey = new Keyword("Machine Learning") {Id = 2};
-        var saveListAccount = new Account("AuthorToken", "Bill", "Gates") {Id = 3};
+        var saveListAccount = new Account("AuthorToken", "Billy Gates") {Id = 3};
         var aiProject = new Project("Artificial Intelligence 101")
         { 
             Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
@@ -35,7 +35,7 @@ public class KeywordRepositoryTests : IDisposable
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
-        context.Accounts.Add( new Account("Token2", "Jeff", "Bezos") { Id = 2 });
+        context.Accounts.Add( new Account("Token2", "John Bezos") { Id = 2 });
         context.SaveChanges();
 
         //init dbContext and Repo
@@ -76,7 +76,7 @@ public class KeywordRepositoryTests : IDisposable
     {
         var projects = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(4, "AI"));
         Assert.Collection(projects,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );
     }
@@ -86,7 +86,7 @@ public class KeywordRepositoryTests : IDisposable
     {
         var projects = await _repo.ReadAllProjectsWithKeywordStringAsync("AI");
         Assert.Collection(projects,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );
     }

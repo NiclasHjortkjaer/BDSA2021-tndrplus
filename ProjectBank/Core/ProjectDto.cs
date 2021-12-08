@@ -3,16 +3,14 @@ namespace ProjectBank.Core;
 public record ProjectDto(
     int Id,
     string? AuthorToken,
-    string? AuthorFirstName,
-    string? AuthorLastName,
+    string? AuthorName,
     string Title,
     string? Description
 );
 public record ProjectDetailsDto(
     int Id,
     string? AuthorToken,
-    string? AuthorFirstName,
-    string? AuthorLastName,
+    string? AuthorName,
     string Title,
     string? Description,
     Degree? Degree,
@@ -21,7 +19,7 @@ public record ProjectDetailsDto(
     float? Ects,
     DateTime LastUpdated,
     ISet<string> Keywords
-) : ProjectDto(Id, AuthorToken, AuthorFirstName, AuthorLastName, Title, Description);
+) : ProjectDto(Id, AuthorToken, AuthorName, Title, Description);
 
 
 public record ProjectCreateDto
@@ -29,10 +27,7 @@ public record ProjectCreateDto
     public string? AuthorToken { get; init; } = null!;
     
     [StringLength(50)]
-    public string? AuthorFirstName { get; init; } = null!;
-
-    [StringLength(50)]
-    public string? AuthorLastName { get; init; } = null!;
+    public string? AuthorName { get; init; } = null!;
 
     [StringLength(100)]
     public string Title { get; init; } = null!;
