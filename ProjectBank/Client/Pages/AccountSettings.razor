@@ -43,7 +43,7 @@
 
 <RadzenButton Click=@Edit Text="Edit profile"/>
 <RadzenButton style="width: 160px" IsBusy=@busyProfile Click=@OnBusyClickProfile Text="Save" />
-
+<RadzenButton style="width: 160px" IsBusy=@busyProfile Click=@OnBusyClickProfile Text="Save" />
 <div class="row">
     <div class="col-xl-6">
         <h3 style="margin-top: 2rem">Change password:</h3>
@@ -81,15 +81,11 @@
     //DATA NOT YET LINKED TO CONTEXT
     string[] roleArray = new string[] {"Student", "Supervisor"};
     
-   private string name = "Unavailable";
+   public string name = "Unavailable";
     private string email = "Unavailable";
-    string currentRole = "Unavail";
-     AccountCreateDto account = new AccountCreateDto{
-         AzureAAdToken = "jytte"
+    string currentRole = "Unavailable";
 
 
-     };
-    
     //PAGE SCRIPTS
     void Edit()
     {
@@ -105,22 +101,17 @@ private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
         currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
        email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
        //var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-       
       //      user.FindFirst(c => c.Type.Contains("aud"))?.Value);
-      
-      var response = await Http.PostAsJsonAsync("api/Account",account);
-        Console.WriteLine(response);
+       AccountCreateDto account = new AccountCreateDto{
+            AzureAAdToken = user.FindFirst(c => c.Type.Contains("aud"))?.Value
+
+            
+        };
+
+     var response = await Http.PostAsJsonAsync("api/Account",account);
+       // Console.WriteLine(response);
   }
   
-  private async Task addUserToDB(){
-      var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-       
-      //      user.FindFirst(c => c.Type.Contains("aud"))?.Value);
-      var response = await Http.PostAsJsonAsync("api/Account",account);
-        Console.WriteLine(response);
-      
-
-  }
   
 
     async Task OnBusyClickProfile()
