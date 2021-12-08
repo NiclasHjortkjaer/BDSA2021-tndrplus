@@ -25,25 +25,25 @@
         else
         {
             foreach (var project in _projects)
-          {
-           
-                  <div class="project_builder" id="p_@_idCounter" style="z-index: @_i;">
-                      <div class="project_content">
-                          <div id="project_title">Title: @project.Title </div>
-                          <div id="supervisor">by: <x onclick="">Supervisor</x></div>
-                          <br/>
-                          <hr/>
-                          <br/>
-                          <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
-                          <br/>
-                          <hr/>
-                          <br/>
-                          <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
-                      </div>
-                  </div>
-                  _i += 10;
-                  _idCounter += 1;
-              }  
+            {
+                currentProject = project;
+                <div class="project_builder" id="p_@_idCounter" style="z-index: @_i;">
+                    <div class="project_content">
+                        <div id="project_title">Title: @project.Title </div>
+                        <div id="supervisor">by: <x onclick="">Supervisor</x></div>
+                        <br/>
+                        <hr/>
+                        <br/>
+                        <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
+                        <br/>
+                        <hr/>
+                        <br/>
+                        <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
+                    </div>
+                </div>
+                _i += 10;
+                _idCounter += 1;
+            }  
         }
   
 
@@ -55,7 +55,7 @@
     <button id="re-watch_btn" @onclick="(() => CheckClick(ClickType.Rewatch))">
         <label id="re-watch_icon" class="oi oi-action-undo"></label>
     </button>
-    <button id="like_btn" @onclick="(() => CheckClick(ClickType.Like))">
+    <button id="like_btn" @onclick="addLiked">
         <label id="star_icon" class="oi oi-star"></label>
     </button>
 </div>
@@ -72,13 +72,26 @@
     private int _idCounter = 1;
 
     private ProjectDto[]? _projects;
-    
+
+    private List<ProjectDto> _likedProjects;
+
+    private ProjectDto currentProject;
+
+    private void addLiked()
+    {
+        if (!_likedProjects.Contains(currentProject))
+        {
+            _likedProjects.Add(currentProject);     
+        }
+       
+    }
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
             _projects = await Http.GetFromJsonAsync<ProjectDto[]>($"/api/Keyword/{keyword}");
-           
+            _likedProjects = new List<ProjectDto>();
         }
         catch (AccessTokenNotAvailableException e)
         {
