@@ -10,7 +10,7 @@ public class ProjectControllerTests
         // Arrange
         var logger = new Mock<ILogger<ProjectController>>();
         var toCreate = new ProjectCreateDto();
-        var created = new ProjectDetailsDto(1, "AuthorToken", "AuthorFirstName", "AuthorLastName", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
+        var created = new ProjectDetailsDto(1, "AuthorToken", "AuthorName", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
         var controller = new ProjectController(logger.Object, repository.Object);
@@ -63,7 +63,7 @@ public class ProjectControllerTests
         // Arrange
         var logger = new Mock<ILogger<ProjectController>>();
         var repository = new Mock<IProjectRepository>();
-        var project = new ProjectDetailsDto(1, "AuthorToken", "AuthorFirstName", "AuthorLastName", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
+        var project = new ProjectDetailsDto(1, "AuthorToken", "AuthorName", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadAsync(1)).ReturnsAsync(project);
         var controller = new ProjectController(logger.Object, repository.Object);
 

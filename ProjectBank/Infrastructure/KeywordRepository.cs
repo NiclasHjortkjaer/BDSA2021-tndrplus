@@ -59,7 +59,7 @@ public class KeywordRepository : IKeywordRepository
         var list = new List<ProjectDto>();
         foreach (var p in entity.Projects)
         {
-            list.Add( new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Author.FirstName, p.Author.LastName, p.Title, p.Description));
+            list.Add( new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Author.Name, p.Title, p.Description));
         }
         return list.AsReadOnly();
     }
@@ -80,7 +80,7 @@ public class KeywordRepository : IKeywordRepository
             list.Add(new ProjectDto(
                     p.Id, p.Author?.AzureAdToken, p.Author?.FirstName, p.Author?.LastName, p.Title, p.Description)
             );
-        }
+
 
         return list.AsReadOnly();
     }

@@ -21,10 +21,10 @@ public class AccountRepositoryTests
         context.Database.EnsureCreated();
         
         //seed some data
-        var unknownAccount = new Account("UnknownToken", "Elon", "Musk") {Id = 1};
+        var unknownAccount = new Account("UnknownToken", "Elon Musk") {Id = 1};
         var aiKeyword = new Keyword("AI") {Id = 1};
         var machineLearnKey = new Keyword("Machine Learning") {Id = 2};
-        var saveListAccount = new Account("AuthorToken", "Bill", "Gates") {Id = 3};
+        var saveListAccount = new Account("AuthorToken", "Billy Gates") {Id = 3};
         var aiProject = new Project("Artificial Intelligence 101")
         { 
             Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
@@ -36,7 +36,7 @@ public class AccountRepositoryTests
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
-        context.Accounts.Add( new Account("Token2", "Jeff", "Bezos") { Id = 2 });
+        context.Accounts.Add( new Account("Token2", "John Bezos") { Id = 2 });
         context.SaveChanges();
         
         //init dbContext and Repo
@@ -49,8 +49,7 @@ public class AccountRepositoryTests
         var created = new AccountCreateDto
         {
             AzureAAdToken = "Create",
-            FirstName = "Larry",
-            LastName = "Page",
+            Name = "Larry John",
             SavedProjects = new HashSet<string> {"Ez OOP"}
         };
         var account = await _repo.CreateAsync(created);
@@ -64,9 +63,9 @@ public class AccountRepositoryTests
     {
         var accounts = await _repo.ReadAllAsync();
         Assert.Collection(accounts,
-            account => Assert.Equal(new AccountDto(1, "UnknownToken", "Elon", "Musk"),account),
-            account => Assert.Equal(new AccountDto(2, "Token2", "Jeff", "Bezos"),account),
-            account => Assert.Equal(new AccountDto(3, "AuthorToken", "Bill", "Gates"),account)
+            account => Assert.Equal(new AccountDto(1, "UnknownToken", "Elon Musk"),account),
+            account => Assert.Equal(new AccountDto(2, "Token2", "John Bezos"),account),
+            account => Assert.Equal(new AccountDto(3, "AuthorToken", "Billy Gates"),account)
             );
     }
     [Fact]
