@@ -21,12 +21,19 @@ public class ProjectController : ControllerBase {
     public async Task<IReadOnlyCollection<ProjectDto>> Get()
         => await _repository.ReadAllAsync();
 
-    [AllowAnonymous]
+    /*[AllowAnonymous]
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
     [ProducesResponseType(404)]
     public async Task<ProjectDetailsDto>? Get(int projectId)
-        => await _repository.ReadAsync(projectId);
+        => await _repository.ReadAsync(projectId);*/
+
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
+    [ProducesResponseType(404)]
+    [HttpGet("{title}")]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string title)
+        => await _repository.ReadTitleAsync(title);
 
     [Authorize]
     [HttpPost]
