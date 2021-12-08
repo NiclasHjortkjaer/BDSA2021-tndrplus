@@ -38,9 +38,9 @@ builder.Services.AddScoped<IKeywordRepository, KeywordRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 //Azure storage blob stuff
-//var blobContainerUri = new Uri(builder.Configuration["BlobContainerUri"]);
+var blobContainerUri = new Uri(builder.Configuration["BlobContainerUri"]);
 
-//builder.Services.AddScoped<BlobContainerClient>(_ => new BlobContainerClient(blobContainerUri, new DefaultAzureCredential()));
+builder.Services.AddScoped<BlobContainerClient>(_ => new BlobContainerClient(blobContainerUri, new DefaultAzureCredential()));
 //builder.Services.AddScoped<IImageRepository, ImageRepository>();
 
 var app = builder.Build();

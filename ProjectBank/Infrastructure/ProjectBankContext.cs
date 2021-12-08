@@ -37,6 +37,10 @@ public class ProjectBankContext : DbContext, IProjectBankContext
             .Entity<Account>()
             .HasMany(a => a.SavedProjects)
             .WithMany(p => p.Accounts);
+        modelBuilder
+            .Entity<Keyword>()
+            .HasMany(k => k.Projects)
+            .WithMany(p => p.Keywords);
     }
 
 }
