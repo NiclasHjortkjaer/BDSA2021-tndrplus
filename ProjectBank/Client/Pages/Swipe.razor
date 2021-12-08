@@ -1,6 +1,10 @@
 @page "/swipe/{keyword}"
 @inject HttpClient Http
 @using Radzen.Blazor.Rendering
+@using System.Security.Principal
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Security.Claims
+@using System.Net
 
 <button id="GoBack_btn" onclick="location.href='/browse'">
     <label class="oi oi-arrow-circle-left"></label>
@@ -13,49 +17,138 @@
 </button>
 @*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
 
-<div class="project_builder" @*for="slider"*@>
-    <div class="project_content">
-        <div class="like_star">
-            <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
-            <label class="oi oi-star" id="star" for="star_checkbox"></label>
-        </div>
-        <div id="project_title">Title: _Project.title_ </div>
-        <div id="supervisor">by: <x onclick="">Supervisor</x></div>
-        <br/>
-        <hr/>
-        <br/>
-        <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
-        <br/>
-        <hr/>
-        <br/>
-        <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
-    </div>
-</div>
 
-<div class="like_and_dislike_btn_div">
-    <button id="dislike_btn" onclick="">
-        <label id="x_icon" class="oi oi-x"></label>
-    </button>
-    <button id="re-watch_btn" onclick="">
-        <label id="re-watch_icon" class="oi oi-action-undo"></label>
-    </button>
-    <button id="like_btn" onclick="">
-        <label id="star_icon" class="oi oi-star"></label>
-    </button>
-</div>
+@if (_projects == null)
+{
+    <h1>no project to show on keyword: @keyword</h1>
+}
+else
+{
+    <div class="outer_box">
+        <div class="project_builder" id="p_@_idCounter" style="z-index: @_i;">
+            <div class="project_content">
+                <div id="project_title">Title: @_currentProject.Title </div>
+                <div id="supervisor">by: <x onclick=""> Supervisor</x></div>
+                <br/>
+                <hr/>
+                <br/>
+                <textarea class="project_description" readonly="readonly">@_currentProject.Description</textarea>
+                <br/>
+                <hr/>
+                <br/>
+                <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
+            </div>
+        </div>
+    </div>
+    
+        <div class="like_and_dislike_btn_div">
+            <button id="dislike_btn" @onclick="(() => CheckClick(ClickType.Dislike))">
+                <label id="x_icon" class="oi oi-x"></label>
+            </button>
+            <button id="re-watch_btn" @onclick="(() => CheckClick(ClickType.Rewatch))">
+                <label id="re-watch_icon" class="oi oi-action-undo"></label>
+            </button>
+            <button id="like_btn" @onclick="(() => CheckClick(ClickType.Like))">
+                <label id="star_icon" class="oi oi-star"></label>
+            </button>
+        </div>
+       
+}
+
 
 @code
 {
     [Parameter]
     public string keyword { get; set; }
 
-    private IEnumerable<ProjectDto> _projects;
+    //private string[]? _Test = {"Project1", "Project2", "Project3"};
+    
+    private int _i = 10;
 
-    //protected override async Task OnInitializedAsync()
-    //{
-        //_projects = await Http.GetFromJsonAsync<IReadOnlyCollection<ProjectDto>>("/api/keywordString");
-        //projects = new KeywordDto[] {new KeywordDto(2, "API")};
-        
-    //}
+    private int _idCounter = 0;
 
+    private ProjectDto[]? _projects;
+
+    private List<ProjectDto> _likedProjects;
+
+    private ProjectDto _currentProject;
+    private ClaimsPrincipal? _user;
+
+    private string _keywordString;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _projects = await Http.GetFromJsonAsync<ProjectDto[]>($"/api/Keyword/{keyword}");
+            _likedProjects = new List<ProjectDto>();
+            _user = Claims.getUser();
+            if (_projects != null)
+            {
+                _currentProject = _projects.First();
+            }
+        }
+        catch (AccessTokenNotAvailableException e)
+        {
+            e.Redirect();
+        }
+
+    }
+    
+    private enum ClickType
+    {
+        Like,
+        Dislike,
+        Rewatch
+    }
+
+    private void CheckClick(ClickType s)
+    {
+        if (s == ClickType.Like)
+        {
+            if (!_likedProjects.Contains(_currentProject))
+            {
+                _likedProjects.Add(_currentProject);
+
+
+    //string aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+    //put til account controller med azuread toke og projectDTO
+            }
+            _idCounter++;
+            _currentProject = _projects[(_idCounter) % _projects.Length];
+        }
+        if (s == ClickType.Rewatch)
+        {
+            if (_likedProjects.Contains(_currentProject))
+            {
+                _likedProjects.Remove(_currentProject);
+            }
+            if (_idCounter != 0) //ja laver vi lige en anden løsning på - skal der komme en side op og sige du er færdig? samme gælder for når vi scroller videre
+            {
+                _idCounter--;
+            }
+            
+            _currentProject = _projects[(_idCounter) % _projects.Length];
+        }
+        if (s == ClickType.Dislike)
+        {
+            _idCounter++;
+            _currentProject = _projects[(_idCounter) % _projects.Length];
+            
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    /*
+    private string[] getKeyWords()
+    {
+        //skal hentes fra db
+    }*/
 }
+    
+
+@*<div class="like_star">
+                    <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
+                    <label class="oi oi-star" id="star" for="star_checkbox"></label>
+                </div>*@

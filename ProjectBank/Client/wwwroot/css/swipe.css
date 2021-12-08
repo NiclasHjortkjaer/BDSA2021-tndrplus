@@ -4,6 +4,7 @@
     font-size: 20px;
     float: top;
     border: none;
+    z-index: 100000;
 }
 
 #GoBack_btn label{
@@ -16,15 +17,21 @@
     color: #ffffff;
 }
 
+.outer_box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
 .project_builder{
     background: #d7d7d7;
     height: 500px;
     width: 400px;
     border-radius: 10px;
-    position: relative;
-    left: 31%;
-    top: 25%;
+    position: absolute;
 }
+
 
 .project_builder .project_content{
     color: #1a1e21;
@@ -113,7 +120,7 @@
 
 .like_and_dislike_btn_div{
   text-align: center;
-  padding-top: 10px;
+  padding-top: 20px;
 }
 .like_and_dislike_btn_div button{
     background-image: linear-gradient(15deg, #ff655b, #fd297b);
@@ -132,6 +139,7 @@
 }
 
 #info_btn{
+    z-index: 100000;
     background-color: #d7d7d7;
     color: #1a1e21;
     text-align: center;
