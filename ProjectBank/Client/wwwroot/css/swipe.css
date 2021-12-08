@@ -18,8 +18,8 @@
 }
 
 .outer_box{
-    position: relative;
-    height: 500px;
+    display: flex;
+    justify-content: center;
 }
 .project_builder{
     background: #d7d7d7;
@@ -27,7 +27,6 @@
     width: 400px;
     border-radius: 10px;
     position: absolute;
-    left: 31%;
 }
 
 
@@ -118,7 +117,7 @@
 
 .like_and_dislike_btn_div{
   text-align: center;
-  padding-top: 10px;
+  padding-top: 20px;
 }
 .like_and_dislike_btn_div button{
     background-image: linear-gradient(15deg, #ff655b, #fd297b);
