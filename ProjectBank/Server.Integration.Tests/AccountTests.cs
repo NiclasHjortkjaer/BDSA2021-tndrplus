@@ -19,7 +19,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var accounts = await _client.GetFromJsonAsync<AccountDto[]>("/api/Account");
         Assert.NotNull(accounts);
         Assert.True(accounts.Length >= 2);
-        Assert.Contains(accounts, a => a.FirstName == "Elon");
+        Assert.Contains(accounts, a => a.Name == "Elon Musk");
     }
 
     [Fact]
@@ -28,6 +28,6 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var id = 1;
         var account = await _client.GetFromJsonAsync<AccountDto>($"/api/Account/{id}");
         Assert.NotNull(account);
-        Assert.Equal("Elon",account.FirstName);
+        Assert.Equal("Elon Musk",account.Name);
     }
 }

@@ -40,8 +40,7 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotEmpty(projects);
         Assert.True(projects.Length >= 1);
         Assert.Contains(projects, p => p.Title == "Artificial Intelligence 101");
-        Assert.Contains(projects, p => p.AuthorFirstName == "Elon");
-        Assert.Contains(projects, p => p.AuthorLastName == "Musk");
-        
+        Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
+
     }
 }

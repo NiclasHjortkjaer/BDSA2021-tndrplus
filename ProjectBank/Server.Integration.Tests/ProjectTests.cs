@@ -21,7 +21,7 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotNull(projects);
         Assert.True(projects.Length >= 2);
         Assert.Contains(projects, p => p.Title == "Artificial Intelligence 101");
-        Assert.Contains(projects, p => p.AuthorFirstName == "Elon");
+        Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         var project = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{id}");
         Assert.NotNull(project);
         Assert.Equal("Artificial Intelligence 101", project.Title);
-        Assert.Equal("Elon", project.AuthorFirstName);
+        Assert.Equal("Elon Musk", project.AuthorName);
         Assert.NotEmpty(project.Keywords);
 
     }

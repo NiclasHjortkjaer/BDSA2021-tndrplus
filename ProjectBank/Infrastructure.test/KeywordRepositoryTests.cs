@@ -76,12 +76,12 @@ public class KeywordRepositoryTests : IDisposable
     {
         var projectsAi = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(4, "AI"));
         Assert.Collection(projectsAi,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );
         var projectsMl = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(5, "Machine Learning"));
         Assert.Collection(projectsMl,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
 
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );

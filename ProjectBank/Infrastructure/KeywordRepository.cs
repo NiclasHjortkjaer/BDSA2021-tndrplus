@@ -63,25 +63,25 @@ public class KeywordRepository : IKeywordRepository
         }
         return list.AsReadOnly();
     }
-    
+
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordStringAsync(string keyword)
     {
         var entity = await _context.Keywords
             //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
-            .Include("Projects.Author")//Eager load multople levels. Use string to specify reltaionship
+            .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
             .FirstOrDefaultAsync(e => e.Word == keyword);
         if (entity == null)
         {
             return new List<ProjectDto>().AsReadOnly();
         }
+
         var list = new List<ProjectDto>();
         foreach (var p in entity.Projects)
         {
             list.Add(new ProjectDto(
-                    p.Id, p.Author?.AzureAdToken, p.Author?.FirstName, p.Author?.LastName, p.Title, p.Description)
+                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description)
             );
-
-
+        }
         return list.AsReadOnly();
     }
 
