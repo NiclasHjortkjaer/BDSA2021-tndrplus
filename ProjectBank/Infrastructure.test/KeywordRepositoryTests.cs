@@ -74,8 +74,13 @@ public class KeywordRepositoryTests : IDisposable
     [Fact]
     public async Task ReadAllProjectsWithKeywordAsync_returns_all_allprojects_with_keyword()
     {
-        var projects = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(4, "AI"));
-        Assert.Collection(projects,
+        var projectsAi = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(4, "AI"));
+        Assert.Collection(projectsAi,
+            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today"), project)
+        );
+        var projectsMl = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(5, "Machine Learning"));
+        Assert.Collection(projectsMl,
             project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );
@@ -89,6 +94,13 @@ public class KeywordRepositoryTests : IDisposable
             project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today"), project)
         );
+    }
+    [Fact]
+    public async Task ReadAllProjectsWithKeywordStringAsync_returns_empty_list_given_invalid_keyword()
+    {
+        var projects = await _repo.ReadAllProjectsWithKeywordStringAsync("Not AI");
+        Assert.NotNull(projects);
+        Assert.Empty(projects);
     }
 
     [Fact]
