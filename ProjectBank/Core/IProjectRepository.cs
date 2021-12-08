@@ -6,6 +6,7 @@ public interface IProjectRepository
     Task<ProjectDetailsDto> ReadAsync(int projectId);
     Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync();
     Task<IReadOnlyCollection<ProjectDetailsDto>> ReadTitleAsync(string input);
+    Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAuthorAsync(string input);
     Task<Status> UpdateAsync(int id, ProjectUpdateDto project);
     Task<Status> DeleteAsync(int projectId);
 }

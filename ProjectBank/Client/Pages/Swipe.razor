@@ -17,34 +17,34 @@
 
 <div class="outer_box">
 
+  
     @if (_projects == null)
+            {
+                <h1>no project to show on keyword: @keyword</h1>
+            }
+        else
         {
-            <h1>no project to show on keyword: @keyword</h1>
-        }
-    else
-    {
-        <h1>no project to show on title: @_projects.First().Title</h1>
-        @*foreach (var project in _projects)
-      {
-       
-              <div class="project_builder" id="p_@_idCounter" style="z-index: @_i;">
-                  <div class="project_content">
-                      <div id="project_title">Title: @project.Title </div>
-                      <div id="supervisor">by: <x onclick="">Supervisor</x></div>
-                      <br/>
-                      <hr/>
-                      <br/>
-                      <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
-                      <br/>
-                      <hr/>
-                      <br/>
-                      <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
+            foreach (var project in _projects)
+          {
+           
+                  <div class="project_builder" id="p_@_idCounter" style="z-index: @_i;">
+                      <div class="project_content">
+                          <div id="project_title">Title: @project.Title </div>
+                          <div id="supervisor">by: <x onclick="">Supervisor</x></div>
+                          <br/>
+                          <hr/>
+                          <br/>
+                          <textarea class="project_description" readonly="readonly">blah blah blah....</textarea>
+                          <br/>
+                          <hr/>
+                          <br/>
+                          <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
+                      </div>
                   </div>
-              </div>
-              _i += 10;
-              _idCounter += 1;
-          }  *@
-    }
+                  _i += 10;
+                  _idCounter += 1;
+              }  
+        }
   
 
 </div>
@@ -86,7 +86,7 @@
         try
         {
             _projects = await Http.GetFromJsonAsync<ProjectDto[]>($"/api/Keyword/{keyword}");
-            //await Http.GetFromJsonAsync<List<ProjectDto>>($"/api/Project");
+           
         }
         catch (AccessTokenNotAvailableException e)
         {
@@ -107,7 +107,7 @@
         }
     }
 }
-
+    
 
 @*<div class="like_star">
                     <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
