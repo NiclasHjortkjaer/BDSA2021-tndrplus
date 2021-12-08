@@ -31,8 +31,9 @@ public static class SeedExtensions
             var aiProject = new Project("Artificial Intelligence 101")
             { 
                 Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow
+                Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today.", LastUpdated = DateTime.UtcNow
             };
+            
             var mlProject = new Project("Machine Learning for dummies")
             {
                 Ects = 15, Author = saveListAccount, Description = "Very easy guide just for you", Keywords = new[]{machineLearnKey}, Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
