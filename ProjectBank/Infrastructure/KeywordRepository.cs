@@ -61,21 +61,28 @@ public class KeywordRepository : IKeywordRepository
 
         return list.AsReadOnly();
     }
-    
-    public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordStringAsync(string keyword) //test this
+
+    public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordStringAsync(string keyword)
     {
         var projects = await _context.Keywords
             .Where(k => k.Word == keyword)
             .Select(k => k.Projects).ToListAsync();
-        
+
         var list = new List<ProjectDto>();
         foreach (var p in projects[0])
         {
-            list.Add( new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Author.FirstName, p.Author.LastName, p.Title, p.Description));
+            
+            var project = new ProjectDto(p.Id,null,null,null, p.Title, p.Description);
+                
+            if (project != null)
+            {
+                list.Add(project);
+            }
         }
 
         return list.AsReadOnly();
     }
+    
 
 
 

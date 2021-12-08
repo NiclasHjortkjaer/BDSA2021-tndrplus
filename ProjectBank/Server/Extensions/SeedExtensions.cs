@@ -26,6 +26,7 @@ public static class SeedExtensions
             var machineLearnKey = new Keyword("Machine Learning");
             var designKey = new Keyword("Design"); 
             var saveListAccount = new Account("AuthorToken", "Bill", "Gates");
+            var save2ListAccount = new Account("AuthorTokenNRTWO", "Billy", "Gatorboi");
 
             var aiProject = new Project("Artificial Intelligence 101")
             { 
@@ -38,7 +39,7 @@ public static class SeedExtensions
             };
             var designProject = new Project("Design the future")
             {
-                Ects = 15, Author = saveListAccount, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey},
+                Ects = 15, Author = save2ListAccount, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey},
                 LastUpdated = DateTime.UtcNow
             };
             context.Projects.AddRange(aiProject, mlProject, designProject);
