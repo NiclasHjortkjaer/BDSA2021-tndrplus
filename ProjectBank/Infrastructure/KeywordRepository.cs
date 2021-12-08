@@ -66,6 +66,7 @@ public class KeywordRepository : IKeywordRepository
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordStringAsync(string keyword)
     {
+
         var entity = await _context.Keywords
             //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
             .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
@@ -84,6 +85,7 @@ public class KeywordRepository : IKeywordRepository
         }
         return list.AsReadOnly();
     }
+    
 
 
 
