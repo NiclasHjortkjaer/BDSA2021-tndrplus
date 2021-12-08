@@ -4,8 +4,10 @@
 <!---- USINGS ATTRIBUTES AND INJECTIONS  ---->
 @inject NavigationManager uriHelper;
 @inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject HttpClient Http
 @using Microsoft.AspNetCore.Authorization;
 @using System.Security.Claims;
+@using System.Net
 
 @attribute [Authorize]
 
@@ -82,6 +84,11 @@
    private string name = "Unavailable";
     private string email = "Unavailable";
     string currentRole = "Unavail";
+     AccountCreateDto account = new AccountCreateDto{
+         AzureAAdToken = "jytte"
+
+
+     };
     
     //PAGE SCRIPTS
     void Edit()
@@ -95,9 +102,24 @@ private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
        name = user.Identity.Name;
        _claims = user.Claims;
-        currentRole = user.FindFirst(c => c.Type.Contains("roles"))?.Value;
+        currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
        email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
+       //var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
        
+      //      user.FindFirst(c => c.Type.Contains("aud"))?.Value);
+      
+      var response = await Http.PostAsJsonAsync("api/Account",account);
+        Console.WriteLine(response);
+  }
+  
+  private async Task addUserToDB(){
+      var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+       
+      //      user.FindFirst(c => c.Type.Contains("aud"))?.Value);
+      var response = await Http.PostAsJsonAsync("api/Account",account);
+        Console.WriteLine(response);
+      
+
   }
   
 

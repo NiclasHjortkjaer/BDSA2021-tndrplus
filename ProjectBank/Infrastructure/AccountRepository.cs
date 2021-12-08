@@ -9,7 +9,15 @@ public class AccountRepository : IAccountRepository
     }
 
     public async Task<AccountDetailsDto> CreateAsync(AccountCreateDto account)
-    {
+    { var conflict = await _context.Accounts
+            .Where(k => k.AzureAdToken == account.AzureAAdToken)
+            .Select(k => new AccountDto(k.Id, k.AzureAdToken))
+            .FirstOrDefaultAsync();
+
+        if (conflict != null)
+        {
+            return null!;
+        }
         var newAccount = new Account(account.AzureAAdToken)
         {
             SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync()
