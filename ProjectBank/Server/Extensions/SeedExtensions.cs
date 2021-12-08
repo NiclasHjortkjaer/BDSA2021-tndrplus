@@ -42,10 +42,6 @@ public static class SeedExtensions
             };
             var designProject = new Project("Design the future")
             {
-
-                Ects = 15, Author = save2ListAccount, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey},
-                LastUpdated = DateTime.UtcNow
-
                 Ects = 15, Author = saveListAccount, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey},
                 LastUpdated = DateTime.UtcNow, Accounts = new[]{unknownAccount, saveListAccount}
 
