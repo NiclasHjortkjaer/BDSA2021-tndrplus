@@ -9,6 +9,7 @@ public class AccountRepository : IAccountRepository
     }
 
     public async Task<AccountDetailsDto> CreateAsync(AccountCreateDto account)
+
     { var conflict = await _context.Accounts
             .Where(k => k.AzureAdToken == account.AzureAAdToken)
             .Select(k => new AccountDto(k.Id, k.AzureAdToken))
@@ -19,6 +20,10 @@ public class AccountRepository : IAccountRepository
             return null!;
         }
         var newAccount = new Account(account.AzureAAdToken)
+
+    {
+        var newAccount = new Account(account.AzureAAdToken, account.Name)
+
         {
             SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync()
         };
@@ -27,6 +32,7 @@ public class AccountRepository : IAccountRepository
         return new AccountDetailsDto(
             newAccount.Id,
             newAccount.AzureAdToken,
+            newAccount.Name
             newAccount.SavedProjects.Select(a => a.Title).ToHashSet());
     }
 
@@ -37,6 +43,7 @@ public class AccountRepository : IAccountRepository
             select new AccountDetailsDto(
                 a.Id,
                 a.AzureAdToken,
+                a.Name,
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
@@ -44,7 +51,7 @@ public class AccountRepository : IAccountRepository
     }
     public async Task<IReadOnlyCollection<AccountDto>> ReadAllAsync() =>
         (await _context.Accounts
-            .Select(a => new AccountDto(a.Id, a.AzureAdToken))
+            .Select(a => new AccountDto(a.Id, a.AzureAdToken, a.Name))
             .ToListAsync())
             .AsReadOnly();
 

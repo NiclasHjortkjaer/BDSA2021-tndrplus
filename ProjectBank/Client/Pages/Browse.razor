@@ -26,13 +26,14 @@
     
     protected override async Task OnInitializedAsync()
     {
-       //keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
-        keywords = new KeywordDto[] {new KeywordDto(2, "API")};
-    }
-    private async Task Create(string keyword) // doesnt work
-    {
-        var response = await Http.PostAsJsonAsync("api/Keyword", new KeywordCreateDto() {Projects = new HashSet<string>(), Word = keyword});
-        Console.WriteLine(response);
+        try
+        {
+            keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
+        }
+        catch(AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 
     private void redirectToSwipePage(string keyword)

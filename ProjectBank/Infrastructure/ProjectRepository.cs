@@ -18,7 +18,7 @@ public class ProjectRepository : IProjectRepository
             Degree = project.Degree,
             Ects = project.Ects,
             ImageUrl = project.ImageUrl,
-            Author = await GetAuthorAsync(project.Author),
+            Author = await GetAuthorAsync(project.AuthorToken, project.AuthorFirstName, project.AuthorLastName),
             Keywords = await GetKeywordsAsync(project.Keywords).ToListAsync()
         };
         _context.Projects.Add(newProject);
@@ -27,6 +27,8 @@ public class ProjectRepository : IProjectRepository
         return new ProjectDetailsDto(
             newProject.Id,
             newProject.Author?.AzureAdToken,
+            newProject.Author?.FirstName,
+            newProject.Author?.LastName,
             newProject.Title,
             newProject.Description,
             newProject.Degree,
@@ -46,6 +48,8 @@ public class ProjectRepository : IProjectRepository
             select new ProjectDetailsDto(
                 p.Id,
                 p.Author == null ? null : p.Author.AzureAdToken,
+                p.Author == null ? null : p.Author.FirstName,
+                p.Author == null ? null : p.Author.LastName,
                 p.Title,
                 p.Description,
                 p.Degree,
@@ -60,7 +64,7 @@ public class ProjectRepository : IProjectRepository
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync() =>
         (await _context.Projects
-            .Select(p => new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Title, p.Description))
+            .Select(p => new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Author!.FirstName, p.Author!.LastName, p.Title, p.Description))
             .ToListAsync())
             .AsReadOnly();
 
@@ -70,6 +74,8 @@ public class ProjectRepository : IProjectRepository
             select new ProjectDetailsDto(
                 p.Id,
                 p.Author == null ? null : p.Author.AzureAdToken,
+                p.Author == null ? null : p.Author.FirstName,
+                p.Author == null ? null : p.Author.LastName,
                 p.Title,
                 p.Description,
                 p.Degree,
@@ -83,6 +89,32 @@ public class ProjectRepository : IProjectRepository
         return await projects.ToListAsync();
     }
 
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAuthorAsync(string input) {
+        if (string.IsNullOrWhiteSpace(input)) {
+            return new List<ProjectDetailsDto>();
+        } else {
+            
+            var projects = from p in _context.Projects
+                where (p.Author!.FirstName.ToLower() + " " + p.Author!.LastName.ToLower()).Contains(input.ToLower())
+                select new ProjectDetailsDto(
+                    p.Id,
+                    p.Author == null ? null : p.Author.AzureAdToken,
+                    p.Author == null ? null : p.Author.FirstName,
+                    p.Author == null ? null : p.Author.LastName,
+                    p.Title,
+                    p.Description,
+                    p.Degree,
+                    p.ImageUrl,
+                    p.FileUrl,
+                    p.Ects,
+                    p.LastUpdated,
+                    p.Keywords.Select(k => k.Word).ToHashSet()
+                );
+            
+            return await projects.ToListAsync();
+        }
+    }
+
     public async Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
     {
         var entity = await _context.Projects
@@ -94,7 +126,7 @@ public class ProjectRepository : IProjectRepository
         }
 
         entity.Title = project.Title;
-        entity.Author = await GetAuthorAsync(project.Author);
+        entity.Author = await GetAuthorAsync(project.AuthorToken, project.AuthorFirstName, project.AuthorLastName);
         entity.Degree = project.Degree;
         entity.Description = project.Description;
         entity.Ects = project.Ects;
@@ -120,10 +152,10 @@ public class ProjectRepository : IProjectRepository
     }
     //----------Private helper methods---------------------------//
     //Get Author object from DTO Author string
-    private async Task<Account?> GetAuthorAsync(string? azureAadToken) =>
+    private async Task<Account?> GetAuthorAsync(string? azureAadToken, string? firstName, string? lastName) =>
         string.IsNullOrWhiteSpace(azureAadToken) ? null
             : await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureAadToken) ??
-              new Account(azureAadToken);
+              new Account(azureAadToken, firstName, lastName);
     
     //Get collectino of keyword objects from the keywords collection of strings in the DTOs
     private async IAsyncEnumerable<Keyword> GetKeywordsAsync(IEnumerable<string> keywords)
