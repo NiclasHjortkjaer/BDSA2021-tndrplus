@@ -50,7 +50,7 @@
     }else{
         @foreach (var favorite in favorites)
         {
-            <ul onclick="location.href='https://youtube.com'">@favorite</ul>   
+            <ul @onclick="() => setFavoriteIdAndNavigate(favorite)">@favorite</ul>   
         }
     }
 </div>
@@ -81,9 +81,19 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
-    private void FavoriteNavigate(string favorite)
+    private void setFavoriteIdAndNavigate(string favorite)
     {
-        navigationManager.NavigateTo("/projects/"+favorite);
+        //var _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+favorite);
+        //var projectId = _project.Id
+        //Test TODO:
+        var projectId = 1;
+
+        FavoriteNavigate(projectId);
+    }
+    private int? favoriteId;
+    private void FavoriteNavigate(int favorite)
+    {
+        navigationManager.NavigateTo("/projects/" + favorite.ToString());
     }
 
 }
