@@ -1,0 +1,9 @@
+@page "/projects/{text}"
+
+<h1>This is the blazor page for the "@Text" project</h1>
+
+@code {
+    [Parameter]
+    public string? Text { get; set; }
+
+}
