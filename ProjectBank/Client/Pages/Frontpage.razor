@@ -1,0 +1,9 @@
+@page "/"
+@inject NavigationManager navigationManager
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        navigationManager.NavigateTo("/browse"); //Redirect from frontpage
+    }
+}

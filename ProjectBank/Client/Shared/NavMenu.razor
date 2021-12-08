@@ -1,4 +1,9 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using System.Security.Claims
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager navigationManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/browse"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -45,15 +50,27 @@
     }else{
         @foreach (var favorite in favorites)
         {
-            <ul onclick="location.href='https://youtube.com'">@favorite</ul>   
+            <ul @onclick="() => setFavoriteIdAndNavigate(favorite)">@favorite</ul>   
         }
     }
 </div>
 
 @code {
-    private string[]? favorites = {"Test", "Fun", "øl-tid"}; @*Skal blive til en liste af projecter hvor liked = true*@
-
-
+    private IEnumerable<string> favorites = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            var account = await Http.GetFromJsonAsync<AccountDetailsDto>("/api/Account/1");
+            if (account != null)
+            {
+                var savedProjects = account.SavedProjects;
+                favorites = savedProjects;
+            }
+        }
+    }
 
     private bool collapseNavMenu = true;
 
@@ -64,6 +81,19 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
-    
+    private void setFavoriteIdAndNavigate(string favorite)
+    {
+        //var _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+favorite);
+        //var projectId = _project.Id
+        //Test TODO:
+        var projectId = 1;
+
+        FavoriteNavigate(projectId);
+    }
+    private int? favoriteId;
+    private void FavoriteNavigate(int favorite)
+    {
+        navigationManager.NavigateTo("/projects/" + favorite.ToString());
+    }
 
 }
