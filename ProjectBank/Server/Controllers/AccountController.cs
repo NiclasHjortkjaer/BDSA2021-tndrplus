@@ -26,8 +26,8 @@ public class AccountController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
-    public async Task<AccountDetailsDto>? Get(int accountId)
-       => await _repository.ReadAsync(accountId);
+    public async Task<AccountDetailsDto>? Get(int id)
+       => await _repository.ReadAsync(id);
 
     [Authorize]
     [HttpPost]

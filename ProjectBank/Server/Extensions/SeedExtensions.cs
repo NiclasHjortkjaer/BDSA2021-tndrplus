@@ -30,7 +30,7 @@ public static class SeedExtensions
             var aiProject = new Project("Artificial Intelligence 101")
             { 
                 Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow
+                Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow, Accounts = new[]{saveListAccount}
             };
             var mlProject = new Project("Machine Learning for dummies")
             {
@@ -39,7 +39,7 @@ public static class SeedExtensions
             var designProject = new Project("Design the future")
             {
                 Ects = 15, Author = saveListAccount, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey},
-                LastUpdated = DateTime.UtcNow
+                LastUpdated = DateTime.UtcNow, Accounts = new[]{unknownAccount, saveListAccount}
             };
             context.Projects.AddRange(aiProject, mlProject, designProject);
 
