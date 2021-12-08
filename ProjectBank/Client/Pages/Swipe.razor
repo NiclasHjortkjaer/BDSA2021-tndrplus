@@ -73,14 +73,6 @@
 
     private ProjectDto[]? _projects;
     
-    private enum ClickType
-    {
-        Like,
-        Dislike,
-        Rewatch
-    }
-    
-
     protected override async Task OnInitializedAsync()
     {
         try
@@ -93,6 +85,13 @@
             e.Redirect();
         }
 
+    }
+    
+    private enum ClickType
+    {
+        Like,
+        Dislike,
+        Rewatch
     }
 
     private void CheckClick(ClickType s)
