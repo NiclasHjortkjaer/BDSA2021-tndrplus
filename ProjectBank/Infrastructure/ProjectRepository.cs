@@ -115,6 +115,53 @@ public class ProjectRepository : IProjectRepository
         }
     }
 
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadKeywordAsync(string input) {
+        //p.Keywords.ToList().ForEach(x => x.Word.ToLower().Contains(input.ToLower()))
+        
+        var projects = from p in _context.Projects
+            where containsWord(getKeyWordStrings(p), input)
+            select new ProjectDetailsDto(
+                p.Id,
+                p.Author == null ? null : p.Author.AzureAdToken,
+                p.Author == null ? null : p.Author.FirstName,
+                p.Author == null ? null : p.Author.LastName,
+                p.Title,
+                p.Description,
+                p.Degree,
+                p.ImageUrl,
+                p.FileUrl,
+                p.Ects,
+                p.LastUpdated,
+                p.Keywords.Select(k => k.Word).ToHashSet()
+            );
+        
+        return await projects.ToListAsync();
+    }
+
+    // HELPER
+    private bool containsWord(IEnumerable<string> words, string input) {
+        foreach (var word in words)
+        {
+            if (word.ToLower().Contains(input.ToLower())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // HELPER
+    private IEnumerable<string> getKeyWordStrings(Project project)
+    {
+        //var keywords = from p in _context.Projects
+        //select p.Keywords
+
+        foreach (var keyword in project.Keywords)
+        {
+            yield return keyword.Word;
+        }
+    }
+
     public async Task<Status> UpdateAsync(int id, ProjectUpdateDto project)
     {
         var entity = await _context.Projects
