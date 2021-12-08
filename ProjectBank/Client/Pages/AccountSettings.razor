@@ -99,7 +99,7 @@ private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
        name = user.Identity.Name;
        _claims = user.Claims;
-        currentRole = user.FindFirst(c => c.Type.Contains("roles"))?.Value;
+        currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
        email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
       token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
         AccountCreateDto account = new AccountCreateDto{
