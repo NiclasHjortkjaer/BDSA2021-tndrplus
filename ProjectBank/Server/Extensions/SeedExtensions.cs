@@ -21,12 +21,12 @@ public static class SeedExtensions
         if (!await context.Projects.AnyAsync())
         {
             //seed some data
-            var unknownAccount = new Account("UnknownToken", "Elon", "Musk");
+            var unknownAccount = new Account("UnknownToken", "Elon Musk");
             var aiKeyword = new Keyword("AI");
             var machineLearnKey = new Keyword("Machine Learning");
             var designKey = new Keyword("Design"); 
-            var saveListAccount = new Account("AuthorToken", "Bill", "Gates");
-            var save2ListAccount = new Account("AuthorTokenNRTWO", "Billy", "Gatorboi");
+
+            var saveListAccount = new Account("AuthorToken", "Billy Gates");
 
             var aiProject = new Project("Artificial Intelligence 101")
             { 

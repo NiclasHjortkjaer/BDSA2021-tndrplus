@@ -49,37 +49,40 @@ public class KeywordRepository : IKeywordRepository
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordAsync(KeywordDto keyword)
     {
-        var projects = await _context.Keywords
-            .Where(k => k.Word == keyword.Word)
-            .Select(k => k.Projects).ToListAsync();
-        
-        var list = new List<ProjectDto>();
-        foreach (var p in projects[0])
+        var entity = await _context.Keywords
+            .Include("Projects.Author")
+            .FirstOrDefaultAsync(e => e.Word == keyword.Word);
+        if (entity == null)
         {
-            list.Add( new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Author.FirstName, p.Author.LastName, p.Title, p.Description));
+            return new List<ProjectDto>().AsReadOnly();
         }
-
+        var list = new List<ProjectDto>();
+        foreach (var p in entity.Projects)
+        {
+            list.Add( new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Author.Name, p.Title, p.Description));
+        }
         return list.AsReadOnly();
     }
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordStringAsync(string keyword)
     {
-        var projects = await _context.Keywords
-            .Where(k => k.Word == keyword)
-            .Select(k => k.Projects).ToListAsync();
 
-        var list = new List<ProjectDto>();
-        foreach (var p in projects[0])
+        var entity = await _context.Keywords
+            //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
+            .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+            .FirstOrDefaultAsync(e => e.Word == keyword);
+        if (entity == null)
         {
-            
-            var project = new ProjectDto(p.Id,null,null,null, p.Title, p.Description);
-                
-            if (project != null)
-            {
-                list.Add(project);
-            }
+            return new List<ProjectDto>().AsReadOnly();
         }
 
+        var list = new List<ProjectDto>();
+        foreach (var p in entity.Projects)
+        {
+            list.Add(new ProjectDto(
+                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description)
+            );
+        }
         return list.AsReadOnly();
     }
     

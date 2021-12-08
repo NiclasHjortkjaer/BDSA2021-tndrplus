@@ -25,8 +25,8 @@ public class ProjectController : ControllerBase {
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
     [ProducesResponseType(404)]
-    public async Task<ProjectDetailsDto>? Get(int projectId)
-        => await _repository.ReadAsync(projectId);
+    public async Task<ProjectDetailsDto>? Get(int id)
+        => await _repository.ReadAsync(id);
 
     [Authorize]
     [HttpPost]

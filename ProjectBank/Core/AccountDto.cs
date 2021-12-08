@@ -3,15 +3,13 @@ namespace ProjectBank.Core;
 public record AccountDto(
     int Id,
     string AzureAdToken,
-    string FirstName,
-    string LastName
+    string Name
 );
     
 public record AccountDetailsDto(
     int Id,
     string AzureAdToken,
-    string FirstName,
-    string LastName,
+    string Name,
     ISet<string> SavedProjects
 );
 
@@ -20,10 +18,8 @@ public record AccountCreateDto
     public string AzureAAdToken { get; init; } = null!;
 
     [StringLength(50)]
-    public string FirstName { get; init; } = null!;
+    public string Name { get; init; } = null!;
     
-    [StringLength(50)]
-    public string LastName { get; init; } = null!;
     public ISet<string> SavedProjects { get; init; } = new HashSet<string>();
 
 }

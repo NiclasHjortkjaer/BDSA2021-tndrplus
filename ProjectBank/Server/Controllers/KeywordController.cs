@@ -22,18 +22,20 @@ public class KeywordController : ControllerBase
     public async Task<IReadOnlyCollection<KeywordDto>> Get()
         => await _repository.ReadAllAsync();
 
-    /*[AllowAnonymous]
-    [HttpGet("{id}")]
+
+    [AllowAnonymous]
+    [HttpGet("getby/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(KeywordDto), 200)]
-    public async Task<KeywordDto>? Get(int keywordId)
-       => await _repository.ReadAsync(keywordId);*/
+    public async Task<KeywordDto>? Get(int id)
+       => await _repository.ReadAsync(id);
+
 
     [AllowAnonymous]
     [HttpGet("{keyword}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
-    public async Task<IReadOnlyCollection<ProjectDto>> Get(string keyword)
+    public async Task<IReadOnlyCollection<ProjectDto>> Get([FromRoute]string keyword)
         => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
 
     [Authorize]
