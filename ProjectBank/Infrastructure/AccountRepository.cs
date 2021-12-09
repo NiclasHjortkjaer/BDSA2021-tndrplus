@@ -71,6 +71,63 @@ public class AccountRepository : IAccountRepository
         
         return Status.Deleted;
     }
+    public async Task<Status> AddLikedProjectAsync(int accountId, int projectId) //test den Carl
+    {
+        var account = await _context.Accounts.FindAsync(accountId);
+        if (account == null)
+        {
+            return Status.NotFound;
+        }
+
+        var projectLiked = await _context.Projects.FindAsync(projectId);
+        if (projectLiked == null)
+        {
+            return Status.NotFound;
+        }
+
+        if (!account.SavedProjects.Contains(projectLiked))
+        {
+            account.SavedProjects.Add(projectLiked);   
+        }
+
+        await _context.SaveChangesAsync();
+        
+        return Status.Updated;
+    }
+    /*public async Task<Status> RemoveLikedProjectAsync(int accountId, int projectId) //Det er slet ikke meningen at man sletter noget på den måde ifølge ef core, find en anden løsning.
+    {
+        var account = await _context.Accounts.FindAsync(accountId);
+        if (account == null)
+        {
+            return Status.NotFound;
+        }
+
+        var projectToRemove = await _context.Projects.FindAsync(projectId);
+        if (projectToRemove == null)
+        {
+            return Status.NotFound;
+        }
+
+        if (account.SavedProjects.Contains(projectToRemove))
+        {
+            //account.SavedProjects.Where(p => p.Equals(projectToRemove));
+            //account.SavedProjects.Remove(projectToRemove);
+
+            var projectsToSave = account.SavedProjects.ToList();
+            foreach(var project in projectsToSave)
+            {
+                await AddLikedProjectAsync(accountId, project.Id);
+            }
+
+        }
+
+        await _context.SaveChangesAsync();
+        
+        return Status.Updated;
+    }*/
+    
+    
+    
     //-----------------------Private helper methods---------------------------//
     private async IAsyncEnumerable<Project> GetSavedProjectsAsync(IEnumerable<string> projects)
     {

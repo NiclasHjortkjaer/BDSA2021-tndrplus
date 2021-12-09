@@ -103,17 +103,15 @@ else
         Rewatch
     }
 
-    private void CheckClick(ClickType s)
+    private void CheckClick(ClickType s) //vi skal ha lavet den async
     {
         if (s == ClickType.Like)
         {
             if (!_likedProjects.Contains(_currentProject))
             {
                 _likedProjects.Add(_currentProject);
-
-
-    //string aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-    //put til account controller med azuread toke og projectDTO
+                //string aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+                //put til account controller med azuread toke og projectDTO
             }
             _idCounter++;
             _currentProject = _projects[(_idCounter) % _projects.Length];
