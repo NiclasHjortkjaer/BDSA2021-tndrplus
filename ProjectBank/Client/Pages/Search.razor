@@ -56,13 +56,14 @@ else{
 @code {
 
     public string SearchText = "";
-    ProjectDto[]? _projects;
+    
+    ProjectDetailsDto[]? _projects;
 
     async void LoadProjects()
     {
         try
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDto[]?>($"/api/Project/{SearchText}");
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{SearchText}");
         }
         catch(AccessTokenNotAvailableException exception)
         {
