@@ -7,34 +7,62 @@
     <input @bind="SearchText" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
     <button class="btn_search" @onclick="LoadProjects"> <span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
 </div>
-
-<RadzenDataList WrapItems="true" AllowPaging="true" Data="@projects" TItem="ProjectDto">
+<br/>
+@*<RadzenDataList WrapItems="true" AllowPaging="true" Data="@projects" TItem="ProjectDto">
     <Template Context="project">
-        <RadzenCard Style="width:300px;">
+        <RadzenCard Style="width:600px; border-radius: 10px; color: #1a1e21; position: relative">
             <div class="row">
-            <div class="col-md-6">
-                <div>Title:</div>
-                <b>@project.Title</b>
-                <div style="margin-top:20px">Author:</div>
-                <b>@(project.AuthorName)</b>
-                <br />
-            </div>
+                <div class="col-md-6">
+                    <div>Title:</div>
+                    <b>@project.Title</b>
+                    <div style="margin-top:20px">Author:</div>
+                    <b>@(project.AuthorName)</b>
+                    <br />
+                </div>
             </div>
         </RadzenCard>
     </Template>
-</RadzenDataList>
+</RadzenDataList>*@
+
+
+@if (_projects == null)
+{
+    
+}
+else{
+    @foreach (var project in _projects)
+    {
+        <br/>
+       <div class="project_center">
+          <div class="project_builder_search">
+              <div class="project_search_content">
+                  <div class="like_star">
+                      <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
+                      <label class="oi oi-star" id="star" for="star_checkbox"></label>
+                  </div>
+                  <div id="project_search_title">Title: @project.Title </div>
+                  <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
+                  <br>
+                  <hr>
+                  <br>
+                  
+              </div>
+          </div>
+       </div>  
+    }
+}
 
 
 @code {
 
     public string SearchText = "";
-    ProjectDto[]? projects;
+    ProjectDto[]? _projects;
 
     async void LoadProjects()
     {
         try
         {
-            projects = await Http.GetFromJsonAsync<ProjectDto[]?>($"/api/Project/{SearchText}");
+            _projects = await Http.GetFromJsonAsync<ProjectDto[]?>($"/api/Project/{SearchText}");
         }
         catch(AccessTokenNotAvailableException exception)
         {
