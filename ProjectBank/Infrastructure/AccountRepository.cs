@@ -103,6 +103,7 @@ public class AccountRepository : IAccountRepository
         
         return Status.Updated;
     }
+    
     /*public async Task<Status> RemoveLikedProjectAsync(int accountId, int projectId) //Det er slet ikke meningen at man sletter noget på den måde ifølge ef core, find en anden løsning.
     {
         var account = await _context.Accounts.FindAsync(accountId);

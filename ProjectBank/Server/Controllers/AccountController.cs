@@ -30,10 +30,10 @@ public class AccountController : ControllerBase
        => await _repository.ReadAsync(id);
     
     [AllowAnonymous]
-    [HttpGet("{}")] //herfra
+    [HttpPost("{accountId}/{projectId}")] //herfra
     [ProducesResponseType(typeof(Status),404)]
     [ProducesResponseType(typeof(Status),200)]
-    public async Task<Status>? Get(int accountId, int projectId)
+    public async Task<Status>? Post(int accountId, int projectId)
         => await _repository.AddLikedProjectAsync(accountId,projectId);
 
     [Authorize]
