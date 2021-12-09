@@ -35,4 +35,19 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotEmpty(project.Keywords);
 
     }
+
+    [Fact]
+    public async Task Get_by_title_returns_projects_given_valid_title()
+    {
+        var title = "Artificial Intelligence 101";
+        var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{title}");
+
+        Assert.NotNull(projects);
+        Assert.Equal(1, projects!.Length);
+
+        var project = projects.FirstOrDefault();
+        Assert.Equal("Artificial Intelligence 101", project!.Title);
+        Assert.Equal("Elon Musk", project.AuthorName);
+        Assert.NotEmpty(project.Keywords);
+    }
 }

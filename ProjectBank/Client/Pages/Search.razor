@@ -28,13 +28,13 @@
 @code {
 
     public string SearchText = "";
-    ProjectDto[]? projects;
+    ProjectDetailsDto[]? projects;
 
     async void LoadProjects()
     {
         try
         {
-            projects = await Http.GetFromJsonAsync<ProjectDto[]?>($"/api/Project/{SearchText}");
+            projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{SearchText}");
         }
         catch(AccessTokenNotAvailableException exception)
         {
