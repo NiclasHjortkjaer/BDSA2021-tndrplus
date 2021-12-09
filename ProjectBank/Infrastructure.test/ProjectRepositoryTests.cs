@@ -206,27 +206,6 @@ public class ProjectRepositoryTests
     }
 
     [Fact]
-    public async Task ReadKeywordAsync_given_AI_returns_aiProject()
-    {
-        var projects = await _repo.ReadKeywordAsync("AI");
-
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon", "Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
-
-        Assert.Equal(1, projects.Count());
-        Assert.Equal(1, projects.First().Id);
-        Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
-        Assert.Equal(projects.First().AuthorFirstName, aiProject.AuthorFirstName);
-        Assert.Equal(projects.First().AuthorLastName, aiProject.AuthorLastName);
-        Assert.Equal(projects.First().Degree, aiProject.Degree);
-        Assert.Equal(projects.First().Title, aiProject.Title);
-        Assert.Equal(projects.First().Description, aiProject.Description);
-        Assert.Equal(projects.First().ImageUrl, aiProject.ImageUrl);
-        Assert.Equal(projects.First().FileUrl, aiProject.FileUrl);
-        Assert.Equal(projects.First().LastUpdated, aiProject.LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
-    }
-
-    [Fact]
     public async Task UpdateAsync_given_invalid_id_returns_notFound()
     {
         var project = new ProjectUpdateDto
