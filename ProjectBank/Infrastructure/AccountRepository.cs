@@ -94,14 +94,13 @@ public class AccountRepository : IAccountRepository
             return Status.NotFound;
         }
 
-        if (!account.SavedProjects.Contains(projectLiked))
-        {
-            account.SavedProjects.Add(projectLiked);   
-        }
-
-        await _context.SaveChangesAsync();
+        if (account.SavedProjects.Contains(projectLiked)) return Status.Conflict;
         
+        account.SavedProjects.Add(projectLiked);
+            
+        await _context.SaveChangesAsync();
         return Status.Updated;
+
     }
     
     /*public async Task<Status> RemoveLikedProjectAsync(int accountId, int projectId) //Det er slet ikke meningen at man sletter noget på den måde ifølge ef core, find en anden løsning.

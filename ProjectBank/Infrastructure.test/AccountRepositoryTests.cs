@@ -147,6 +147,29 @@ public class AccountRepositoryTests
 
         Assert.True(account3.SavedProjects.Contains(actualProject));
     }
+    [Fact]
+    public async Task AddLikedProjectAsync_two_times_return_status_conflict()
+    {
+        var account3 = await _context.Accounts.FindAsync(3);
+        var actualProject = await _context.Projects.FindAsync(2);
+        
+        Assert.False(account3.SavedProjects.Contains(actualProject));
+        
+        var status = await _repo.AddLikedProjectAsync(3, 2);
+        var status2 = await _repo.AddLikedProjectAsync(3, 2);
+        
+        Assert.True(account3.SavedProjects.Contains(actualProject));
+        Assert.Equal(Status.Updated, status);
+        Assert.Equal(Status.Conflict, status2);
+        
+    }
+    [Fact]
+    public async Task AddLikedProjectAsync_on_null_project_return_status_notFound()
+    {
+        var status = await _repo.AddLikedProjectAsync(3, 399);
+
+        Assert.Equal(Status.NotFound, status);
+    }
     /*[Fact]
     public async Task RemoveLikedProjectAsync_adds_given_project_from_id() //ikke meningen man må slette fra listen på den måde i følge ef core, hvad gør vi så..
     {
