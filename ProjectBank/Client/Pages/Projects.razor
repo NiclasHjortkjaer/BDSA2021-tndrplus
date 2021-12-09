@@ -2,24 +2,55 @@
 @inject HttpClient Http
 @inject NavigationManager navigationManager
 
-<h1>This is the blazor page for the "@Title" project</h1>
+<h1>This is the blazor page for the "@Project?.Title" project</h1>
+  
+<div class="row my-5">
+    <div class="col-lg-6 col-xl-4 offset-lg-3 offset-xl-4">
+        <RadzenCard class="m-6">
+            <h3 class="h5" style="color:black;">"@Project?.Title":</h3>
+            <div class="d-flex flex-row">
+                <div>
+                    <b style="color:black;">Project description:</b>
+                    <div style="color:black;">@(Project?.Description)</div>
+                    <b style="color:black;">Level of difficulty:</b>
+                    <div style="color:black;">@(Project?.Degree)</div>
+                    <b style="color:black;">ECTS:</b>
+                    <div style="color:black;">@(Project?.Ects)</div>
+                    <b style="color:black;">Last updated:</b>
+                    <div style="color:black;">@(Project?.LastUpdated)</div>
+                    <b style="color:black;">Tags:</b>
+                    <div style="color:black;">@if (Project != null){foreach (var keyword in Project.Keywords)
+                    {
+                        <div>@keyword</div>
+                    }}
+                    </div>
+                </div>
+            </div>
+        </RadzenCard>
+        <RadzenCard class="m-3">
+            <h3 class="h5" style="color:black;">Author:</h3>
+            <div class="d-flex flex-row">
+                <div>
+                    <div style="color:black;">"Insert role here"</div>
+                    <b style="color:black;">@(Project?.AuthorName)</b>
+                </div>
+            </div>
+        </RadzenCard>
+    </div>
+</div>
 
 @code {
     [Parameter]
     public string? Id { get; set; }
-    
-    private ProjectDetailsDto? project;
-    private string? Title;
+    private ProjectDetailsDto? Project;
 
     protected override async Task OnInitializedAsync()
     {
-        project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
+        Project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
 
-        if (project == null)
+        if (Project == null)
         {
-            navigationManager.NavigateTo("/browse");
-        } else {
-            Title = project.Title;
-        }
+            //Display content not found error, but how?
+        } 
     }
 }
