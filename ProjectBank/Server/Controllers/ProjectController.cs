@@ -35,7 +35,7 @@ public class ProjectController : ControllerBase {
     {
         var created = await _repository.CreateAsync(project);
 
-        return CreatedAtRoute(nameof(Get), new { created.Id }, created);
+        return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }
 
     [Authorize]
