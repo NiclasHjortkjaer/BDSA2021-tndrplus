@@ -29,7 +29,7 @@
     height: 500px;
     width: 400px;
     border-radius: 10px;
-    position: absolute;
+    position: relative;
 }
 
 .project_builder .project_content{
