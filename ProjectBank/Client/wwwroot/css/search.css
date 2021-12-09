@@ -8,7 +8,7 @@
 
 .searchBar{
     position: relative;
-    width: 50%;
+    width: 55%;
     height: 50px;
     margin: 0;
     padding: 0;
@@ -48,9 +48,8 @@ input[type=text]{
     background-color: #ffffff;
     position: relative;
     border-radius: 10px;
-    height: 200px;
+    height: fit-content;
     width: 600px;
-    top: 20px;
 }
 .project_builder_search .project_search_content{
     color: #1a1e21;
@@ -111,4 +110,38 @@ input[type=text]{
 
 #star_checkbox:checked ~ #star{
     color: #ff655b;
+}
+
+.project_builder_search .project_search_content .project_search_description{
+    height: 120px;
+    width: 570px;
+    resize: none;
+    background: none;
+    border: none;
+    outline: none;
+    overflow-x: hidden;
+}
+
+.project_builder_search .project_search_content .project_search_keywords{
+    height: 80px;
+    width: 570px;
+    resize: none;
+    background: none;
+    border: none;
+    outline: none;
+    overflow-x: hidden;
+}
+
+.project_builder_search .project_search_content #see_more, #close_more{
+    position: relative;
+    z-index: 20;
+    float: right;
+    padding-right: 10px;
+    color: #505052;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.project_builder_search .project_search_content #see_more:hover, #close_more:hover{
+    color: #1a1e21;
+    text-decoration: underline;
 }
