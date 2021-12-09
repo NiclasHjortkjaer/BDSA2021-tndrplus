@@ -29,9 +29,8 @@
     height: 500px;
     width: 400px;
     border-radius: 10px;
-    position: absolute;
+    position: relative;
 }
-
 
 .project_builder .project_content{
     color: #1a1e21;
@@ -120,8 +119,9 @@
 
 .like_and_dislike_btn_div{
   text-align: center;
-  padding-top: 20px;
+  padding-top: 10px;
 }
+
 .like_and_dislike_btn_div button{
     background-image: linear-gradient(15deg, #ff655b, #fd297b);
     border: none;
@@ -155,4 +155,3 @@
 #info_btn:hover{
     background-color: #ffffff;
 }
-

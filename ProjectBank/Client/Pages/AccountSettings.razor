@@ -4,8 +4,11 @@
 <!---- USINGS ATTRIBUTES AND INJECTIONS  ---->
 @inject NavigationManager uriHelper;
 @inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject HttpClient Http
 @using Microsoft.AspNetCore.Authorization;
 @using System.Security.Claims;
+@using System.Net
+
 
 @attribute [Authorize]
 
@@ -34,76 +37,55 @@
             <RadzenLabel Text="Role:" />
         </div>
         <div class="col-md-9">
-            <RadzenDropDown @bind-value="currentRole" Disabled=@editing AllowClear="true" TValue="string" Style="width:300px" Data=@roleArray/>
+            <RadzenTextBox Disabled=true Placeholder=@currentRole style="width: 50%;" Name="Role"/>
         </div>
     </div>
 </RadzenFieldset>
 
 <RadzenButton Click=@Edit Text="Edit profile"/>
 <RadzenButton style="width: 160px" IsBusy=@busyProfile Click=@OnBusyClickProfile Text="Save" />
-
-<div class="row">
-    <div class="col-xl-6">
-        <h3 style="margin-top: 2rem">Change password:</h3>
-    </div>
-</div>
-
-<RadzenFieldset class="mb-4">
-    <div class="row mb-4">
-        <div class="align-items-center d-flex col-md-3">
-                <RadzenPassword Placeholder="Enter current password..."/>
-        </div>
-    </div>
-    <div class="row mb-4">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenPassword Placeholder="Enter new pasword..."/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenPassword Placeholder="Repeat new password..."/>
-        </div>
-    </div>
-</RadzenFieldset>
-
-<RadzenButton style="width: 160px" IsBusy=@busyPassword Click=@OnBusyClickPassword Text="Save" />
     
 @code {
 
     //VARIABLES
-    bool editing = true;
-    bool busyProfile;
-    bool busyPassword;
-
-
-    //DATA NOT YET LINKED TO CONTEXT
-    string[] roleArray = new string[] {"Student", "Supervisor"};
+    private bool editing = true;
+    private bool busyProfile;
     
-   private string name = "Unavailable";
-    private string email = "Unavailable";
-    string currentRole = "Unavail";
+    private string? name;
+    private string? email;
+    private string? currentRole;
+    private string? token;
+
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
     
     //PAGE SCRIPTS
-    void Edit()
+    private void Edit()
     {
         editing = !editing;
     }
 
-private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
    
     protected override async Task OnInitializedAsync(){
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-       name = user.Identity.Name;
-       _claims = user.Claims;
-        currentRole = user.FindFirst(c => c.Type.Contains("roles"))?.Value;
-       email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
-       
-  }
-  
-
-    async Task OnBusyClickProfile()
-    {
+        _claims = user.Claims;
         
+        name = user.Identity?.Name;
+        currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
+        email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
+        token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+        
+        if (token != null && name != null){
+            AccountCreateDto account = new AccountCreateDto{
+                AzureAAdToken = token,
+                Name = name
+            };
+            
+            var response = await Http.PostAsJsonAsync("api/Account",account);
+        }
+    }
+  
+    private async Task OnBusyClickProfile()
+    {
         busyProfile = true;
         await Task.Delay(2000);
         UpdateProfile();
@@ -111,16 +93,7 @@ private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
         uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
     }
 
-    async Task OnBusyClickPassword()
-    {
-        busyPassword = true;
-        await Task.Delay(2000);
-        UpdateProfile();
-        busyPassword = false;
-        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
-    }
-
-    void UpdateProfile()
+    private void UpdateProfile()
     {
         //...
     }

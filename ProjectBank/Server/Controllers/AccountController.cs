@@ -43,7 +43,7 @@ public class AccountController : ControllerBase
     {
         var created = await _repository.CreateAsync(account);
 
-        return CreatedAtRoute(nameof(Get), new { created.Id }, created);
+        return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }
 
     [Authorize]
