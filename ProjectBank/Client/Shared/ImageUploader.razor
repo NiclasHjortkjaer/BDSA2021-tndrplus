@@ -1,0 +1,80 @@
+@using System.Net.Http.Headers
+@using System.Net.Mime
+@using System.Net
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div class="form-group input-group">
+    @*<RadzenUpload Multiple="true" id="Image" Accept="image/*" OnChange="@OnFileSelection" Url="upload/multiple" Style="margin-bottom: 15px;">Image</RadzenUpload>
+    <RadzenButton Text="Clear" Click="ClearImage" Style="margin-bottom: 15px;" />*@
+    <InputFile id="Image" OnChange="@OnFileSelection" class="form-control"/>
+    <button type="button" @onclick="UploadImage" class="btn btn-secondary" style="background-color:darkgreen; opacity: 70">Upload</button>
+    <button type="button" @onclick="ClearImage" class="btn btn-secondary" >Clear</button>
+</div>
+<div class="form-group">
+        @if (!string.IsNullOrWhiteSpace(imageUrl))
+        {
+            <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@imageUrl" alt="Project Image" class="img-thumbnail"></div>
+        }
+</div>
+@code {
+    private ProjectUpdateDto project = new ProjectUpdateDto
+    { 
+        Id = 1, Title = "Artificial Intelligence 101", AuthorName = "ElonA", Degree = Degree.Bachelor,
+
+        Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow
+    };
+    
+    private string imageName = Guid.NewGuid().ToString();
+
+    private string imageUrl = string.Empty;
+
+    private IBrowserFile? imageFile;
+    
+    private async Task UploadImage()
+    {
+        if (imageFile != null)
+        {
+            var bytes = new byte[imageFile.Size];
+            await imageFile.OpenReadStream().ReadAsync(bytes);
+            var byteContent = new ByteArrayContent(bytes);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue(imageFile.ContentType);
+            var content = new MultipartFormDataContent();
+            content.Add(byteContent, "file", imageFile.Name);
+            var response = await Http.PostAsync($"api/Image/{imageName}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                project.ImageUrl = response.Headers.Location?.ToString();
+                var updated = await Http.PutAsJsonAsync("api/Project", project);
+                Console.WriteLine(updated.StatusCode);
+            }
+        }
+    }
+
+    private void ClearImage()
+    {
+        imageUrl = string.Empty;
+        imageFile = null;
+    }
+
+    private void Cancel()
+    {
+        var uri = $"{NavigationManager.BaseUri}characters";
+
+        NavigationManager.NavigateTo(uri);
+    }
+
+    private async Task OnFileSelection(InputFileChangeEventArgs e)
+    {
+        imageFile = e.GetMultipleFiles().FirstOrDefault();
+
+        if (imageFile != null)
+        {
+            var bytes = new byte[imageFile.Size];
+            await imageFile.OpenReadStream().ReadAsync(bytes);
+            var contentType = imageFile.ContentType;
+            imageUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+        }
+    }
+} 
