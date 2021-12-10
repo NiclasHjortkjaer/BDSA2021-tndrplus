@@ -2,7 +2,8 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager navigationManager
-
+<AuthorizeView>
+    <Authorized>
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/browse"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
@@ -54,6 +55,11 @@
         }
     }
 </div>
+    </Authorized>
+    <NotAuthorized>
+
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private IEnumerable<string> favorites = null!;
