@@ -45,6 +45,20 @@ public class AccountRepository : IAccountRepository
 
         return await accounts.FirstOrDefaultAsync();
     }
+    
+    public async Task<AccountDetailsDto> ReadFromTokenAsync(string azureAdToken)
+    {
+        var accounts = from a in _context.Accounts
+            where a.AzureAdToken == azureAdToken
+            select new AccountDetailsDto(
+                a.Id,
+                a.AzureAdToken,
+                a.Name,
+                a.SavedProjects.Select(p => p.Title).ToHashSet()
+            );
+
+        return await accounts.FirstOrDefaultAsync();
+    }
     public async Task<IReadOnlyCollection<AccountDto>> ReadAllAsync() =>
         (await _context.Accounts
             .Select(a => new AccountDto(a.Id, a.AzureAdToken, a.Name))
@@ -80,9 +94,10 @@ public class AccountRepository : IAccountRepository
         
         return Status.Deleted;
     }
-    public async Task<Status> AddLikedProjectAsync(int accountId, int projectId) //test den Carl
+    public async Task<Status> AddLikedProjectAsync(string azureToken, int projectId) //test den Carl
     {
-        var account = await _context.Accounts.FindAsync(accountId);
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureToken);
+        
         if (account == null)
         {
             return Status.NotFound;

@@ -78,6 +78,16 @@ public class AccountRepositoryTests
         Assert.True(account.SavedProjects.SetEquals(new []{"Artificial Intelligence 101"}));
     }
     [Fact]
+    public async Task Read_given_Valid_Token_Returns_Account()
+    {
+        var account = await _repo.ReadFromTokenAsync("AuthorToken");
+        
+        Assert.Equal(3, account.Id);
+        Assert.Equal("AuthorToken", account.AzureAdToken);
+        Assert.True(account.SavedProjects.SetEquals(new []{"Artificial Intelligence 101"}));
+    }
+    
+    [Fact]
     public async Task Read_Invalid_Id_Returns_Null()
     {
         var account = await _repo.ReadAsync(-1);
@@ -141,10 +151,10 @@ public class AccountRepositoryTests
         
         Assert.False(account3.SavedProjects.Contains(actualProject));
         
-        var status = await _repo.AddLikedProjectAsync(3, 2);
+        var status = await _repo.AddLikedProjectAsync("AuthorToken", 2);
         
         Assert.Equal(Status.Updated, status);
-
+        
         Assert.True(account3.SavedProjects.Contains(actualProject));
     }
     [Fact]
@@ -155,8 +165,8 @@ public class AccountRepositoryTests
         
         Assert.False(account3.SavedProjects.Contains(actualProject));
         
-        var status = await _repo.AddLikedProjectAsync(3, 2);
-        var status2 = await _repo.AddLikedProjectAsync(3, 2);
+        var status = await _repo.AddLikedProjectAsync("AuthorToken", 2);
+        var status2 = await _repo.AddLikedProjectAsync("AuthorToken", 2);
         
         Assert.True(account3.SavedProjects.Contains(actualProject));
         Assert.Equal(Status.Updated, status);
@@ -166,7 +176,7 @@ public class AccountRepositoryTests
     [Fact]
     public async Task AddLikedProjectAsync_on_null_project_return_status_notFound()
     {
-        var status = await _repo.AddLikedProjectAsync(3, 399);
+        var status = await _repo.AddLikedProjectAsync("AuthorToken", 399);
 
         Assert.Equal(Status.NotFound, status);
     }
