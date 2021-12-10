@@ -23,7 +23,8 @@ public class AccountControllerTests
         Assert.Equal(created, result?.Value);
         Assert.Equal("Get", result?.ActionName);
         Assert.Equal(KeyValuePair.Create("Id", (object?)1), result?.RouteValues?.Single());
-    }  
+    } 
+    
 
     [Fact]
     public async Task Get_returns_accounts_from_repo()
