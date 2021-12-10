@@ -11,7 +11,6 @@ public static class SeedExtensions
             var context = scope.ServiceProvider.GetRequiredService<ProjectBankContext>();
             await SeedProjectsAsync(context);
         }
-        
         return host;
     }
 
@@ -22,16 +21,112 @@ public static class SeedExtensions
         {
             //Accounts
             var ElonA = new Account("UnknownToken", "Elon Musk");
-            var BillyA = new Account("AuthorToken", "Billy Gates");
-            var JytteA = new Account("AuthorToken", "Jytte Gurdesen");
-            var JohnA = new Account("AuthorToken", "John Lee");
+            var BillyA = new Account("AuthorToken1", "Billy Gates");
+            var JytteA = new Account("AuthorToken2", "Jytte Gurdesen");
+            var JohnA = new Account("AuthorToken3", "John Lee");
 
             //Keywords
             var designKey = new Keyword("Design"); 
             var aiKey = new Keyword("AI");
             var machineLearnKey = new Keyword("Machine Learning");
             var environmentKey = new Keyword("Environment");
+            var dbKey = new Keyword("Database");
+            var secKey = new Keyword("Security");
 
+
+            
+            var sec = new Project("Security")
+            { 
+                Author = JohnA ,Keywords = new[]{secKey
+                }, Degree = Degree.Master,
+
+                Ects = 15, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                }
+
+            };
+               var secDb = new Project("How to secure data")
+            { 
+                Author = ElonA ,Keywords = new[]{secKey
+                ,dbKey }, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                }
+
+            };
+             
+             
+              var secEnvir = new Project("Security and Environment")
+            { 
+                Author = ElonA ,Keywords = new[]{secKey
+                ,environmentKey }, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JytteA
+                }
+
+            };
+            
+            var secMachine = new Project("Security and machinelearning")
+            { 
+                Author = ElonA ,Keywords = new[]{secKey
+                ,machineLearnKey }, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA,JytteA
+                }
+
+            };
+
+
+            var secAi = new Project("Security and AI")
+            { 
+                Author = ElonA ,Keywords = new[]{secKey
+                ,aiKey }, Degree = Degree.Master,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA
+                }
+
+            };
+            var secDesing = new Project("Website and Security")
+            { 
+                Author = ElonA ,Keywords = new[]{secKey
+                ,designKey }, Degree = Degree.Master,
+
+                Ects = 15, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA
+                }
+
+            };
+
+               var DbEnv = new Project("Environment and data")
+            { 
+                Author = ElonA ,Keywords = new[]{environmentKey,dbKey }, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA
+                }
+
+            };
+             var DbAi = new Project("Make ai from collected data")
+            { 
+                Author = ElonA ,Keywords = new[]{aiKey,dbKey }, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA,ElonA,BillyA
+                }
+
+            };
+
+            var DbMachineProject = new Project("Machine learing from data ")
+            { 
+                Author = JohnA ,Keywords = new[]{machineLearnKey,dbKey }, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA,ElonA}
+
+            };
+
+             var DbDesignProject = new Project("Connect database to website")
+            { 
+                Author = JohnA ,Keywords = new[]{designKey,dbKey }, Degree = Degree.Master,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA,ElonA}
+
+            };
            
              var EnvProject = new Project("Crazy Project")
             { 
@@ -62,7 +157,7 @@ public static class SeedExtensions
 
             };
             //Projects
-            var designProject = new Project("create ai robot ")
+            var designProject = new Project("Create ai robot ")
             { 
                 Author = JytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,
 
@@ -94,7 +189,10 @@ public static class SeedExtensions
                 LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA, BillyA}
 
             };
-            context.Projects.AddRange(aiProject, mlProject, designProject);
+            context.Projects.AddRange
+                (aiProject, mlProject, designProject, EnvProject, 
+                    EnvAIiProject, designaiProject, designaProject, designAi3Project, designAiProject
+                );
 
             await context.SaveChangesAsync();
         }
