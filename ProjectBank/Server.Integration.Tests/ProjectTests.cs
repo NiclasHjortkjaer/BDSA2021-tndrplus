@@ -33,6 +33,65 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal("Artificial Intelligence 101", project.Title);
         Assert.Equal("Elon Musk", project.AuthorName);
         Assert.NotEmpty(project.Keywords);
+    }
 
+    [Fact]
+    public async Task Post_returns_created()
+    {
+        var project = new ProjectCreateDto
+        {
+            Title = "Post Project",
+            AuthorToken = "PostToken",
+            AuthorName = "Jesper Buch",
+            Description = "Project about making money",
+            Ects = 10f,
+            Degree = Degree.Master,
+            Keywords = new HashSet<string>{"AI"}
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/Project", project);
+        
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(new Uri("http://localhost/api/Project/3"), response.Headers.Location);
+
+        var created = await response.Content.ReadFromJsonAsync<ProjectDetailsDto>();
+        
+        Assert.NotNull(created);
+        Assert.Equal("PostToken", created.AuthorToken);
+        Assert.Equal("Post Project", created.Title);
+        Assert.Equal("Jesper Buch", created.AuthorName);
+        Assert.Contains("AI", project.Keywords);
+        Assert.Equal(10f, project.Ects);
+        Assert.Equal("Project about making money", project.Description);
+    }
+
+    [Fact]
+    public async Task Get_by_input_returns_projects_given_valid_title()
+    {
+        var title = "Artificial Intelligence 101";
+        var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{title}");
+
+        Assert.NotNull(projects);
+        Assert.Equal(1, projects!.Length);
+
+        var project = projects.FirstOrDefault();
+        Assert.Equal("Artificial Intelligence 101", project!.Title);
+        Assert.Equal("Elon Musk", project.AuthorName);
+        Assert.NotEmpty(project.Keywords);
+    }
+
+    [Fact]
+    public async Task Get_by_input_returns_projects_given_valid_author()
+    {
+        var author = "Elon";
+        var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{author}");
+
+        Assert.NotNull(projects);
+        Assert.Equal(1, projects!.Length);
+
+        var project = projects.FirstOrDefault();
+        Assert.Equal("Artificial Intelligence 101", project!.Title);
+        Assert.Equal("Elon Musk", project.AuthorName);
+        Assert.NotEmpty(project.Keywords);
     }
 }

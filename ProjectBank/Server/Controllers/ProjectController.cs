@@ -31,9 +31,13 @@ public class ProjectController : ControllerBase {
     [AllowAnonymous]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
     [ProducesResponseType(404)]
-    [HttpGet("{title}")]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string title)
-        => await _repository.ReadTitleAsync(title);
+    [HttpGet("{input}")]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string input) {
+        var projectsByTitle = await _repository.ReadTitleAsync(input);
+        var projectsByAuthor = await _repository.ReadAuthorAsync(input);
+
+        return projectsByTitle.Union(projectsByAuthor).ToList().AsReadOnly();
+    }
 
     [Authorize]
     [HttpPost]
@@ -42,7 +46,7 @@ public class ProjectController : ControllerBase {
     {
         var created = await _repository.CreateAsync(project);
 
-        return CreatedAtRoute(nameof(Get), new { created.Id }, created);
+        return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }
 
     [Authorize]

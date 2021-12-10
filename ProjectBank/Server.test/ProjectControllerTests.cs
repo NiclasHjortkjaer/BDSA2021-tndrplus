@@ -16,11 +16,11 @@ public class ProjectControllerTests
         var controller = new ProjectController(logger.Object, repository.Object);
 
         // Act
-        var result = await controller.Post(toCreate) as CreatedAtRouteResult;
+        var result = await controller.Post(toCreate) as CreatedAtActionResult;
 
         // Assert
         Assert.Equal(created, result?.Value);
-        Assert.Equal("Get", result?.RouteName);
+        Assert.Equal("Get", result?.ActionName);
         Assert.Equal(KeyValuePair.Create("Id", (object?)1), result?.RouteValues?.Single());
     }  
 
@@ -82,7 +82,10 @@ public class ProjectControllerTests
         var repository = new Mock<IProjectRepository>();
         var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
+        
         repository.Setup(m => m.ReadTitleAsync("Artificial")).ReturnsAsync(new []{aiProject});
+        repository.Setup(m => m.ReadAuthorAsync("Artificial")).ReturnsAsync(new ProjectDetailsDto[]{});
+
         var controller = new ProjectController(logger.Object, repository.Object);
 
         // Act
@@ -101,6 +104,7 @@ public class ProjectControllerTests
         var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadTitleAsync("Ar")).ReturnsAsync(new []{aiProject});
+        repository.Setup(m => m.ReadAuthorAsync("Ar")).ReturnsAsync(new ProjectDetailsDto[]{});
         var controller = new ProjectController(logger.Object, repository.Object);
 
         // Act
@@ -119,6 +123,7 @@ public class ProjectControllerTests
         var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadTitleAsync("asdf")).ReturnsAsync(new ProjectDetailsDto[]{});
+        repository.Setup(m => m.ReadAuthorAsync("asdf")).ReturnsAsync(new ProjectDetailsDto[]{});
         var controller = new ProjectController(logger.Object, repository.Object);
 
         // Act
