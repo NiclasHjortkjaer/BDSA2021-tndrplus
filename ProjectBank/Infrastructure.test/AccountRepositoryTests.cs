@@ -94,6 +94,12 @@ public class AccountRepositoryTests
         Assert.Null(account);
     }
     [Fact]
+    public async Task Read_Invalid_token_Returns_Null()
+    {
+        var account = await _repo.ReadFromTokenAsync("Invalid");
+        Assert.Null(account);
+    }
+    [Fact]
     public async Task UpdateAsync_given_invalid_Account_returns_notFound()
     {
         var account = new AccountUpdateDto
