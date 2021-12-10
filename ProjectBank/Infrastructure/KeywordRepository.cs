@@ -64,7 +64,7 @@ public class KeywordRepository : IKeywordRepository
         return list.AsReadOnly();
     }
 
-    public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordStringAsync(string keyword)
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string keyword)
     {
 
         var entity = await _context.Keywords
@@ -73,15 +73,15 @@ public class KeywordRepository : IKeywordRepository
             .FirstOrDefaultAsync(e => e.Word == keyword);
         if (entity == null)
         {
-            return new List<ProjectDto>().AsReadOnly();
+            return new List<ProjectDetailsDto>().AsReadOnly();
         }
 
-        var list = new List<ProjectDto>();
+        var list = new List<ProjectDetailsDto>();
         foreach (var p in entity.Projects)
         {
-            list.Add(new ProjectDto(
-                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description)
-            );
+            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+            list.Add(new ProjectDetailsDto(
+                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
         }
         return list.AsReadOnly();
     }

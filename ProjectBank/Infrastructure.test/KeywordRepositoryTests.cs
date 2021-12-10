@@ -27,7 +27,7 @@ public class KeywordRepositoryTests : IDisposable
         var aiProject = new Project("Artificial Intelligence 101")
         { 
             Id = 1, AuthorId = 1,Author = unknownAccount ,Keywords = new[]{aiKeyword, machineLearnKey}, Degree = Degree.Bachelor,
-            Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow, Accounts = new[] {saveListAccount}
+            Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = new DateTime(50), Accounts = new[] {saveListAccount}
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
@@ -90,12 +90,23 @@ public class KeywordRepositoryTests : IDisposable
     [Fact]
     public async Task ReadAllProjectsWithKeywordStringAsync_returns_all_allprojects_with_keyword()
     {
+        
         var projects = await _repo.ReadAllProjectsWithKeywordStringAsync("AI");
-        Assert.Collection(projects,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
-                "A dummies guide to AI. Make your own AI friend today"), project)
-        );
+        ISet<string> keySet = new HashSet<string>() {"AI","Machine Learning",};
+        
+        Assert.Equal(keySet,projects.First().Keywords);
+        Assert.Equal(new DateTime(50),projects.First().LastUpdated);
+        Assert.Equal(null,projects.First().ImageUrl);
+        Assert.Equal(null,projects.First().FileUrl);
+        Assert.Equal(Degree.Bachelor,projects.First().Degree);
+        Assert.Equal(1,projects.First().Id);
+        Assert.Equal("UnknownToken",projects.First().AuthorToken);
+        Assert.Equal("Elon Musk",projects.First().AuthorName);
+        Assert.Equal("Artificial Intelligence 101",projects.First().Title);
+        Assert.Equal("A dummies guide to AI. Make your own AI friend today",projects.First().Description);
+        
     }
+    
     [Fact]
     public async Task ReadAllProjectsWithKeywordStringAsync_returns_empty_list_given_invalid_keyword()
     {

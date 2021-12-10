@@ -32,7 +32,7 @@
 @code {
     private string message = string.Empty;
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
-    private static ClaimsPrincipal? user; //bedre måde at gøre det på? lægge i shared måske?
+    private ClaimsPrincipal? user;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,11 +48,6 @@
         {
             message = "The user is NOT authenticated.";
         }
-    }
-
-    public static ClaimsPrincipal? getUser() //skal vi ha det i shared
-    {
-        return user;
     }
 
 }
