@@ -149,6 +149,31 @@ public static class SeedExtensions
 
                 Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
 
+
+               
+
+           
+             var EnvProject = new Project("Crazy Project")
+            { 
+                Author = JohnA ,Keywords = new[]{designKey, machineLearnKey,environmentKey }, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA}
+
+            };
+            var designaiProject = new Project("Design website with ai")
+            { 
+                Author = JytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
+
+            };
+             var designAiProject = new Project("Create website with machine learning")
+            { 
+                Author = JytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
+
+                Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
+
+
             };
              var designAi3Project = new Project("Save the worlds animals with ai and machinelearning ")
             { 
@@ -158,6 +183,7 @@ public static class SeedExtensions
 
             };
             //Projects
+
             var designProject = new Project("Create ai robot ")
             { 
                 Author = JytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,

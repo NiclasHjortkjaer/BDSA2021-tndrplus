@@ -30,4 +30,27 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotNull(account);
         Assert.Equal("Elon Musk",account.Name);
     }
+
+    [Fact]
+    public async Task Post_returns_created()
+    {
+        var account = new AccountCreateDto
+        {
+            AzureAAdToken = "PostAccount",
+            Name = "Jesper Buch",
+            SavedProjects = new HashSet<string>()
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/Account", account);
+        
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(new Uri("http://localhost/api/Account/4"), response.Headers.Location);
+
+        var created = await response.Content.ReadFromJsonAsync<AccountDetailsDto>();
+        
+        Assert.NotNull(created);
+        Assert.Equal("Jesper Buch", created.Name);
+        Assert.Equal("PostAccount", created.AzureAdToken);
+        Assert.Empty(created.SavedProjects);
+    }
 }

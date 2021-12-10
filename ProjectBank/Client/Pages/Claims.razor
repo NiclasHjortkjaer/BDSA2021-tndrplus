@@ -32,7 +32,7 @@
 @code {
     private string message = string.Empty;
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
-    private static ClaimsPrincipal user; //bedre måde at gøre det på? lægge i shared måske?
+    private static ClaimsPrincipal? user; //bedre måde at gøre det på? lægge i shared måske?
 
     protected override async Task OnInitializedAsync()
     {

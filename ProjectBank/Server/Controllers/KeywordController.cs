@@ -45,7 +45,7 @@ public class KeywordController : ControllerBase
     {
         var created = await _repository.CreateAsync(keyword);
 
-        return CreatedAtRoute(nameof(Get), new { created.Id }, created);
+        return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }
 
     /* [Authorize]
