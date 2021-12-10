@@ -113,7 +113,6 @@ else
                 _likedProjects.Add(_currentProject);
                 await Http.PostAsJsonAsync($"api/Account/{_aToken}",_currentProject );
                 //så kan vi måske lave en if(response ==....) så vise noget forskelligt, hvis den nu ik kan finde projektet i databasen eller whatever.
-
             }
             _idCounter++;
             _currentProject = _projects[(_idCounter) % _projects.Length];

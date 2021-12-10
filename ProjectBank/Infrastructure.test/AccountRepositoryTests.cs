@@ -151,10 +151,10 @@ public class AccountRepositoryTests
         
         Assert.False(account3.SavedProjects.Contains(actualProject));
         
-        var status = await _repo.AddLikedProjectAsync(3, 2);
+        var status = await _repo.AddLikedProjectAsync("AuthorToken", 2);
         
         Assert.Equal(Status.Updated, status);
-
+        
         Assert.True(account3.SavedProjects.Contains(actualProject));
     }
     [Fact]
@@ -165,8 +165,8 @@ public class AccountRepositoryTests
         
         Assert.False(account3.SavedProjects.Contains(actualProject));
         
-        var status = await _repo.AddLikedProjectAsync(3, 2);
-        var status2 = await _repo.AddLikedProjectAsync(3, 2);
+        var status = await _repo.AddLikedProjectAsync("AuthorToken", 2);
+        var status2 = await _repo.AddLikedProjectAsync("AuthorToken", 2);
         
         Assert.True(account3.SavedProjects.Contains(actualProject));
         Assert.Equal(Status.Updated, status);
@@ -176,7 +176,7 @@ public class AccountRepositoryTests
     [Fact]
     public async Task AddLikedProjectAsync_on_null_project_return_status_notFound()
     {
-        var status = await _repo.AddLikedProjectAsync(3, 399);
+        var status = await _repo.AddLikedProjectAsync("AuthorToken", 399);
 
         Assert.Equal(Status.NotFound, status);
     }
