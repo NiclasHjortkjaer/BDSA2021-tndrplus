@@ -5,10 +5,10 @@ public record KeywordDto(
     string Word
 );
 
-public record KeywordDetailsDto(
+/*public record KeywordDetailsDto(
     int Id,
     string Word,
-    ISet<string> Projects) : KeywordDto(Id, Word);
+    ISet<string> Projects) : KeywordDto(Id, Word);*/
 
 public record KeywordCreateDto
 {
@@ -16,8 +16,8 @@ public record KeywordCreateDto
     public ISet<string> Projects = new HashSet<string>();
 }
 
-public record KeywordUpdateDto : KeywordCreateDto
+/*public record KeywordUpdateDto : KeywordCreateDto
 {
     public int Id { get; init; }
-} 
+} */
 
