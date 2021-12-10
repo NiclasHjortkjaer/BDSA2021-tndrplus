@@ -1,20 +1,44 @@
 @page "/"
 @inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject HttpClient Http
+@using Microsoft.AspNetCore.Authorization;
 <AuthorizeView>
     <NotAuthorized>
 <h1>Welcome to the ProjectBank! </h1>
 <h3>You are currently not logged in and can therefore not access the rest of the ProjectBank. 
-Please press "Log in" in the top-left corner and log in.</h3>
+Please press "Log in" in the top-Right corner and log in.</h3>
     </NotAuthorized>
     <Authorized>
         <h1>Hello and Welcome, @context.User.Identity.Name!</h1>
+
         <h3>You are now signed in as and can use the ProjectBank. </h3>
         <ImageUploader></ImageUploader>
+
     </Authorized>
 </AuthorizeView>
 @code{
-    protected override async Task OnInitializedAsync()
-    {
-       
+     private string? name;
+    private string? currentRole;
+    private string? token;
+
+    protected override async Task OnInitializedAsync(){
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+                  if (user.Identity.IsAuthenticated)
+        {
+            
+        name = user.Identity?.Name;
+        currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
+        token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+        
+        if (token != null && name != null){
+            AccountCreateDto account = new AccountCreateDto{
+                AzureAAdToken = token,
+                Name = name
+            };
+            
+            var response = await Http.PostAsJsonAsync("api/Account",account);
+        }}
+
     }
 }

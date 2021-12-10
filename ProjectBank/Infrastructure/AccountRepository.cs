@@ -94,9 +94,10 @@ public class AccountRepository : IAccountRepository
         
         return Status.Deleted;
     }
-    public async Task<Status> AddLikedProjectAsync(int accountId, int projectId) //test den Carl
+    public async Task<Status> AddLikedProjectAsync(string azureToken, int projectId) //test den Carl
     {
-        var account = await _context.Accounts.FindAsync(accountId);
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureToken);
+        
         if (account == null)
         {
             return Status.NotFound;
