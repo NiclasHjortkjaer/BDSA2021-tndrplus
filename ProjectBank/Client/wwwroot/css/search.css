@@ -80,6 +80,12 @@ input[type=text]{
     text-decoration: underline;
 }
 
+.project_search_content hr{
+    background-color: #1a1e21;
+    padding: 0;
+    margin-left: 8%;
+}
+
 .project_builder_search .project_search_content .like_star{
     position: relative;
     float: right;
@@ -87,28 +93,21 @@ input[type=text]{
     margin-right: 15px;
 }
 
-.project_search_content hr{
-    background-color: #1a1e21;
-    padding: 0;
-    margin-left: 8%;
-}
-
-.project_builder_search .project_search_content .like_star #star_checkbox{
+.project_builder_search .project_search_content .like_star .star_checkbox{
     display: none;
 }
 
-.project_builder_search .project_search_content .like_star #star{
+.project_builder_search .project_search_content .like_star .oi-star{
     cursor: pointer;
     font-size: 20px;
-    color: #1a1e21;
     transition: all 0.2s ease;
 }
 
-#star_checkbox:not(:checked) ~ #star:hover{
+.star_checkbox:not(:checked) ~ .oi-star:hover{
     color: #8a3530;
 }
 
-#star_checkbox:checked ~ #star{
+.star_checkbox:checked ~ .oi-star {
     color: #ff655b;
 }
 
@@ -132,7 +131,7 @@ input[type=text]{
     overflow-x: hidden;
 }
 
-.project_builder_search .project_search_content #see_more, #close_more{
+.project_builder_search .project_search_content .see_more, .close_more{
     position: relative;
     z-index: 20;
     float: right;
@@ -141,7 +140,7 @@ input[type=text]{
     cursor: pointer;
     transition: all 0.25s ease;
 }
-.project_builder_search .project_search_content #see_more:hover, #close_more:hover{
+.project_builder_search .project_search_content .see_more:hover, .close_more:hover{
     color: #1a1e21;
     text-decoration: underline;
 }

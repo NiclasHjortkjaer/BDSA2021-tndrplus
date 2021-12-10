@@ -1,5 +1,6 @@
 ﻿@page "/search"
 @using System.Data.SqlTypes
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 
 <PageTitle>ProjectBank - Search</PageTitle>
@@ -18,11 +19,11 @@ else{
     {
      <br/>
        <div class="project_center">
-          <div class="project_builder_search">
+          <div class="project_builder_search" id="P_@project.Id">
               <div class="project_search_content">
                   <div class="like_star">
-                      <input type="checkbox" id="star_checkbox" unchecked="true" onchange=""/>
-                      <label class="oi oi-star" id="star" for="star_checkbox"></label>
+                      <input type="checkbox" class="star_checkbox" id="star_checkbox_@project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(project.Title)"/>
+                      <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label> 
                   </div>
                   <div id="project_search_title">Title: @project.Title </div>
                   <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
@@ -30,27 +31,30 @@ else{
                   <hr>
                   <br>
                   <textarea class="project_search_description" readonly="readonly">@project.Description</textarea>
-                  @if (_isHidden)
-                  {
-                      <label id="see_more" @onclick="SwitchVisibilityState">See more</label>
-                  }
-                  @if (!_isHidden)
-                  {
-                      <div class="expanded_content" id="expand">
-                          <br>
-                          <hr>
-                          <br>
-                          <textarea class="project_search_keywords" readonly="readonly">@string.Join(", ",project.Keywords)</textarea> 
-                          <br>
-                          <hr>
-                          <br>
-                          <label class="project_search_Ects" readonly="readonly">Ects: @project.Ects </label> 
-                          <br>
-                          <label class="project_search_degree" readonly="readonly">Degree: @project.Degree </label>
-                          <br>
-                          <label id="close_more" @onclick="SwitchVisibilityState">Close</label>
-                      </div>
-                  }
+                  
+                  <label class="see_more" id="see_more_@project.Id" onclick="
+                        document.getElementById('see_more_@project.Id').style.display='none';
+                        document.getElementById('expand_@project.Id').style.display='block';
+                    " for="P_@project.Id">See more</label>
+                  
+                  <div class="expanded_content" id="expand_@project.Id" for="P_@project.Id" style="display: none">
+                      <br>
+                      <hr>
+                      <br>
+                      <textarea class="project_search_keywords" readonly="readonly">@string.Join(", ",project.Keywords)</textarea> 
+                      <br>
+                      <hr>
+                      <br>
+                      <label class="project_search_Ects" readonly="readonly">Ects: @project.Ects </label> 
+                      <br>
+                      <label class="project_search_degree" readonly="readonly">Degree: @project.Degree </label>
+                      <br>
+                      <label class="close_more" id="close_more_@project.Id" onclick="
+                        document.getElementById('expand_@project.Id').style.display='none';
+                        document.getElementById('see_more_@project.Id').style.display='block';
+                        
+                      ">Close</label>
+                  </div>
               </div>
           </div>
        </div>  
@@ -60,6 +64,7 @@ else{
 
 @code {
     private bool _isHidden = true;
+
     private void SwitchVisibilityState()
     {
         if (_isHidden == true)
@@ -69,12 +74,12 @@ else{
         else
         {
             _isHidden = true;
-        } 
-        
+        }
+
     }
-    
+
     public string SearchText = "";
-    
+
     ProjectDetailsDto[]? _projects;
 
     async void LoadProjects()
@@ -83,10 +88,29 @@ else{
         {
             _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{SearchText}");
         }
-        catch(AccessTokenNotAvailableException exception)
+        catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
         await InvokeAsync(StateHasChanged);
     }
+
+    
+   
+    
+    private void AddOrRemoveFavorite(string title) //virker ikke
+    {
+        var alreadyliked = false;
+        
+        if (alreadyliked)
+        {
+            // fjern fra liked liste
+        }
+        if (!alreadyliked)
+        {
+            // skal add til fav_liste
+        }
+        
+    }
+    
 }
