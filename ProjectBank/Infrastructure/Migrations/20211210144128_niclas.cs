@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProjectBank.Infrastructure.Migrations
 {
-    public partial class demo : Migration
+    public partial class niclas : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
