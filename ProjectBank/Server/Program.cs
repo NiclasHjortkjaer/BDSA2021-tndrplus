@@ -42,7 +42,7 @@ builder.Services.AddScoped<ISearchManagement, SearchManagement>();
 var blobContainerUri = new Uri(builder.Configuration["BlobContainerUri"]);
 
 builder.Services.AddScoped<BlobContainerClient>(_ => new BlobContainerClient(blobContainerUri, new DefaultAzureCredential()));
-//builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 
 var app = builder.Build();
 

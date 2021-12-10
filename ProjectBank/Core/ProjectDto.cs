@@ -24,35 +24,35 @@ public record ProjectDetailsDto(
 
 public record ProjectCreateDto
 {
-    public string? AuthorToken { get; init; } = null!;
+    public string? AuthorToken { get; set; } = null!;
     
     [StringLength(50)]
-    public string? AuthorName { get; init; } = null!;
+    public string? AuthorName { get; set; } = null!;
 
     [StringLength(100)]
-    public string Title { get; init; } = null!;
+    public string Title { get; set; } = null!;
     
     [StringLength(500)]
-    public string? Description { get; init; }
-    public Degree? Degree { get; init; }
+    public string? Description { get; set; }
+    public Degree? Degree { get; set; }
 
     [StringLength(250)]
     [Url]
-    public string? ImageUrl { get; init; }
+    public string? ImageUrl { get; set; }
 
     [StringLength(250)]
     [Url]
-    public string? FileUrl { get; init; }
+    public string? FileUrl { get; set; }
 
-    public DateTime LastUpdated { get; init; }
+    public DateTime LastUpdated { get; set; }
     
-    public float? Ects { get; init; }
+    public float? Ects { get; set; }
 
-    public ISet<string> Keywords { get; init; } = new HashSet<string>();
+    public ISet<string> Keywords { get; set; } = new HashSet<string>();
     
 }
 
 public record ProjectUpdateDto : ProjectCreateDto{
-    public int Id {get; init;}
+    public int Id {get; set;}
 }
 

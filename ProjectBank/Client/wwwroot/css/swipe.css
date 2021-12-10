@@ -25,7 +25,7 @@
 }
 
 .project_builder{
-    background: #d7d7d7;
+    background: #ffffff;
     height: 500px;
     width: 400px;
     border-radius: 10px;
@@ -59,32 +59,6 @@
 .project_builder .project_content #supervisor x:hover{
     color: #1a1e21;
     text-decoration: underline;
-}
-
-.project_builder .project_content .like_star{
-    position: relative;
-    float: right;
-    padding-top: 5px;
-    margin-right: 15px;
-}
-
-.project_builder .project_content .like_star #star_checkbox{
-    display: none;
-}
-
-.project_builder .project_content .like_star #star{
-    cursor: pointer;
-    font-size: 20px;
-    color: #1a1e21;
-    transition: all 0.2s ease;
-}
-
-#star_checkbox:not(:checked) ~ #star:hover{
-    color: #8a3530;
-}
-
-#star_checkbox:checked ~ #star{
-    color: #ff655b;
 }
 
 .project_content hr{
