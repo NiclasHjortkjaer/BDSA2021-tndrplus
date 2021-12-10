@@ -37,11 +37,11 @@ public class AccountController : ControllerBase
         => await _repository.ReadFromTokenAsync(azzureAdToken);
     
     [AllowAnonymous]
-    [HttpPost("{accountId}")] //herfra
+    [HttpPost("{azureToken}")] //herfra
     [ProducesResponseType(typeof(Status),404)]
     [ProducesResponseType(typeof(Status),200)]
-    public async Task<Status> Post(int accountId, [FromBody] int projectId)
-        => await _repository.AddLikedProjectAsync(accountId,projectId);
+    public async Task<Status> Post(string azureToken, [FromBody] int projectId)
+        => await _repository.AddLikedProjectAsync(azureToken,projectId);
 
     [Authorize]
     [HttpPost]
