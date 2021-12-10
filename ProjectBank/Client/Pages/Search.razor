@@ -35,7 +35,20 @@
     {
         try
         {
-            projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{SearchText}");
+            projects = new ProjectDetailsDto[]{};
+
+
+            //projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{SearchText}");
+
+            projects.Union(await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{SearchText}"));
+            projects.Union(await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Keyword/{SearchText}"));
+
+            //TODO få lige en searchcontroller til at stå for det her
+            
+            
+
+            //projects.Union(await projectsGivenAuthorOrTitle);
+            //projects.Union(await projectsGivenKeyword);
         }
         catch(AccessTokenNotAvailableException exception)
         {
