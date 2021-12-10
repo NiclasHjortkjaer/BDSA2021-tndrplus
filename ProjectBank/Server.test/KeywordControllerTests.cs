@@ -81,11 +81,15 @@ public class KeywordControllerTests
         var repository = new Mock<IKeywordRepository>();
         //var keyword = new KeywordDto(1, "API");
 
-        
-        var keyList = new List<ProjectDto>(){new ProjectDto(1, "UnknownToken", "Elon Musk", "AI", "Welcome young friends, here we will study..")};
 
-        //keyList.AsReadOnly();
-        
+        var keyList = new List<ProjectDetailsDto>()
+        {
+            new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
+                new DateTime(50), new HashSet<string>() {"AI"})
+
+        };
+
         repository.Setup(m => m.ReadAllProjectsWithKeywordStringAsync("AI")).ReturnsAsync(keyList);
         var controller = new KeywordController(logger.Object, repository.Object);
 

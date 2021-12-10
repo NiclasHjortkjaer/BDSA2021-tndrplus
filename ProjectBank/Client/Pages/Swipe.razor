@@ -1,10 +1,8 @@
 @page "/swipe/{keyword}"
 @inject HttpClient Http
-@using Radzen.Blazor.Rendering
-@using System.Security.Principal
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Security.Claims
-@using System.Net
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+
 
 <button id="GoBack_btn" onclick="location.href='/browse'">
     <label class="oi oi-arrow-circle-left"></label>
@@ -36,7 +34,7 @@ else
                 <br/>
                 <hr/>
                 <br/>
-                <textarea class="project_keywords" readonly="readonly">#something, ..., .., ..., ...., #Keyword</textarea>
+                <textarea class="project_keywords" readonly="readonly">Keywords: @_keywordString</textarea>
             </div>
         </div>
     </div>
@@ -61,18 +59,18 @@ else
     [Parameter]
     public string keyword { get; set; }
 
-    //private string[]? _Test = {"Project1", "Project2", "Project3"};
-    
     private int _i = 10;
 
     private int _idCounter = 0;
 
-    private ProjectDto[]? _projects;
+    private ProjectDetailsDto[]? _projects;
 
-    private List<ProjectDto> _likedProjects;
+    private List<ProjectDetailsDto> _likedProjects;
 
-    private ProjectDto _currentProject;
+    private ProjectDetailsDto _currentProject;
     private ClaimsPrincipal? _user;
+    private IEnumerable<Claim>? _claims;
+    private string? _aToken;
 
     private string _keywordString;
     
@@ -81,12 +79,15 @@ else
     {
         try
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDto[]>($"/api/Keyword/{keyword}");
-            _likedProjects = new List<ProjectDto>();
-            _user = Claims.getUser();
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}");
+            _likedProjects = new List<ProjectDetailsDto>();
+            _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+            _claims = _user.Claims;
+            _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             if (_projects != null)
             {
                 _currentProject = _projects.First();
+                _keywordString = getKeyWords();
             }
         }
         catch (AccessTokenNotAvailableException e)
@@ -103,17 +104,16 @@ else
         Rewatch
     }
 
-    private void CheckClick(ClickType s)
+    private async void CheckClick(ClickType s)
     {
         if (s == ClickType.Like)
         {
             if (!_likedProjects.Contains(_currentProject))
             {
                 _likedProjects.Add(_currentProject);
+                await Http.PostAsJsonAsync($"api/Account/{_aToken}",_currentProject );
+                //så kan vi måske lave en if(response ==....) så vise noget forskelligt, hvis den nu ik kan finde projektet i databasen eller whatever.
 
-
-    //string aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-    //put til account controller med azuread toke og projectDTO
             }
             _idCounter++;
             _currentProject = _projects[(_idCounter) % _projects.Length];
@@ -124,7 +124,7 @@ else
             {
                 _likedProjects.Remove(_currentProject);
             }
-            if (_idCounter != 0) //ja laver vi lige en anden løsning på - skal der komme en side op og sige du er færdig? samme gælder for når vi scroller videre
+            if (_idCounter != 0)
             {
                 _idCounter--;
             }
@@ -137,12 +137,17 @@ else
             _currentProject = _projects[(_idCounter) % _projects.Length];
             
         }
+        _keywordString = getKeyWords();
         InvokeAsync(StateHasChanged);
     }
 
-    /*
-    private string[] getKeyWords()
+
+    private string getKeyWords()
     {
-        //skal hentes fra db
-    }*/
+
+        var keywords = string.Join(", ", _currentProject.Keywords);
+
+        return keywords;
+    }
 }
+    

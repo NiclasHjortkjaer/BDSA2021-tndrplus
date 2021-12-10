@@ -8,4 +8,6 @@ public interface IAccountRepository
     Task<Status> UpdateAsync(int id, AccountUpdateDto account);
     Task<Status> DeleteAsync(int accountId);
 
+    Task<Status> AddLikedProjectAsync(int accountId , int projectId);
+    //Task<Status> RemoveLikedProjectAsync(int accountid, int projectId);
 }

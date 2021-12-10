@@ -1,3 +1,4 @@
+using ProjectBank.Infrastructure;
 using Xunit;
 
 namespace ProjectBank.Server.test;
@@ -22,7 +23,8 @@ public class AccountControllerTests
         Assert.Equal(created, result?.Value);
         Assert.Equal("Get", result?.ActionName);
         Assert.Equal(KeyValuePair.Create("Id", (object?)1), result?.RouteValues?.Single());
-    }  
+    } 
+    
 
     [Fact]
     public async Task Get_returns_accounts_from_repo()
@@ -55,6 +57,22 @@ public class AccountControllerTests
 
         // Assert
         Assert.Null(response);
+    }
+    [Fact]
+    public async Task Put_project_on_accountId_and_projectId()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<AccountController>>();
+        var repository = new Mock<IAccountRepository>();
+
+        repository.Setup(m => m.AddLikedProjectAsync(1,1)).ReturnsAsync(Status.Updated);
+        var controller = new AccountController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Post(1,1);
+
+        // Assert
+        Assert.True(response == Status.Updated);
     }
 
     [Fact]

@@ -35,7 +35,7 @@ public class KeywordController : ControllerBase
     [HttpGet("{keyword}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
-    public async Task<IReadOnlyCollection<ProjectDto>> Get([FromRoute]string keyword)
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword)
         => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
 
     [Authorize]

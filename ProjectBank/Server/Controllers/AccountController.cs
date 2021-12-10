@@ -28,6 +28,13 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(AccountDto), 200)]
     public async Task<AccountDetailsDto>? Get(int id)
        => await _repository.ReadAsync(id);
+    
+    [AllowAnonymous]
+    [HttpPost("{accountId}")] //herfra
+    [ProducesResponseType(typeof(Status),404)]
+    [ProducesResponseType(typeof(Status),200)]
+    public async Task<Status> Post(int accountId, [FromBody] int projectId)
+        => await _repository.AddLikedProjectAsync(accountId,projectId);
 
     [Authorize]
     [HttpPost]
