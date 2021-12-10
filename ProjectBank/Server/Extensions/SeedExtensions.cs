@@ -11,7 +11,6 @@ public static class SeedExtensions
             var context = scope.ServiceProvider.GetRequiredService<ProjectBankContext>();
             await SeedProjectsAsync(context);
         }
-        
         return host;
     }
 
@@ -22,9 +21,9 @@ public static class SeedExtensions
         {
             //Accounts
             var ElonA = new Account("UnknownToken", "Elon Musk");
-            var BillyA = new Account("AuthorToken", "Billy Gates");
-            var JytteA = new Account("AuthorToken", "Jytte Gurdesen");
-            var JohnA = new Account("AuthorToken", "John Lee");
+            var BillyA = new Account("AuthorToken1", "Billy Gates");
+            var JytteA = new Account("AuthorToken2", "Jytte Gurdesen");
+            var JohnA = new Account("AuthorToken3", "John Lee");
 
             //Keywords
             var designKey = new Keyword("Design"); 
@@ -94,7 +93,10 @@ public static class SeedExtensions
                 LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA, BillyA}
 
             };
-            context.Projects.AddRange(aiProject, mlProject, designProject);
+            context.Projects.AddRange
+                (aiProject, mlProject, designProject, EnvProject, 
+                    EnvAIiProject, designaiProject, designaProject, designAi3Project, designAiProject
+                );
 
             await context.SaveChangesAsync();
         }
