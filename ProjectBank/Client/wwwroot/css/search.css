@@ -1,0 +1,146 @@
+
+.searchBar_wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.searchBar{
+    position: relative;
+    width: 55%;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    border: none;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    outline: none;
+}
+
+input[type=text]{
+    padding: 10px;
+    font-size: medium;
+}
+
+.btn_search{
+    position: relative;
+    height: 50px;
+    width: 50px;
+    border-left:1  #212121;
+    border-bottom: none;
+    border-top: none;
+    border-right: none;
+    background-color:#fff;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.project_center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.project_builder_search{
+    background-color: #ffffff;
+    position: relative;
+    border-radius: 10px;
+    height: fit-content;
+    width: 600px;
+}
+.project_builder_search .project_search_content{
+    color: #1a1e21;
+    margin-left: 15px;
+    padding-top: 5px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.project_builder_search .project_search_content #project_search_title{
+    font-size: 20px;
+    margin: 0;
+}
+
+.project_builder_search .project_search_content #search_supervisor{
+    color: #505052;
+    margin: 0;
+    padding: 0;
+}
+
+.project_builder_search .project_search_content #search_supervisor x{
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.project_builder_search .project_search_content #search_supervisor x:hover{
+    color: #1a1e21;
+    text-decoration: underline;
+}
+
+.project_search_content hr{
+    background-color: #1a1e21;
+    padding: 0;
+    margin-left: 8%;
+}
+
+.project_builder_search .project_search_content .like_star{
+    position: relative;
+    float: right;
+    padding-top: 5px;
+    margin-right: 15px;
+}
+
+.project_builder_search .project_search_content .like_star .star_checkbox{
+    display: none;
+}
+
+.project_builder_search .project_search_content .like_star .oi-star{
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s ease;
+}
+
+.star_checkbox:not(:checked) ~ .oi-star:hover{
+    color: #8a3530;
+}
+
+.star_checkbox:checked ~ .oi-star {
+    color: #ff655b;
+}
+
+.project_builder_search .project_search_content .project_search_description{
+    height: 120px;
+    width: 570px;
+    resize: none;
+    background: none;
+    border: none;
+    outline: none;
+    overflow-x: hidden;
+}
+
+.project_builder_search .project_search_content .project_search_keywords{
+    height: 80px;
+    width: 570px;
+    resize: none;
+    background: none;
+    border: none;
+    outline: none;
+    overflow-x: hidden;
+}
+
+.project_builder_search .project_search_content .see_more, .close_more{
+    position: relative;
+    z-index: 20;
+    float: right;
+    padding-right: 10px;
+    color: #505052;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.project_builder_search .project_search_content .see_more:hover, .close_more:hover{
+    color: #1a1e21;
+    text-decoration: underline;
+}
