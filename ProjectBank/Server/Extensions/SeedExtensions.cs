@@ -191,7 +191,9 @@ public static class SeedExtensions
             };
             context.Projects.AddRange
                 (aiProject, mlProject, designProject, EnvProject, 
-                    EnvAIiProject, designaiProject, designaProject, designAi3Project, designAiProject
+                    EnvAIiProject, designaiProject, designaProject, designAi3Project,
+                    designAiProject, sec, secAi, secDb,secDesing, secEnvir, secMachine,
+                    DbAi, DbEnv, DbDesignProject, DbMachineProject
                 );
 
             await context.SaveChangesAsync();
