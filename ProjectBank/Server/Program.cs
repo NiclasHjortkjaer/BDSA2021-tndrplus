@@ -36,6 +36,7 @@ builder.Services.AddScoped<IProjectBankContext, ProjectBankContext>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IKeywordRepository, KeywordRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ISearchManagement, SearchManagement>();
 
 //Azure storage blob stuff
 var blobContainerUri = new Uri(builder.Configuration["BlobContainerUri"]);

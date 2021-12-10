@@ -114,50 +114,25 @@ public class ProjectRepositoryTests
 
         var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         
-        Assert.Equal(projects.Count(), 1);
-        Assert.Equal(projects.First().Id, 2);
-        Assert.Equal(projects.First().AuthorToken, mlProject.AuthorToken);
-        Assert.Equal(projects.First().AuthorName, mlProject.AuthorName);
-        Assert.Equal(projects.First().Degree, mlProject.Degree);
-        Assert.Equal(projects.First().Title, mlProject.Title);
-        Assert.Equal(projects.First().Description, mlProject.Description);
-        Assert.Equal(projects.First().ImageUrl, mlProject.ImageUrl);
-        Assert.Equal(projects.First().FileUrl, mlProject.FileUrl);
-        Assert.Equal(projects.First().LastUpdated, mlProject.LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.Equal(1, projects.Count());
+        Assert.Equal(2, projects.First().Id);
+        Assert.Equal(mlProject.AuthorToken, projects.First().AuthorToken);
+        Assert.Equal(mlProject.AuthorName, projects.First().AuthorName);
+        Assert.Equal(mlProject.Degree, projects.First().Degree);
+        Assert.Equal(mlProject.Title, projects.First().Title);
+        Assert.Equal(mlProject.Description, projects.First().Description);
+        Assert.Equal(mlProject.ImageUrl, projects.First().ImageUrl);
+        Assert.Equal(mlProject.FileUrl, projects.First().FileUrl);
+        Assert.Equal(mlProject.LastUpdated, projects.First().LastUpdated, TimeSpan.FromSeconds(5));
         Assert.True(projects.First().Keywords.SetEquals(new string[]{}));
     }
 
     [Fact]
-    public async Task ReadTitleAsync_returns_everything_given_emptystring()
+    public async Task ReadTitleAsync_returns_emptylist_given_emptystring()
     {
-        var projects = await _repo.ReadTitleAsync("");
+        var projects = await _repo.ReadTitleAsync(" ");
 
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
-        var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
-
-        Assert.Equal(projects.Count(), 2);
-        
-        Assert.Equal(projects.ElementAt(0).Id, 1);
-        Assert.Equal(projects.ElementAt(0).AuthorToken, aiProject.AuthorToken);
-        Assert.Equal(projects.ElementAt(0).AuthorName, aiProject.AuthorName);
-        Assert.Equal(projects.ElementAt(0).Degree, aiProject.Degree);
-        Assert.Equal(projects.ElementAt(0).Title, aiProject.Title);
-        Assert.Equal(projects.ElementAt(0).Description, aiProject.Description);
-        Assert.Equal(projects.ElementAt(0).ImageUrl, aiProject.ImageUrl);
-        Assert.Equal(projects.ElementAt(0).FileUrl, aiProject.FileUrl);
-        Assert.Equal(projects.ElementAt(0).LastUpdated, aiProject.LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.ElementAt(0).Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
-        
-        Assert.Equal(projects.ElementAt(1).Id, 2);
-        Assert.Equal(projects.ElementAt(1).AuthorToken, mlProject.AuthorToken);
-        Assert.Equal(projects.ElementAt(1).AuthorName, mlProject.AuthorName);
-        Assert.Equal(projects.ElementAt(1).Degree, mlProject.Degree);
-        Assert.Equal(projects.ElementAt(1).Title, mlProject.Title);
-        Assert.Equal(projects.ElementAt(1).Description, mlProject.Description);
-        Assert.Equal(projects.ElementAt(1).ImageUrl, mlProject.ImageUrl);
-        Assert.Equal(projects.ElementAt(1).FileUrl, mlProject.FileUrl);
-        Assert.Equal(projects.ElementAt(1).LastUpdated, mlProject.LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.ElementAt(1).Keywords.SetEquals(new string[]{}));
+        Assert.Equal(0, projects.Count());
     }
 
     [Fact]
