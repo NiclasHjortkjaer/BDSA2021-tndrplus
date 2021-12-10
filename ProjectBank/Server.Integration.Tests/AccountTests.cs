@@ -26,7 +26,15 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
     public async Task get_by_id_returns_account_by_id()
     {
         var id = 1;
-        var account = await _client.GetFromJsonAsync<AccountDto>($"/api/Account/{id}");
+        var account = await _client.GetFromJsonAsync<AccountDto>($"/api/Account/getBy{id}");
+        Assert.NotNull(account);
+        Assert.Equal("Elon Musk",account.Name);
+    }
+    [Fact]
+    public async Task get_by_Token_returns_account()
+    {
+        var azureAdToken = "UnknownToken";
+        var account = await _client.GetFromJsonAsync<AccountDto>($"/api/Account/{azureAdToken}");
         Assert.NotNull(account);
         Assert.Equal("Elon Musk",account.Name);
     }
@@ -44,7 +52,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/Account", account);
         
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        Assert.Equal(new Uri("http://localhost/api/Account/4"), response.Headers.Location);
+        Assert.Equal(new Uri("http://localhost/api/Account/getBy4"), response.Headers.Location);
 
         var created = await response.Content.ReadFromJsonAsync<AccountDetailsDto>();
         

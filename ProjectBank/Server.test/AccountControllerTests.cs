@@ -58,6 +58,22 @@ public class AccountControllerTests
         // Assert
         Assert.Null(response);
     }
+    
+    [Fact]
+    public async Task Get_given_non_existing_Token_returns_NotFound()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<AccountController>>();
+        var repository = new Mock<IAccountRepository>();
+        repository.Setup(m => m.ReadFromTokenAsync("Invalid")).ReturnsAsync(default(AccountDetailsDto));
+        var controller = new AccountController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Get("Invalid");
+
+        // Assert
+        Assert.Null(response);
+    }
     [Fact]
     public async Task Put_project_on_accountId_and_projectId()
     {
@@ -87,6 +103,21 @@ public class AccountControllerTests
 
         // Act
         var response = await controller.Get(1);
+
+        // Assert
+        Assert.Equal(account, response);
+    }
+    public async Task Get_given_existing_token_returns_account()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<AccountController>>();
+        var repository = new Mock<IAccountRepository>();
+        var account = new AccountDetailsDto(1, "AzureAdToken", "Warren Buffet", new HashSet<string>());
+        repository.Setup(m => m.ReadFromTokenAsync("AzureAdToken")).ReturnsAsync(account);
+        var controller = new AccountController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Get("AzureAdToken");
 
         // Assert
         Assert.Equal(account, response);

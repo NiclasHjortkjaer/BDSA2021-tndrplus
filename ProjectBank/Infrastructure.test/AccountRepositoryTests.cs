@@ -78,6 +78,16 @@ public class AccountRepositoryTests
         Assert.True(account.SavedProjects.SetEquals(new []{"Artificial Intelligence 101"}));
     }
     [Fact]
+    public async Task Read_given_Valid_Token_Returns_Account()
+    {
+        var account = await _repo.ReadFromTokenAsync("AuthorToken");
+        
+        Assert.Equal(3, account.Id);
+        Assert.Equal("AuthorToken", account.AzureAdToken);
+        Assert.True(account.SavedProjects.SetEquals(new []{"Artificial Intelligence 101"}));
+    }
+    
+    [Fact]
     public async Task Read_Invalid_Id_Returns_Null()
     {
         var account = await _repo.ReadAsync(-1);
