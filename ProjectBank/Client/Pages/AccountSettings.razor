@@ -55,8 +55,6 @@
     private string? email;
     private string? currentRole;
     private string? token;
-
-    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
     
     //PAGE SCRIPTS
     private void Edit()
@@ -67,21 +65,11 @@
    
     protected override async Task OnInitializedAsync(){
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        _claims = user.Claims;
-        
         name = user.Identity?.Name;
         currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
         email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
         token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
         
-        if (token != null && name != null){
-            AccountCreateDto account = new AccountCreateDto{
-                AzureAAdToken = token,
-                Name = name
-            };
-            
-            var response = await Http.PostAsJsonAsync("api/Account",account);
-        }
     }
   
     private async Task OnBusyClickProfile()
