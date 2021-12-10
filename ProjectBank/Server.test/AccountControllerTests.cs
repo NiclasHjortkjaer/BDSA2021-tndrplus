@@ -81,11 +81,11 @@ public class AccountControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
 
-        repository.Setup(m => m.AddLikedProjectAsync(1,1)).ReturnsAsync(Status.Updated);
+        repository.Setup(m => m.AddLikedProjectAsync("ya",1)).ReturnsAsync(Status.Updated);
         var controller = new AccountController(logger.Object, repository.Object);
 
         // Act
-        var response = await controller.Post(1,1);
+        var response = await controller.Post("ya",1);
 
         // Assert
         Assert.True(response == Status.Updated);
