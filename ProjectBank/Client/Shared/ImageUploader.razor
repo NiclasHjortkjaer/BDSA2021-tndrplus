@@ -1,4 +1,3 @@
-@page "/projects/{Id}/image"
 @using System.Net.Http.Headers
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
@@ -6,7 +5,7 @@
 <div class="form-group input-group">
     @*<RadzenUpload Multiple="true" id="Image" Accept="image/*" OnChange="@OnFileSelection" Url="upload/multiple" Style="margin-bottom: 15px;">Image</RadzenUpload>
     <RadzenButton Text="Clear" Click="ClearImage" Style="margin-bottom: 15px;" />*@
-    <InputFile id="Image" OnChange="@OnFileSelection" class="form-control"/>
+    <InputFile id="Image" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif" class="form-control"/>
     <button type="button" @onclick="UploadImage" class="btn btn-secondary" style="background-color:darkgreen; opacity: 70">Upload</button>
     <button type="button" @onclick="ClearImage" class="btn btn-secondary" >Clear</button>
 </div>
@@ -19,8 +18,9 @@
 @code {
 
     [Parameter]
-    public int Id { get; set; }
+    public int projectId { get; set; }
 
+    
     private ProjectDetailsDto toBeUpdated;
 
 
@@ -34,8 +34,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Id = 1;
-        toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{Id}");
+        toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{projectId}");
         if (toBeUpdated != null)
         {
             project = new ProjectUpdateDto()

@@ -8,7 +8,7 @@ public class PdfController : Controller
 
     private readonly IReadOnlyCollection<string> _allowedContentTypes = new[]
     {
-        "pdf/pdf",
+        "application/pdf",
         
     };
 
