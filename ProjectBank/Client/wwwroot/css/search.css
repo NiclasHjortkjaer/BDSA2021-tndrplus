@@ -144,3 +144,22 @@ input[type=text]{
     color: #1a1e21;
     text-decoration: underline;
 }
+
+.to_top_button{
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 100;
+    background-color: #d7d7d7;
+    color: #1a1e21;
+    cursor: pointer;
+    border: 0;
+    height: 30px;
+    width: 30px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+}
+
+.to_top_button:hover{
+    background-color: #ffffff;
+}
