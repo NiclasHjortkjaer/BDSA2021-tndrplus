@@ -133,7 +133,6 @@ input[type=text]{
 
 .project_builder_search .project_search_content .see_more, .close_more{
     position: relative;
-    z-index: 20;
     float: right;
     padding-right: 10px;
     color: #505052;
