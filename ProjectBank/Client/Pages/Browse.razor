@@ -7,7 +7,11 @@
 
 <PageTitle>ProjectBank - Browse</PageTitle>
 
-    @if (keywords == null)
+<div class="browse_all">
+    <button class="browse_all_btn" @onclick="">Browse all</button>or look for a specific keyword to browse:
+</div>
+
+@if (keywords == null)
     {
        <h1>Loading...</h1> 
     }else{
