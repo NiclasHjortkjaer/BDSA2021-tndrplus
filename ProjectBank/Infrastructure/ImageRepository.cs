@@ -11,6 +11,7 @@ public class ImageRepository : IImageRepository
 
     public async Task<(Status status, Uri uri)> CreateImageAsync(string name, string contentType, Stream stream)
     {
+        // Create a URI to the blob
         var client = _client.GetBlockBlobClient(name);
 
         await client.UploadAsync(stream);

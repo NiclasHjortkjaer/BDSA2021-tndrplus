@@ -64,26 +64,29 @@ public class KeywordRepository : IKeywordRepository
         return list.AsReadOnly();
     }
 
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string keyword)
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string input)
     {
+        if (string.IsNullOrWhiteSpace(input)) {
+            return new List<ProjectDetailsDto>();
+        } else {
+            var entity = await _context.Keywords
+                //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
+                .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+                .FirstOrDefaultAsync(e => e.Word == input);
+            if (entity == null)
+            {
+                return new List<ProjectDetailsDto>().AsReadOnly();
+            }
 
-        var entity = await _context.Keywords
-            //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
-            .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
-            .FirstOrDefaultAsync(e => e.Word == keyword);
-        if (entity == null)
-        {
-            return new List<ProjectDetailsDto>().AsReadOnly();
+            var list = new List<ProjectDetailsDto>();
+            foreach (var p in entity.Projects)
+            {
+                ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+                list.Add(new ProjectDetailsDto(
+                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+            }
+            return list.AsReadOnly();
         }
-
-        var list = new List<ProjectDetailsDto>();
-        foreach (var p in entity.Projects)
-        {
-            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
-            list.Add(new ProjectDetailsDto(
-                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
-        }
-        return list.AsReadOnly();
     }
     
 
