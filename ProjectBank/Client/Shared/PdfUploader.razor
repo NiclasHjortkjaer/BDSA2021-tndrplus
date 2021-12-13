@@ -7,20 +7,29 @@
 <div class="form-group input-group">
     @*<RadzenUpload Multiple="true" id="Image" Accept="image/*" OnChange="@OnFileSelection" Url="upload/multiple" Style="margin-bottom: 15px;">Image</RadzenUpload>
     <RadzenButton Text="Clear" Click="ClearImage" Style="margin-bottom: 15px;" />*@
-    <InputFile id="pdf" OnChange="@OnFileSelection" class="form-control"/>
+    <InputFile id="pdf" OnChange="@OnFileSelection" accept=".pdf" class="form-control"/>
     <button type="button" @onclick="UploadFile" class="btn btn-secondary" style="background-color:darkgreen; opacity: 70">Upload</button>
     <button type="button" @onclick="ClearFile" class="btn btn-secondary" >Clear</button>
 </div>
 <div class="form-group">
         @if (!string.IsNullOrWhiteSpace(fileUrl))
         {
-            <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@fileUrl" alt="Project Image" class="img-thumbnail"></div>
-        }
+            <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><a style="color: #0a53be" href="@fileUrl" download="@fileName">Preview file</a></div>
+            
+        }@if (sizeExceeded)
+         {
+             <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
+         }
 </div>
 @code {
 
     [Parameter]
-    public ProjectUpdateDto project { get; set; }
+    public int projectId { get; set; }
+
+    
+    private ProjectDetailsDto toBeUpdated;
+
+    public ProjectUpdateDto project;
 
     private string fileName = Guid.NewGuid().ToString();
 
@@ -28,21 +37,36 @@
 
     private IBrowserFile? pdfFile;
 
+    private bool sizeExceeded;
+    protected override async Task OnInitializedAsync()
+    {
+        toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{projectId}");
+        if (toBeUpdated != null)
+        {
+            project = new ProjectUpdateDto()
+            {
+                Id = toBeUpdated.Id, Degree = toBeUpdated.Degree, Title = toBeUpdated.Title,
+                Description = toBeUpdated.Description, Ects = toBeUpdated.Ects, Keywords = toBeUpdated.Keywords, AuthorName = toBeUpdated.AuthorName,
+                AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
+            };
+        }
+    }
+    
     private async Task UploadFile()
     {
         if (pdfFile != null)
         {
             var bytes = new byte[pdfFile.Size];
-            await pdfFile.OpenReadStream().ReadAsync(bytes);
+            await pdfFile.OpenReadStream(1024000).ReadAsync(bytes);
             var byteContent = new ByteArrayContent(bytes);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue(pdfFile.ContentType);
             var content = new MultipartFormDataContent();
             content.Add(byteContent, "file", pdfFile.Name);
-            var response = await Http.PostAsync($"api/file/{fileName}", content);
+            var response = await Http.PostAsync($"api/Pdf/{fileName}", content);
 
             if (response.IsSuccessStatusCode)
             {
-                project.ImageUrl = response.Headers.Location?.ToString();
+                project.FileUrl = response.Headers.Location?.ToString();
                 var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
                 Console.WriteLine(updated.StatusCode);
             }
@@ -66,14 +90,25 @@
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
+        sizeExceeded = false;
         pdfFile = e.GetMultipleFiles().FirstOrDefault();
 
         if (pdfFile != null)
         {
-            var bytes = new byte[pdfFile.Size];
-            await pdfFile.OpenReadStream().ReadAsync(bytes);
-            var contentType = pdfFile.ContentType;
-            fileUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+            try
+            {
+                var bytes = new byte[pdfFile.Size];
+                await pdfFile.OpenReadStream(1024000).ReadAsync(bytes);
+                var contentType = pdfFile.ContentType;
+                fileUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+            }
+            catch (IOException exception)
+            {
+                sizeExceeded = true;
+                Console.WriteLine(e);
+                
+            }
+            
         }
     }
 } 
