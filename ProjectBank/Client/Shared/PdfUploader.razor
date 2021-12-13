@@ -1,0 +1,79 @@
+@using System.Net.Http.Headers
+@using System.Net.Mime
+@using System.Net
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div class="form-group input-group">
+    @*<RadzenUpload Multiple="true" id="Image" Accept="image/*" OnChange="@OnFileSelection" Url="upload/multiple" Style="margin-bottom: 15px;">Image</RadzenUpload>
+    <RadzenButton Text="Clear" Click="ClearImage" Style="margin-bottom: 15px;" />*@
+    <InputFile id="pdf" OnChange="@OnFileSelection" class="form-control"/>
+    <button type="button" @onclick="UploadFile" class="btn btn-secondary" style="background-color:darkgreen; opacity: 70">Upload</button>
+    <button type="button" @onclick="ClearFile" class="btn btn-secondary" >Clear</button>
+</div>
+<div class="form-group">
+        @if (!string.IsNullOrWhiteSpace(fileUrl))
+        {
+            <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@fileUrl" alt="Project Image" class="img-thumbnail"></div>
+        }
+</div>
+@code {
+
+    [Parameter]
+    public ProjectUpdateDto project { get; set; }
+
+    private string fileName = Guid.NewGuid().ToString();
+
+    private string fileUrl = string.Empty;
+
+    private IBrowserFile? pdfFile;
+
+    private async Task UploadFile()
+    {
+        if (pdfFile != null)
+        {
+            var bytes = new byte[pdfFile.Size];
+            await pdfFile.OpenReadStream().ReadAsync(bytes);
+            var byteContent = new ByteArrayContent(bytes);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue(pdfFile.ContentType);
+            var content = new MultipartFormDataContent();
+            content.Add(byteContent, "file", pdfFile.Name);
+            var response = await Http.PostAsync($"api/file/{fileName}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                project.ImageUrl = response.Headers.Location?.ToString();
+                var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
+                Console.WriteLine(updated.StatusCode);
+            }
+        }
+    }
+
+    private void ClearFile()
+    {
+        fileUrl = string.Empty;
+        pdfFile = null;
+        StateHasChanged();
+    }
+
+    private void Cancel()
+    {
+        var uri = $"{NavigationManager.BaseUri}characters";
+
+        NavigationManager.NavigateTo(uri);
+        
+    }
+
+    private async Task OnFileSelection(InputFileChangeEventArgs e)
+    {
+        pdfFile = e.GetMultipleFiles().FirstOrDefault();
+
+        if (pdfFile != null)
+        {
+            var bytes = new byte[pdfFile.Size];
+            await pdfFile.OpenReadStream().ReadAsync(bytes);
+            var contentType = pdfFile.ContentType;
+            fileUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+        }
+    }
+} 
