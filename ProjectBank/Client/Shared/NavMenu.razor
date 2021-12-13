@@ -6,7 +6,10 @@
     <Authorized>
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/browse"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
+        <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
+        <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+
+            </NavLink>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -57,7 +60,47 @@
 </div>
     </Authorized>
     <NotAuthorized>
-
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
+        <NavLink class="nav-link" href="/">
+            </NavLink>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/">
+                <span class="oi oi-globe" aria-hidden="true"></span> Browse
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                <span class="oi oi-magnifying-glass" aria-hidden="true"></span> Search
+            </NavLink>
+        </div>
+        @*<div class="nav-item px-3">
+            <NavLink class="nav-link" href="fetchdata">
+                <span class="oi oi-wrench" aria-hidden="true"></span> Settings
+            </NavLink>
+        </div>*@
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/">
+                <span class="oi oi-pencil" aria-hidden="true"></span> Settings
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/">
+            <span class="oi oi-pencil" aria-hidden="true"></span> Claims
+            </NavLink>
+        </div>
+    </nav>
+</div>
+<hr>
+<br>
     </NotAuthorized>
 </AuthorizeView>
 

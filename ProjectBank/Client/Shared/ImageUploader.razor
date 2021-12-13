@@ -1,6 +1,5 @@
+@page "/projects/{Id}/image"
 @using System.Net.Http.Headers
-@using System.Net.Mime
-@using System.Net
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
@@ -18,19 +17,36 @@
         }
 </div>
 @code {
-    private ProjectUpdateDto project = new ProjectUpdateDto
-    { 
-        Id = 1, Title = "Artificial Intelligence 101", AuthorName = "ElonA", Degree = Degree.Bachelor,
 
-        Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow
-    };
-    
+    [Parameter]
+    public int Id { get; set; }
+
+    private ProjectDetailsDto toBeUpdated;
+
+
+    private ProjectUpdateDto project;
+
     private string imageName = Guid.NewGuid().ToString();
 
     private string imageUrl = string.Empty;
 
     private IBrowserFile? imageFile;
-    
+
+    protected override async Task OnInitializedAsync()
+    {
+        Id = 1;
+        toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{Id}");
+        if (toBeUpdated != null)
+        {
+            project = new ProjectUpdateDto()
+            {
+                Id = toBeUpdated.Id, Degree = toBeUpdated.Degree, Title = toBeUpdated.Title,
+                Description = toBeUpdated.Description, Ects = toBeUpdated.Ects, Keywords = toBeUpdated.Keywords, AuthorName = toBeUpdated.AuthorName,
+                AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.FileUrl, LastUpdated = DateTime.UtcNow
+            };
+        }
+    }
+
     private async Task UploadImage()
     {
         if (imageFile != null)
@@ -46,16 +62,18 @@
             if (response.IsSuccessStatusCode)
             {
                 project.ImageUrl = response.Headers.Location?.ToString();
-                var updated = await Http.PutAsJsonAsync("api/Project", project);
+                var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
                 Console.WriteLine(updated.StatusCode);
             }
         }
     }
-
+    
+    
     private void ClearImage()
     {
         imageUrl = string.Empty;
         imageFile = null;
+        StateHasChanged();
     }
 
     private void Cancel()
@@ -63,6 +81,7 @@
         var uri = $"{NavigationManager.BaseUri}characters";
 
         NavigationManager.NavigateTo(uri);
+        
     }
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
