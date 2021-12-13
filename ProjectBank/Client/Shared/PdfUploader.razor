@@ -16,7 +16,10 @@
         {
             <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><a style="color: #0a53be" href="@fileUrl" download="@fileName">Preview file</a></div>
             
-        }
+        }@if (sizeExceeded)
+         {
+             <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
+         }
 </div>
 @code {
 
@@ -34,6 +37,7 @@
 
     private IBrowserFile? pdfFile;
 
+    private bool sizeExceeded;
     protected override async Task OnInitializedAsync()
     {
         toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{projectId}");
@@ -53,7 +57,7 @@
         if (pdfFile != null)
         {
             var bytes = new byte[pdfFile.Size];
-            await pdfFile.OpenReadStream().ReadAsync(bytes);
+            await pdfFile.OpenReadStream(1024000).ReadAsync(bytes);
             var byteContent = new ByteArrayContent(bytes);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue(pdfFile.ContentType);
             var content = new MultipartFormDataContent();
@@ -86,14 +90,25 @@
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
+        sizeExceeded = false;
         pdfFile = e.GetMultipleFiles().FirstOrDefault();
 
         if (pdfFile != null)
         {
-            var bytes = new byte[pdfFile.Size];
-            await pdfFile.OpenReadStream().ReadAsync(bytes);
-            var contentType = pdfFile.ContentType;
-            fileUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+            try
+            {
+                var bytes = new byte[pdfFile.Size];
+                await pdfFile.OpenReadStream(1024000).ReadAsync(bytes);
+                var contentType = pdfFile.ContentType;
+                fileUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+            }
+            catch (IOException exception)
+            {
+                sizeExceeded = true;
+                Console.WriteLine(e);
+                
+            }
+            
         }
     }
 } 

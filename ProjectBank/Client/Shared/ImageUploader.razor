@@ -13,7 +13,10 @@
         @if (!string.IsNullOrWhiteSpace(imageUrl))
         {
             <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@imageUrl" alt="Project Image" class="img-thumbnail"></div>
-        }
+        }@if (sizeExceeded)
+         {
+             <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
+         }
 </div>
 @code {
 
@@ -31,6 +34,7 @@
     private string imageUrl = string.Empty;
 
     private IBrowserFile? imageFile;
+    private bool sizeExceeded;
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,7 +45,7 @@
             {
                 Id = toBeUpdated.Id, Degree = toBeUpdated.Degree, Title = toBeUpdated.Title,
                 Description = toBeUpdated.Description, Ects = toBeUpdated.Ects, Keywords = toBeUpdated.Keywords, AuthorName = toBeUpdated.AuthorName,
-                AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.FileUrl, LastUpdated = DateTime.UtcNow
+                AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
             };
         }
     }
@@ -51,7 +55,7 @@
         if (imageFile != null)
         {
             var bytes = new byte[imageFile.Size];
-            await imageFile.OpenReadStream().ReadAsync(bytes);
+            await imageFile.OpenReadStream(1024000).ReadAsync(bytes);
             var byteContent = new ByteArrayContent(bytes);
             byteContent.Headers.ContentType = new MediaTypeHeaderValue(imageFile.ContentType);
             var content = new MultipartFormDataContent();
@@ -85,14 +89,24 @@
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
+        sizeExceeded = false;
         imageFile = e.GetMultipleFiles().FirstOrDefault();
 
         if (imageFile != null)
         {
-            var bytes = new byte[imageFile.Size];
-            await imageFile.OpenReadStream().ReadAsync(bytes);
-            var contentType = imageFile.ContentType;
-            imageUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+            try
+            {
+                var bytes = new byte[imageFile.Size];
+                await imageFile.OpenReadStream(1024000).ReadAsync(bytes);
+                var contentType = imageFile.ContentType;
+                imageUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+            }
+            catch (IOException exception)
+            {
+                sizeExceeded = true;
+                Console.WriteLine(exception);
+            }
+            
         }
     }
 } 
