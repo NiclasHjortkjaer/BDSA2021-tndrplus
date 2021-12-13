@@ -6,7 +6,7 @@
 <PageTitle>ProjectBank - Search</PageTitle>
 
 <div class="searchBar_wrapper">
-    <input @bind="SearchText" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
+    <input @bind="SearchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
     <button class="btn_search" @onclick="LoadProjects"> <span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
 </div>
 
@@ -82,7 +82,7 @@ else{
 
     ProjectDetailsDto[]? _projects;
 
-    async void LoadProjects()
+    async Task LoadProjects()
     {
         try
         {
@@ -95,7 +95,23 @@ else{
         await InvokeAsync(StateHasChanged);
     }
 
-    
+    //TODO opdater det her, så dataet på hjemmesiden bliver loaded på første klik
+    async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            //await LoadProjects();
+            try
+            {
+                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{SearchText}");
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+    }
    
     
     private void AddOrRemoveFavorite(string title) //virker ikke
