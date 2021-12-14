@@ -1,0 +1,125 @@
+@page "/createproject"
+@using System.Net
+@using System.Collections.Generic
+@inject HttpClient Http
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+
+<PageTitle>ProjectBank - CreateProject</PageTitle>
+
+<h2>Create a new project:</h2>
+<RadzenFieldset class="mb-4">
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Title:" />
+        </div>
+        <div class="col-md-9">
+            <RadzenTextBox Disabled=false Placeholder="Choose a title" @bind-Value="project.Title" Change=@(args => OnChange(args, "TextArea with placeholder")) style="width: 50%;" Name="ProjectName"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Description:" />
+        </div>
+        <div class="col-md-9">
+            <RadzenTextArea Placeholder="Enter here..." @bind-Value="project.Description" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="height:200px" Class="w-100"  />
+        </div>
+    </div>
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3"> 
+            <RadzenLabel Text="Degree:" />
+        </div>
+        <div class="col-md-9">
+             <RadzenDropDown AllowClear="true"   Item="enums" T="enums" Class="w-100" @bind-Value ="project.Degree"
+                            Data= "enums" />
+        </div>
+    </div>
+        <div class="row">
+        <div class="align-item-center d-flex col-md-3">
+             <RadzenLabel Text="ETCs" />
+        </div>
+         <div class="col-md-9">
+            <RadzenDropDown AllowClear="true" TValue="float?" Class="w-100" @bind-Value="project.Ects" 
+                            Data= "etcs" />
+        </div>
+        </div>
+        <div class="row">
+        <div class="align-item-center d-flex col-md-3">
+             <RadzenLabel Text="Keywords:" />
+             </div>
+         <div class="col-md-9">
+<RadzenListBox AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@multipleValues Multiple="true" Data=@keywords
+                                Style="height:200px;color:black;" Class="w-100" />
+        </div>
+          <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@CreatesProject Text="Save" />
+    </div>
+</RadzenFieldset>
+
+@code {
+    int value = 1;
+     private string? name;
+    
+    private string? token;
+     bool busy;
+    private ProjectCreateDto project = new();
+ private KeywordDto[]? DTOKeywords;
+ //KeywordDto[]? multipleValues;
+   private IEnumerable<string> multipleValues = new string[]{"AI"};
+  private List<string> keywords = new List<string>();
+  // IEnumerable<string> keywordstring;
+      List<Enum?> enums = new List<Enum?>();
+      List<float?> etcs = new List<float?>();
+ protected override async Task OnInitializedAsync(){
+       var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+                  if (user.Identity.IsAuthenticated)
+        {
+            
+        name = user.Identity?.Name;
+        token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+       
+    
+        etcs.Add(7.5f);
+        etcs.Add(15f);
+       enums.Add(Degree.Bachelor);
+       enums.Add(Degree.Master);
+       enums.Add(Degree.PHD);
+ try 
+        {
+            DTOKeywords = await Http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
+                foreach (var keyword in DTOKeywords){
+                    keywords.Add(keyword.Word);
+                }
+        }
+        catch(AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+ }
+   async Task CreatesProject()
+    { 
+         project.AuthorName = name;
+        project.AuthorToken = token;
+        project.LastUpdated = DateTime.UtcNow;
+         ISet<string> keySet = new HashSet<string>();
+             foreach (var keyword in multipleValues){
+                    keySet.Add(keyword);
+                }
+        project.Keywords = keySet;
+try{
+       var response = await Http.PostAsJsonAsync("api/Project",project);
+ }
+        catch(AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    
+        busy = true;
+        await Task.Delay(2000);
+        busy = false;
+    }
+    void OnChange(string value, string name)
+    {
+        
+    }
+ }

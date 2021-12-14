@@ -51,40 +51,32 @@ else
             <button id="like_btn" @onclick="(() => CheckClick(ClickType.Like))">
                 <label id="star_icon" class="oi oi-star"></label>
             </button>
-        </div>
-       
+        </div> 
 }
-
 
 @code
 {
     [Parameter]
-    public string keyword { get; set; }
+    public string? keyword { get; set; }
 
     private int _i = 10;
-
     private int _idCounter = 0;
-
-    private ProjectDetailsDto[]? _projects;
-
-    private List<ProjectDetailsDto> _likedProjects; //vi kan kun bruge dette til at tjekke om vi det er unødvendigt med et API kald. 
-
+    private ProjectDetailsDto[] _projects = null!;
+    private List<ProjectDetailsDto> _likedProjects; 
     private ProjectDetailsDto _lastProject;
     private ProjectDetailsDto _currentProject;
     private ClickType _lastClick;
-
     private ClaimsPrincipal? _user;
     private IEnumerable<Claim>? _claims;
     private string? _aToken;
-
     private string _keywordString;
-
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}");
+            var projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}");
+            if (projects != null) _projects = projects;
             _likedProjects = new List<ProjectDetailsDto>();
             _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _claims = _user.Claims;
@@ -153,7 +145,7 @@ else
             _lastClick = ClickType.Dislike;
         }
         _keywordString = getKeyWords();
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
 
@@ -170,7 +162,4 @@ else
         var notiMsg = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "hhaha", Duration = 4000};
         NotificationService.Notify(notiMsg);
     }*/
-    
-    
-}
-    
+}   
