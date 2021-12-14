@@ -12,8 +12,8 @@ using ProjectBank.Infrastructure;
 namespace ProjectBank.Infrastructure.Migrations
 {
     [DbContext(typeof(ProjectBankContext))]
-    [Migration("20211210144128_niclas")]
-    partial class niclas
+    [Migration("20211214132818_Newest")]
+    partial class Newest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,6 +70,9 @@ namespace ProjectBank.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
