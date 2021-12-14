@@ -10,7 +10,7 @@
 
 @if (claims.Count() > 0)
 {
-    <table class="table table-striped">
+    <table class="table table-striped" style="color: white">
         <thead>
         <tr>
             <th>Type</th>
@@ -20,7 +20,7 @@
         <tbody>
         @foreach (var claim in claims)
         {
-            <tr>
+            <tr style="color: white">
                 <td>@claim.Type</td>
                 <td>@claim.Value</td>
             </tr>
