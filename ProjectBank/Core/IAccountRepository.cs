@@ -9,6 +9,6 @@ public interface IAccountRepository
     Task<Status> UpdateAsync(int id, AccountUpdateDto account);
     Task<Status> DeleteAsync(int accountId);
 
-    Task<Status> AddLikedProjectAsync(string azureToken , int projectId);
-    //Task<Status> RemoveLikedProjectAsync(int accountid, int projectId);
+    Task<Status> AddLikedProjectAsync(string azureToken , string projectTitle);
+    Task<Status> RemoveLikedProjectAsync(string azureToken, string projectTitle);
 }
