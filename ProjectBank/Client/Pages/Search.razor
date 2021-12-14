@@ -10,57 +10,54 @@
     <button class="btn_search" @onclick="LoadProjects"> <span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
 </div>
 
-@if (_projects == null)
+@if (_projects != null)
 {
-    
-}
-else{
     @foreach (var project in _projects)
     {
-     <br/>
-       <div class="project_center">
-          <div class="project_builder_search" id="P_@project.Id">
-              <div class="project_search_content">
-                  <div class="like_star">
-                      <input type="checkbox" class="star_checkbox" id="star_checkbox_@project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(project.Title)"/>
-                      <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label> 
-                  </div>
-                  <div id="project_search_title">Title: @project.Title </div>
-                  <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
-                  <br>
-                  <hr>
-                  <br>
-                  <textarea class="project_search_description" readonly="readonly">@project.Description</textarea>
-                  
-                  <label class="see_more" id="see_more_@project.Id" onclick="
+        <br/>
+        <div class="project_center">
+            <div class="project_builder_search" id="P_@project.Id">
+                <div class="project_search_content">
+                    <div class="like_star">
+                        <input type="checkbox" class="star_checkbox" id="star_checkbox_@project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(project.Title)"/>
+                        <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label>
+                    </div>
+                    <div id="project_search_title">Title: @project.Title </div>
+                    <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
+                    <br>
+                    <hr>
+                    <br>
+                    <textarea class="project_search_description" readonly="readonly">@project.Description</textarea>
+
+                    <label class="see_more" id="see_more_@project.Id" onclick="
                         document.getElementById('see_more_@project.Id').style.display='none';
                         document.getElementById('expand_@project.Id').style.display='block';
                     " for="P_@project.Id">See more</label>
-                  
-                  <div class="expanded_content" id="expand_@project.Id" for="P_@project.Id" style="display: none">
-                      <br>
-                      <hr>
-                      <br>
-                      <textarea class="project_search_keywords" readonly="readonly">@string.Join(", ",project.Keywords)</textarea> 
-                      <br>
-                      <hr>
-                      <br>
-                      <label class="project_search_Ects" readonly="readonly">Ects: @project.Ects </label> 
-                      <br>
-                      <label class="project_search_degree" readonly="readonly">Degree: @project.Degree </label>
-                      <br>
-                      <label class="close_more" id="close_more_@project.Id" onclick="
+
+                    <div class="expanded_content" id="expand_@project.Id" for="P_@project.Id" style="display: none">
+                        <br>
+                        <hr>
+                        <br>
+                        <textarea class="project_search_keywords" readonly="readonly">@string.Join(", ", project.Keywords)</textarea>
+                        <br>
+                        <hr>
+                        <br>
+                        <label class="project_search_Ects" readonly="readonly">Ects: @project.Ects </label>
+                        <br>
+                        <label class="project_search_degree" readonly="readonly">Degree: @project.Degree </label>
+                        <br>
+                        <label class="close_more" id="close_more_@project.Id" onclick="
                         document.getElementById('expand_@project.Id').style.display='none';
                         document.getElementById('see_more_@project.Id').style.display='block';
                         
                       ">Close</label>
-                  </div>
-              </div>
-          </div>
-       </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }
-<br/>
+    <br/>
 @if (_projects is {Length: >= 1 })
 {
     <button class="to_top_button" id="top_btn" onclick="document.body.scrollTop = 0; document.documentElement.scrollTop = 0;">
@@ -92,7 +89,7 @@ else{
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            //await LoadProjects();
+    //await LoadProjects();
             try
             {
                 _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{SearchText}");
@@ -104,21 +101,21 @@ else{
             await InvokeAsync(StateHasChanged);
         }
     }
-   
-    
+
+
     private void AddOrRemoveFavorite(string title) //virker ikke
     {
         var alreadyliked = false;
-        
+
         if (alreadyliked)
         {
-            // fjern fra liked liste
+    // fjern fra liked liste
         }
         if (!alreadyliked)
         {
-            // skal add til fav_liste
+    // skal add til fav_liste
         }
-        
+
     }
-    
 }
+
