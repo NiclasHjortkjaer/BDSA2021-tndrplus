@@ -15,6 +15,7 @@ builder.Services.AddHttpClient("ProjectBank.ServerAPI", client => client.BaseAdd
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ProjectBank.ServerAPI"));
+builder.Services.AddScoped<NotificationService>();
 
 builder.Services.AddMsalAuthentication<RemoteAuthenticationState, CustomAccount>(options =>
 {
