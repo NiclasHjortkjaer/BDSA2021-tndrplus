@@ -21,11 +21,18 @@
 @code {
 
     [Parameter]
-    public int projectId { get; set; }
-    
+    public int Id { get; set; }
+
+    [Parameter]
+    public bool isProject { get; set; }
+
     private ProjectDetailsDto toBeUpdated;
 
+    private AccountDetailsDto toBeUpdatedAccount;
+
     private ProjectUpdateDto? project;
+
+    private AccountUpdateDto? account;
 
     private string imageName = Guid.NewGuid().ToString();
 
@@ -36,16 +43,32 @@
 
     protected override async Task OnInitializedAsync()
     {
-        toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{projectId}");
-        if (toBeUpdated != null)
+        if (isProject)//if project
         {
-            project = new ProjectUpdateDto()
+            toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{Id}");
+            if (toBeUpdated != null)
             {
-                Id = toBeUpdated.Id, Degree = toBeUpdated.Degree, Title = toBeUpdated.Title,
-                Description = toBeUpdated.Description, Ects = toBeUpdated.Ects, Keywords = toBeUpdated.Keywords, AuthorName = toBeUpdated.AuthorName,
-                AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
-            };
+                project = new ProjectUpdateDto()
+                {
+                    Id = toBeUpdated.Id, Degree = toBeUpdated.Degree, Title = toBeUpdated.Title,
+                    Description = toBeUpdated.Description, Ects = toBeUpdated.Ects, Keywords = toBeUpdated.Keywords, AuthorName = toBeUpdated.AuthorName,
+                    AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
+                };
+            }
         }
+        else //if account
+        {
+            toBeUpdatedAccount = await Http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{Id}");
+            if (toBeUpdatedAccount != null)
+            {
+                account = new AccountUpdateDto()
+                {
+                    Id = toBeUpdatedAccount.Id, PictureUrl = toBeUpdatedAccount.PictureUrl, Name = toBeUpdatedAccount.Name,
+                    SavedProjects = toBeUpdatedAccount.SavedProjects, AzureAAdToken = toBeUpdatedAccount.AzureAdToken
+                };
+            }
+        }
+        
     }
 
     private async Task UploadImage()
@@ -60,16 +83,23 @@
             content.Add(byteContent, "file", imageFile.Name);
             var response = await Http.PostAsync($"api/Image/{imageName}", content);
 
-            if (response.IsSuccessStatusCode && project != null)
-            {
-                project.ImageUrl = response.Headers.Location?.ToString();
-                var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
-                Console.WriteLine(updated.StatusCode);
-            }
+            if (response.IsSuccessStatusCode)
+                if(project != null)
+                {
+                    {
+                        project.ImageUrl = response.Headers.Location?.ToString();
+                        var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
+                        Console.WriteLine(updated.StatusCode);
+                    }
+                } else if(account != null){
+                    {
+                        account.PictureUrl = response.Headers.Location?.ToString();
+                        var updated = await Http.PutAsJsonAsync($"api/Account/{account.Id}", account);
+                        Console.WriteLine(updated.StatusCode);
+                    }
+                }
         }
     }
-    
-    
     private void ClearImage()
     {
         imageUrl = string.Empty;
@@ -79,7 +109,7 @@
 
     private void Cancel()
     {
-        var uri = $"{NavigationManager.BaseUri}characters";
+        var uri = $"{NavigationManager.BaseUri}";
 
         NavigationManager.NavigateTo(uri);
         
