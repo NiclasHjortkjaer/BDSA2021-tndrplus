@@ -26,7 +26,6 @@
     [Parameter]
     public int projectId { get; set; }
 
-    
     private ProjectDetailsDto toBeUpdated;
 
     public ProjectUpdateDto project;
@@ -64,7 +63,7 @@
             content.Add(byteContent, "file", pdfFile.Name);
             var response = await Http.PostAsync($"api/Pdf/{fileName}", content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && project != null)
             {
                 project.FileUrl = response.Headers.Location?.ToString();
                 var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
