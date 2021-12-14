@@ -12,8 +12,8 @@
     margin-right: 20px;
     height: 200px;
     border-radius: 10px;
+    word-break: break-word;
     transition: all 0.25s ease;
-    
   }
   
   .grid-item:hover{
