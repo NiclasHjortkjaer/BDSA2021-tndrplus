@@ -57,7 +57,7 @@ public class ProjectRepository : IProjectRepository
                 p.LastUpdated,
                 p.Keywords.Select(k => k.Word).ToHashSet()
             );
-        return await projects.FirstAsync();
+        return await projects.FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync() =>

@@ -38,7 +38,7 @@ public class KeywordRepository : IKeywordRepository
                 k.Word
             );
 
-        return await keywords.FirstAsync();
+        return await keywords.FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyCollection<KeywordDto>> ReadAllAsync() =>
