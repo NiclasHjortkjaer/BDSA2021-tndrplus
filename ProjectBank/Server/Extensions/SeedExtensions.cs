@@ -130,7 +130,7 @@ public static class SeedExtensions
            
              var EnvProject = new Project("Crazy Project")
             { 
-                Author = JohnA ,Keywords = new[]{designKey, machineLearnKey,environmentKey }, Degree = Degree.Bachelor,
+                Author = JohnA ,Keywords = new[]{designKey, machineLearnKey,environmentKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/defaultproj.jpg",
 
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA}
 
@@ -173,7 +173,7 @@ public static class SeedExtensions
             };
             var aiProject = new Project("Artificial Intelligence 101")
             { 
-                Author = ElonA ,Keywords = new[]{aiKey, machineLearnKey}, Degree = Degree.Bachelor,
+                Author = ElonA ,Keywords = new[]{aiKey, machineLearnKey}, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/ai_watch_illustration_fp_886_500.jpg",
 
                 Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA}
 
@@ -181,11 +181,11 @@ public static class SeedExtensions
             
             var mlProject = new Project("Machine Learning for dummies")
             {
-                Ects = 15, Author = BillyA, Description = "Very easy guide just for you", Keywords = new[]{machineLearnKey}, Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
+                Ects = 15, Author = BillyA, Description = "Very easy guide just for you", Keywords = new[]{machineLearnKey}, Degree = Degree.PHD, LastUpdated = DateTime.UtcNow, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/getmedia.ashx.jpeg"
             };
             var designaProject = new Project("Design the future")
             {
-                Ects = 15, Author = BillyA, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey},
+                Ects = 15, Author = BillyA, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey}, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/IN_DEsignthinking_Design-Thinking-2.png",
                 LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA, BillyA}
 
             };
