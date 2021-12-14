@@ -36,12 +36,19 @@ public class AccountController : ControllerBase
     public async Task<AccountDetailsDto>? Get(string azzureAdToken)
         => await _repository.ReadFromTokenAsync(azzureAdToken);
     
-    [AllowAnonymous]
-    [HttpPost("{azureToken}")] //herfra
+    [Authorize]
+    [HttpPost("{azureToken}")] 
     [ProducesResponseType(typeof(Status),404)]
     [ProducesResponseType(typeof(Status),200)]
-    public async Task<Status> Post(string azureToken, [FromBody] int projectId)
-        => await _repository.AddLikedProjectAsync(azureToken,projectId);
+    public async Task<Status> Post(string azureToken, [FromBody] string projectTitle)//lav den her til put i morgen
+        => await _repository.AddLikedProjectAsync(azureToken,projectTitle);
+    
+    [Authorize]
+    [HttpPut("{azureToken}/remove")] 
+    [ProducesResponseType(typeof(Status),404)]
+    [ProducesResponseType(typeof(Status),200)]
+    public async Task<Status> Put(string azureToken, [FromBody] string projectTitle)
+        => await _repository.RemoveLikedProjectAsync(azureToken,projectTitle);
 
     [Authorize]
     [HttpPost]
