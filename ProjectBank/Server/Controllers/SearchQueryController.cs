@@ -16,7 +16,7 @@ public class SearchQueryController : ControllerBase {
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IReadOnlyCollection<ProjectDto>> Get()
+    public IReadOnlyCollection<ProjectDto> Get()
         => new List<ProjectDetailsDto>().AsReadOnly();
 
     [AllowAnonymous]
