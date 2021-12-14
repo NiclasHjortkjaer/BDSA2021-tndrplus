@@ -43,7 +43,7 @@ public class AccountRepository : IAccountRepository
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
-        return await accounts.FirstOrDefaultAsync();
+        return await accounts.FirstAsync();
     }
     
     public async Task<AccountDetailsDto> ReadFromTokenAsync(string azureAdToken)
@@ -57,7 +57,7 @@ public class AccountRepository : IAccountRepository
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
-        return await accounts.FirstOrDefaultAsync();
+        return await accounts.FirstAsync();
     }
     public async Task<IReadOnlyCollection<AccountDto>> ReadAllAsync() =>
         (await _context.Accounts

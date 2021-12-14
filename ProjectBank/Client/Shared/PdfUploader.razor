@@ -20,7 +20,7 @@
 @code {
 
     [Parameter]
-    public ProjectUpdateDto project { get; set; }
+    public ProjectUpdateDto? project { get; set; }
 
     private string fileName = Guid.NewGuid().ToString();
 
@@ -40,7 +40,7 @@
             content.Add(byteContent, "file", pdfFile.Name);
             var response = await Http.PostAsync($"api/file/{fileName}", content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && project != null)
             {
                 project.ImageUrl = response.Headers.Location?.ToString();
                 var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);

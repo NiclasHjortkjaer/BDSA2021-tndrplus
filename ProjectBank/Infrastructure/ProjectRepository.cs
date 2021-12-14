@@ -57,7 +57,7 @@ public class ProjectRepository : IProjectRepository
                 p.LastUpdated,
                 p.Keywords.Select(k => k.Word).ToHashSet()
             );
-        return await projects.FirstOrDefaultAsync();
+        return await projects.FirstAsync();
     }
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync() =>
@@ -152,10 +152,15 @@ public class ProjectRepository : IProjectRepository
     }
     //----------Private helper methods---------------------------//
     //Get Author object from DTO Author string
-    private async Task<Account?> GetAuthorAsync(string? azureAadToken, string? Name )=>
-        string.IsNullOrWhiteSpace(azureAadToken) ? null
-            : await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureAadToken) ??
-              new Account(azureAadToken, Name);
+    private async Task<Account?> GetAuthorAsync(string? azureAadToken, string? Name) {
+        if (Name != null){
+            return string.IsNullOrWhiteSpace(azureAadToken) ? null
+                : await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureAadToken) ??
+                    new Account(azureAadToken, Name);
+        } else {
+            return null;
+        }
+    }
     
     //Get collectino of keyword objects from the keywords collection of strings in the DTOs
     private async IAsyncEnumerable<Keyword> GetKeywordsAsync(IEnumerable<string> keywords)

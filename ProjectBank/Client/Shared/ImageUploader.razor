@@ -21,10 +21,10 @@
     [Parameter]
     public int Id { get; set; }
 
-    private ProjectDetailsDto toBeUpdated;
+    private ProjectDetailsDto? toBeUpdated;
 
 
-    private ProjectUpdateDto project;
+    private ProjectUpdateDto? project;
 
     private string imageName = Guid.NewGuid().ToString();
 
@@ -59,7 +59,7 @@
             content.Add(byteContent, "file", imageFile.Name);
             var response = await Http.PostAsync($"api/Image/{imageName}", content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && project != null)
             {
                 project.ImageUrl = response.Headers.Location?.ToString();
                 var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);

@@ -4,6 +4,12 @@
 
 <h1>This is the blazor page for the "@Project?.Title" project</h1>
   
+@if (Project == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 <div class="row my-5">
     <div class="col-lg-6 col-xl-4 offset-lg-3 offset-xl-4">
         <RadzenCard class="m-6">
@@ -38,6 +44,7 @@
         </RadzenCard>
     </div>
 </div>
+}
 
 @code {
     [Parameter]
@@ -47,10 +54,5 @@
     protected override async Task OnInitializedAsync()
     {
         Project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
-
-        if (Project == null)
-        {
-            //Display content not found error, but how?
-        } 
     }
 }
