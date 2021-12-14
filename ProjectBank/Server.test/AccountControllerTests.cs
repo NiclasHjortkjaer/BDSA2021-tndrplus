@@ -75,17 +75,34 @@ public class AccountControllerTests
         Assert.Null(response);
     }
     [Fact]
-    public async Task Put_project_on_accountId_and_projectId()
+    public async Task Put_project_add_on_azureToken_and_projectTitle()
     {
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
 
-        repository.Setup(m => m.AddLikedProjectAsync("ya",1)).ReturnsAsync(Status.Updated);
+        repository.Setup(m => m.AddLikedProjectAsync("ya","AI")).ReturnsAsync(Status.Updated);
         var controller = new AccountController(logger.Object, repository.Object);
 
         // Act
-        var response = await controller.Post("ya",1);
+        var response = await controller.Post("ya","AI");
+
+        // Assert
+        Assert.True(response == Status.Updated);
+    }
+    
+    [Fact]
+    public async Task Put_project_remove_on_azureToken_and_projectTitle()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<AccountController>>();
+        var repository = new Mock<IAccountRepository>();
+
+        repository.Setup(m => m.RemoveLikedProjectAsync("ya","AI")).ReturnsAsync(Status.Updated);
+        var controller = new AccountController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Put("ya","AI");
 
         // Assert
         Assert.True(response == Status.Updated);

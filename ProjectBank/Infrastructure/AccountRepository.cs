@@ -19,6 +19,7 @@ public class AccountRepository : IAccountRepository
         {
             return null!;
         }
+        
         var newAccount = new Account(account.AzureAAdToken, account.Name)
         {
             SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync()
@@ -94,61 +95,72 @@ public class AccountRepository : IAccountRepository
         
         return Status.Deleted;
     }
-    public async Task<Status> AddLikedProjectAsync(string azureToken, int projectId) //test den Carl
+    public async Task<Status> AddLikedProjectAsync(string azureToken, string projectTitle) //test den Carl
     {
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureToken);
+        var account = await _context.Accounts.Include(a => a.SavedProjects).FirstOrDefaultAsync(a => a.AzureAdToken == azureToken);
         
         if (account == null)
         {
             return Status.NotFound;
         }
 
-        var projectLiked = await _context.Projects.FindAsync(projectId);
-        if (projectLiked == null)
+        var projectTitles = new List<string>();
+        
+        projectTitles = account.SavedProjects.Select(p => p.Title).ToList();
+        if (projectTitles.Contains(projectTitle))
         {
-            return Status.NotFound;
+            return Status.Conflict;
         }
 
-        if (account.SavedProjects.Contains(projectLiked)) return Status.Conflict;
+        projectTitles.Add(projectTitle);
         
-        account.SavedProjects.Add(projectLiked);
-            
+        account.SavedProjects = await GetSavedProjectsAsync(projectTitles).ToListAsync();
+        
         await _context.SaveChangesAsync();
         return Status.Updated;
-
     }
-    
-    /*public async Task<Status> RemoveLikedProjectAsync(int accountId, int projectId) //Det er slet ikke meningen at man sletter noget på den måde ifølge ef core, find en anden løsning.
+
+    public async Task<Status> RemoveLikedProjectAsync(string azureToken, string projectTitle) //evt lav det her tilbage til id?? på projekt
     {
-        var account = await _context.Accounts.FindAsync(accountId);
+        var account = await _context.Accounts.Include(a => a.SavedProjects).FirstOrDefaultAsync(a => a.AzureAdToken == azureToken);
+        
         if (account == null)
         {
             return Status.NotFound;
         }
 
-        var projectToRemove = await _context.Projects.FindAsync(projectId);
+        var projectTitles = new List<string>();
+
+        if (account.SavedProjects != null)
+        {
+            projectTitles = account.SavedProjects.Select(p => p.Title).ToList();
+            if (!projectTitles.Contains(projectTitle))
+            {
+                return Status.Conflict;
+            }
+            
+            projectTitles.Remove(projectTitle); //vi får en fejl fordi EF core ikke kan genkende "missing" properties. den kan kun genkende nye eller opdaterede ting i collections, ikke slettede. Så vi skal selv kunne fortælle den at den altså skal slettes.
+            //The instance of entity type 'Project' cannot be tracked because another instance with the same key value for {'Id'} is already being tracked.
+        }
+        
+        account.SavedProjects = await GetSavedProjectsAsync(projectTitles).ToListAsync();
+        
+        var projectToRemove = await _context.Projects.Include(p => p.Accounts).FirstOrDefaultAsync(p => p.Title == projectTitle);
+        
         if (projectToRemove == null)
         {
-            return Status.NotFound;
+            return Status.Conflict;
         }
+        //--- Because we work with a nested collection in a many to many relationship, we have to remove the account entry in the collection of the project we are removing from the account..
+        //otherwise ef core cannot track the entry of same key value being removed, which will cause an exception, NotSupportedException---
+        List<Account> accounts = projectToRemove.Accounts.ToList();
 
-        if (account.SavedProjects.Contains(projectToRemove))
-        {
-            //account.SavedProjects.Where(p => p.Equals(projectToRemove));
-            //account.SavedProjects.Remove(projectToRemove);
-
-            var projectsToSave = account.SavedProjects.ToList();
-            foreach(var project in projectsToSave)
-            {
-                await AddLikedProjectAsync(accountId, project.Id);
-            }
-
-        }
+        accounts.Remove(account);
+        projectToRemove.Accounts = accounts;
 
         await _context.SaveChangesAsync();
-        
         return Status.Updated;
-    }*/
+    }
     
     
     
@@ -164,5 +176,6 @@ public class AccountRepository : IAccountRepository
             yield return existing.TryGetValue(project, out var p) ? p : new Project(project);
         }
     }
+    
 }
 
