@@ -54,7 +54,7 @@
     }else{
         @foreach (var favorite in favorites)
         {
-            <ul @onclick="() => setFavoriteIdAndNavigate(favorite)">@favorite</ul>   
+            <ul @onclick="() => NavigateToFavorite(favorite)">@favorite</ul>   
         }
     }
 </div>
@@ -118,8 +118,7 @@
             var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
             if (account != null)
             {
-                var savedProjects = account.SavedProjects;
-                favorites = savedProjects;
+                favorites = account.SavedProjects;
             }
         }
     }
@@ -133,19 +132,12 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
-    private void setFavoriteIdAndNavigate(string favorite)
+    private async Task NavigateToFavorite(string favorite)
     {
-        //var _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+favorite);
-        //var projectId = _project.Id
-        //Test TODO:
-        var projectId = 1;
-
-        FavoriteNavigate(projectId);
+        var project = await Http.GetFromJsonAsync<IReadOnlyCollection<ProjectDetailsDto>>("/api/Project/"+favorite);
+        if (project != null)
+        {
+            navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
+        }
     }
-    private int? favoriteId;
-    private void FavoriteNavigate(int favorite)
-    {
-        navigationManager.NavigateTo("/projects/" + favorite.ToString());
-    }
-
 }

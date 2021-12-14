@@ -12,3 +12,19 @@
     height: 200px;
     border-radius: 10px;
   }
+  
+  .browse_all{
+    color: #d7d7d7;
+  }
+  
+  .browse_all_btn{
+    background: none;
+    border: none;
+    color: #d7d7d7;
+    text-decoration: underline;
+    transition: all 0.25s ease;
+  }
+  
+  .browse_all_btn:hover{
+    color: #ffffff;
+  }

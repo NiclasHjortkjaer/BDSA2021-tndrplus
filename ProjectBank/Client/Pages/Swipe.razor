@@ -4,6 +4,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider;
 
 
+
 <button id="GoBack_btn" onclick="location.href='/browse'">
     <label class="oi oi-arrow-circle-left"></label>
 </button>
@@ -26,11 +27,12 @@ else
         <div class="project_builder" id="p_@_idCounter" style="z-index: @_i;">
             <div class="project_content">
                 <div id="project_title">Title: @_currentProject.Title </div>
-                <div id="supervisor">by: <x onclick=""> Supervisor</x></div>
+                <div id="supervisor">by: <x onclick=""> @_currentProject.AuthorName</x></div>
                 <br/>
                 <hr/>
                 <br/>
                 <textarea class="project_description" readonly="readonly">@_currentProject.Description</textarea>
+                @*<img class="card-img-top" src=@_currentProject.ImageUrl alt = "Project image">*@
                 <br/>
                 <hr/>
                 <br/>
@@ -65,15 +67,18 @@ else
 
     private ProjectDetailsDto[]? _projects;
 
-    private List<ProjectDetailsDto> _likedProjects;
+    private List<ProjectDetailsDto> _likedProjects; //vi kan kun bruge dette til at tjekke om vi det er unødvendigt med et API kald. 
 
+    private ProjectDetailsDto _lastProject;
     private ProjectDetailsDto _currentProject;
+    private ClickType _lastClick;
+
     private ClaimsPrincipal? _user;
     private IEnumerable<Claim>? _claims;
     private string? _aToken;
 
     private string _keywordString;
-    
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -96,7 +101,7 @@ else
         }
 
     }
-    
+
     private enum ClickType
     {
         Like,
@@ -106,35 +111,46 @@ else
 
     private async void CheckClick(ClickType s)
     {
-        if (s == ClickType.Like)
+        if (s == ClickType.Like) //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
         {
             if (!_likedProjects.Contains(_currentProject))
             {
                 _likedProjects.Add(_currentProject);
-                await Http.PostAsJsonAsync($"api/Account/{_aToken}",_currentProject );
-                //så kan vi måske lave en if(response ==....) så vise noget forskelligt, hvis den nu ik kan finde projektet i databasen eller whatever.
+                await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title);
             }
+            //ShowNotification("Project added!");
             _idCounter++;
-            _currentProject = _projects[(_idCounter) % _projects.Length];
+            _lastProject = _currentProject;
+            _currentProject = _projects[_idCounter % _projects.Length];
+            _lastClick = ClickType.Like;
         }
         if (s == ClickType.Rewatch)
         {
-            if (_likedProjects.Contains(_currentProject))
+            
+             //lav metode der ved initialize henter liked projects, så vi kan se om det er nødvendigt med api kald
+            
+            //_likedProjects.Remove(_currentProject);
+            if (_lastClick == ClickType.Like)
             {
-                _likedProjects.Remove(_currentProject);
+                await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _lastProject.Title);
             }
-            if (_idCounter != 0)
+
+            if (_idCounter != 0) //scuffed?
             {
                 _idCounter--;
             }
             
             _currentProject = _projects[(_idCounter) % _projects.Length];
+            _lastClick = ClickType.Rewatch;
         }
         if (s == ClickType.Dislike)
         {
+            //ogs tjek om det nuværende er i liked
+            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
             _idCounter++;
+            _lastProject = _currentProject;
             _currentProject = _projects[(_idCounter) % _projects.Length];
-            
+            _lastClick = ClickType.Dislike;
         }
         _keywordString = getKeyWords();
         InvokeAsync(StateHasChanged);
@@ -148,5 +164,13 @@ else
 
         return keywords;
     }
+
+    /*private void ShowNotification(string message)
+    {
+        var notiMsg = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "hhaha", Duration = 4000};
+        NotificationService.Notify(notiMsg);
+    }*/
+    
+    
 }
     
