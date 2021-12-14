@@ -4,7 +4,7 @@
 
 <h1>This is the blazor page for the "@_project?.Title" project</h1>
   
-@if (Project == null)
+@if (_project == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -67,7 +67,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-
-        Project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
+        _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
     }
 }
