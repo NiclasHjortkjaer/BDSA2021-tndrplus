@@ -30,8 +30,7 @@
             <RadzenLabel Text="Degree:" />
         </div>
         <div class="col-md-9">
-             <RadzenDropDown AllowClear="true"   Item="enums" T="enums" Class="w-100" @bind-Value ="project.Degree"
-                            Data= "enums" />
+             <RadzenDropDown AllowClear="true"   Item="enums" T="enums" Class="w-100" @bind-Value ="project.Degree" Data= "enums" />
         </div>
     </div>
         <div class="row">
@@ -57,69 +56,78 @@
 
 @code {
     int value = 1;
-     private string? name;
-    
+    private string? name;
+
     private string? token;
-     bool busy;
+    bool busy;
     private ProjectCreateDto project = new();
- private KeywordDto[]? DTOKeywords;
- //KeywordDto[]? multipleValues;
-   private IEnumerable<string> multipleValues = new string[]{"AI"};
-  private List<string> keywords = new List<string>();
-  // IEnumerable<string> keywordstring;
-      List<Enum?> enums = new List<Enum?>();
-      List<float?> etcs = new List<float?>();
- protected override async Task OnInitializedAsync(){
-       var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-                  if (user.Identity.IsAuthenticated)
+    private KeywordDto[]? DTOKeywords;
+    //KeywordDto[]? multipleValues;
+    private IEnumerable<string> multipleValues = new string[] {"AI"};
+    private List<string> keywords = new List<string>();
+    // IEnumerable<string> keywordstring;
+    List<Enum?> enums = new List<Enum?>();
+    List<float?> etcs = new List<float?>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        if (user.Identity.IsAuthenticated)
         {
-            
-        name = user.Identity?.Name;
-        token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-       
-    
-        etcs.Add(7.5f);
-        etcs.Add(15f);
-       enums.Add(Degree.Bachelor);
-       enums.Add(Degree.Master);
-       enums.Add(Degree.PHD);
- try 
-        {
-            DTOKeywords = await Http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
-                foreach (var keyword in DTOKeywords){
+            name = user.Identity?.Name;
+            token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+
+
+            etcs.Add(7.5f);
+            etcs.Add(15f);
+            enums.Add(Degree.Bachelor);
+            enums.Add(Degree.Master);
+            enums.Add(Degree.PHD);
+            try
+            {
+                DTOKeywords = await Http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
+                foreach (var keyword in DTOKeywords)
+                {
                     keywords.Add(keyword.Word);
                 }
-        }
-        catch(AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
         }
     }
- }
-   async Task CreatesProject()
-    { 
-         project.AuthorName = name;
+
+    async Task CreatesProject()
+    {
+        project.AuthorName = name;
         project.AuthorToken = token;
         project.LastUpdated = DateTime.UtcNow;
-         ISet<string> keySet = new HashSet<string>();
-             foreach (var keyword in multipleValues){
-                    keySet.Add(keyword);
-                }
+        ISet<string> keySet = new HashSet<string>();
+        foreach (var keyword in multipleValues)
+        {
+            keySet.Add(keyword);
+        }
         project.Keywords = keySet;
-try{
-       var response = await Http.PostAsJsonAsync("api/Project",project);
- }
-        catch(AccessTokenNotAvailableException exception)
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/Project", project);
+            busy = true;
+            await Task.Delay(2000);
+             Console.WriteLine("Cmon");
+            var created = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{project.Title}");
+           
+            navigationManager.NavigateTo("/createproject/AdditionalProjectSetup/" + created.Id);
+            busy = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
-    
-        busy = true;
-        await Task.Delay(2000);
-        busy = false;
     }
+
     void OnChange(string value, string name)
     {
-        
     }
- }
+
+}

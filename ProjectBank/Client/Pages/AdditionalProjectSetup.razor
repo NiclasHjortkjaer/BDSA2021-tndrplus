@@ -1,0 +1,42 @@
+@page "/createproject/AdditionalProjectSetup/{id}"
+@using System.Net
+@using System.Collections.Generic
+@inject HttpClient Http
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+
+<PageTitle>ProjectBank - CreateProjectAddtional</PageTitle>
+
+<RadzenFieldset class="mb-4">
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Project image" />
+        </div>
+        <div class="col-md-9">
+            <ImageUploader Id="id" isProject="true"></ImageUploader>
+        </div>
+    </div>
+    <div class="row">
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Project File" />
+        </div>
+        <div class="col-md-9">
+            <PdfUploader projectId="id"></PdfUploader>
+        </div>
+    </div>
+    <div>
+        <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." Click=@CompleteSetup Text="Finish Setup" />
+        </div>
+</RadzenFieldset>
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    private void CompleteSetup()
+    {
+       navigationManager.NavigateTo("project/"+id);
+    }
+
+}

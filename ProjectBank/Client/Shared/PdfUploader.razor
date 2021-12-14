@@ -68,6 +68,7 @@
                 project.FileUrl = response.Headers.Location?.ToString();
                 var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
                 Console.WriteLine(updated.StatusCode);
+                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
         }
     }

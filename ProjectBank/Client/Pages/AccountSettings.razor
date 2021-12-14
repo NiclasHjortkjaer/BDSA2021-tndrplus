@@ -45,7 +45,7 @@
 <RadzenButton Click=@Edit Text="Edit profile"/>
 <RadzenButton style="width: 160px" IsBusy=@busyProfile Click=@OnBusyClickProfile Text="Save" />
 
-<h2>Profile picture</h2>
+<h2 style="padding-top: 2em">Profile picture:</h2>
 <RadzenFieldset class="mb-4">
     <div class="row">
         <div class="align-items-center d-flex col-md-3">
@@ -54,12 +54,13 @@
         <div class="col-md-9">
             @if (account.PictureUrl != null)
             {
-                <img class="card-img-top" src=@account.PictureUrl alt="Project image"/>
+                <img class="card-img-top" src=@account.PictureUrl alt="Project image" style="padding-bottom: 2em"/>
             }
         </div>
     </div>
-    <ImageUploader id=@account.Id isProject="false"></ImageUploader>
 </RadzenFieldset>
+
+ <ImageUploader id=@account.Id isProject="false"></ImageUploader>
     
 @code {
 
@@ -71,7 +72,7 @@
     private string? email;
     private string? currentRole;
     private string? token;
-    private AccountDetailsDto account;
+    private AccountDetailsDto? account;
     
     //PAGE SCRIPTS
     private void Edit()
@@ -86,7 +87,14 @@
         currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
         email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
         token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-        account = await Http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{token}");
+        try
+        {
+            account = await Http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{token}"); //Method does not exists!
+        }
+        catch(AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
   
     private async Task OnBusyClickProfile()

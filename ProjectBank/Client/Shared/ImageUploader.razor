@@ -58,7 +58,7 @@
         }
         else //if account
         {
-            toBeUpdatedAccount = await Http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{Id}");
+            toBeUpdatedAccount = await Http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/getBy{Id}");
             if (toBeUpdatedAccount != null)
             {
                 account = new AccountUpdateDto()
@@ -84,20 +84,25 @@
             var response = await Http.PostAsync($"api/Image/{imageName}", content);
 
             if (response.IsSuccessStatusCode)
-                if(project != null)
+            {
+                if (project != null)
                 {
                     {
                         project.ImageUrl = response.Headers.Location?.ToString();
                         var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
                         Console.WriteLine(updated.StatusCode);
                     }
-                } else if(account != null){
+                }
+                else if (account != null)
+                {
                     {
                         account.PictureUrl = response.Headers.Location?.ToString();
                         var updated = await Http.PutAsJsonAsync($"api/Account/{account.Id}", account);
                         Console.WriteLine(updated.StatusCode);
                     }
                 }
+                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+            }
         }
     }
     private void ClearImage()
