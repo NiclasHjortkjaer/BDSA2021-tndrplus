@@ -73,7 +73,7 @@ public class CustomWebApplicationFactory :  WebApplicationFactory<Program>
         context.Keywords.Add(new Keyword("Design"){Id = 3});
         context.Accounts.Add( new Account("Token2", "John Bezos") { Id = 2 });
         context.SaveChanges();
-        
+
         context.SaveChanges();
     }
 }

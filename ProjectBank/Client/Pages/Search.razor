@@ -61,25 +61,14 @@ else{
     }
 }
 <br/>
-<button class="to_top_button" id="top_btn" onclick="document.body.scrollTop = 0; document.documentElement.scrollTop = 0;">
-    <label class="oi oi-arrow-top" id="to_top_label" style="margin: 0;"></label>
-</button>
+@if (_projects is {Length: >= 1 })
+{
+    <button class="to_top_button" id="top_btn" onclick="document.body.scrollTop = 0; document.documentElement.scrollTop = 0;">
+        <label class="oi oi-arrow-top" id="to_top_label" style="margin: 0;"></label>
+    </button>
+}
 
 @code {
-    private bool _isHidden = true;
-
-    private void SwitchVisibilityState()
-    {
-        if (_isHidden == true)
-        {
-            _isHidden = false;
-        }
-        else
-        {
-            _isHidden = true;
-        }
-
-    }
 
     public string SearchText = "";
 

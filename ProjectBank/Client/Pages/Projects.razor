@@ -18,6 +18,7 @@ else
                 <div>
                     <b style="color:black;">Project description:</b>
                     <div style="color:black;">@(Project?.Description)</div>
+                    <div><img class="card-img-top" src=@Project.ImageUrl alt = "Project image"></div>
                     <b style="color:black;">Level of difficulty:</b>
                     <div style="color:black;">@(Project?.Degree)</div>
                     <b style="color:black;">ECTS:</b>
@@ -29,16 +30,23 @@ else
                     {
                         <div>@keyword</div>
                     }}
+                        <div style="color:blue;">
+                            <a href="@Project.FileUrl" download="@Project.Title??.pdf">@Project.Title .pdf</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </RadzenCard>
-        <RadzenCard class="m-3">
+        <RadzenCard class="m-5">
             <h3 class="h5" style="color:black;">Author:</h3>
             <div class="d-flex flex-row">
                 <div>
                     <div style="color:black;">"Insert role here"</div>
                     <b style="color:black;">@(Project?.AuthorName)</b>
+                    <div><b style="color:black;">Upload Image:</b>
+                        <ImageUploader projectId="Project!.Id"></ImageUploader></div>
+                    <b style="color:black;">Upload PDF:</b>
+                    <div><PdfUploader projectId="Project.Id"></PdfUploader></div>
                 </div>
             </div>
         </RadzenCard>
