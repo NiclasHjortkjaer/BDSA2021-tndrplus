@@ -58,16 +58,14 @@
     private string? _name;
 
     private string? _token;
-    bool _busy;
+    private bool _busy;
     private ProjectCreateDto _project = new();
 
     private KeywordDto[]? _dtoKeywords;
-    //KeywordDto[]? multipleValues;
     private IEnumerable<string> _multipleValues = new[] {"AI"};
     private List<string> _keywords = new();
-    // IEnumerable<string> keywordstring;
-    List<Enum?> _enums = new List<Enum?>();
-    List<float?> _etcs = new List<float?>();
+    private List<Enum?> _enums = new List<Enum?>();
+    private List<float?> _etcs = new List<float?>();
 
     protected override async Task OnInitializedAsync()
     {
