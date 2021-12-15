@@ -2,11 +2,9 @@
 @inject HttpClient Http
 @inject NavigationManager navigationManager
 
-<h1>This is the blazor page for the "@_project?.Title" project</h1>
-  
 @if (_project == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Nothing to see here.</em></p>
 }
 else
 {
@@ -61,8 +59,13 @@ else
     public string? Id { get; set; }
     private ProjectDetailsDto? _project;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
+        try {
+            _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
+        } catch {
+            _project = null;
+        }
+        
     }
 }
