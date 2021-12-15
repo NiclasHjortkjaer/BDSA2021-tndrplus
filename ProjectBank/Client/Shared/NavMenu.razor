@@ -2,6 +2,9 @@
 @inject HttpClient Http
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager navigationManager
+
+@inject ProjectStateChanged projectsChanged; //forsøg
+
 <AuthorizeView>
     <Authorized>
 <div class="top-row ps-3 navbar navbar-dark">
@@ -47,14 +50,16 @@
 </div>
 <hr>
 <br>
-<div class="favoriteList" >
-    @if (favorites == null)
+<div class="favoriteList">
+    
+    @if (projectsChanged.projects == null)
     {
-        
-    }else{
-        @foreach (var favorite in favorites)
+    }
+    else
+    {
+        @foreach (var favorite in projectsChanged.projects)
         {
-            <ul @onclick="() => NavigateToFavorite(favorite)">@favorite</ul>   
+            <ul @onclick="() => NavigateToFavorite(favorite)">@favorite</ul>
         }
     }
 </div>
@@ -106,8 +111,11 @@
 
 @code {
     private IEnumerable<string> favorites = null!;
+    private List<string> trialList;
+    
     protected override async Task OnInitializedAsync()
     {
+        trialList = new List<string>();
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         if (user.Identity?.IsAuthenticated == true)
@@ -118,9 +126,17 @@
             var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
             if (account != null)
             {
-                favorites = account.SavedProjects;
+                projectsChanged.setList(account.SavedProjects);
             }
+            trialList.Add("sup");
+            projectsChanged.OnChange +=(()=>ChangeState());
+            
         }
+    }
+
+    private async void ChangeState()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 
     private bool collapseNavMenu = true;
@@ -140,4 +156,23 @@
             navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
         }
     }
+
+    public async Task updateAccounts()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+            var _claims = _user.Claims;
+            var _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+            var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
+            if (account != null)
+            {
+                favorites = account.SavedProjects;
+            }
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
 }

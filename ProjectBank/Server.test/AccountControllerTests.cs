@@ -75,6 +75,23 @@ public class AccountControllerTests
         Assert.Null(response);
     }
     [Fact]
+    public async Task Get_LikedProjects_given_azureToken_returns_collection_of_projectDetailDTOs()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<AccountController>>();
+        var repository = new Mock<IAccountRepository>();
+        ICollection<int> expected = new List<int>(){1};
+        repository.Setup(m => m.ReadLikedProjectsFromTokenAsync("token")).ReturnsAsync(expected);
+        var controller = new AccountController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.GetLiked("token");
+
+        // Assert
+        Assert.Equal(response, expected);
+        //Assert.Null(response);
+    }
+    [Fact]
     public async Task Put_project_add_on_azureToken_and_projectTitle()
     {
         // Arrange

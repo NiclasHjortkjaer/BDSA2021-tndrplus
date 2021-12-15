@@ -12,9 +12,11 @@ builder.Services.AddHttpClient("ProjectBank.ServerAPI", client => client.BaseAdd
     .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
 //builder.Services.AddScoped<NotificationService>(); //is this the right way to do it hmm - its to get the notifications on swipes
+builder.Services.AddSingleton<ProjectStateChanged>(); //hmm
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("ProjectBank.ServerAPI"));
+
 
 builder.Services.AddMsalAuthentication<RemoteAuthenticationState, CustomAccount>(options =>
 {
