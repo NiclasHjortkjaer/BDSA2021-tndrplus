@@ -30,11 +30,11 @@ public class AccountController : ControllerBase
        => await _repository.ReadAsync(id);
     
     [AllowAnonymous]
-    [HttpGet("{azzureAdToken}")]
+    [HttpGet("{azureAdToken}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
-    public async Task<AccountDetailsDto>? Get(string azzureAdToken)
-        => await _repository.ReadFromTokenAsync(azzureAdToken);
+    public async Task<AccountDetailsDto>? Get(string azureAdToken)
+        => await _repository.ReadFromTokenAsync(azureAdToken);
     
     [Authorize]
     [HttpPost("{azureToken}")] 

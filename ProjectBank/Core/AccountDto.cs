@@ -10,6 +10,7 @@ public record AccountDetailsDto(
     int Id,
     string AzureAdToken,
     string Name,
+    string? PictureUrl,
     ISet<string> SavedProjects
 );
 
@@ -19,7 +20,9 @@ public record AccountCreateDto
 
     [StringLength(50)]
     public string Name { get; init; } = null!;
-    
+
+    public string? PictureUrl { get; set; }
+
     public ISet<string> SavedProjects { get; init; } = new HashSet<string>();
 
 }
