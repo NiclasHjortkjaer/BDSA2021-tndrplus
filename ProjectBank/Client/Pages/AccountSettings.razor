@@ -46,9 +46,6 @@
 <h2 style="padding-top: 2em">Profile picture:</h2>
 <RadzenFieldset class="mb-4">
     <div class="row">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Profile Picture:"/>
-        </div>
         <div class="col-md-9">
             @if (_account?.PictureUrl != null)
             {
@@ -59,10 +56,9 @@
         </div>
     </div>
 </RadzenFieldset>
+<div><ImageUploader Id="_account!.Id" IsProject="false"></ImageUploader></div>
 
-<ImageUploader id=@_account?.Id isProject="false"></ImageUploader>
-
-<h2 style="padding: 3em">Projects created by you:</h2>
+<h2 style="padding-top: 3em; padding-bottom: 1em">Projects created by you:</h2>
 @if (_userProjects.Any())
 {
     <table class="table table-striped" style="color: white">
@@ -101,10 +97,10 @@ else
     private string? _name;
     private string? _email;
     private string? _currentRole;
-    private string? _token;
+    private string? _azureAdtoken;
     private AccountDetailsDto? _account;
     ProjectDetailsDto[]? _projects;
-    private List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
+    private readonly List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
 
 
     //PAGE SCRIPTS
@@ -119,14 +115,13 @@ else
         _name = user.Identity?.Name;
         _currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
         _email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
-        _token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-        _account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{_token}");
-
+        _azureAdtoken = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+        _account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{_azureAdtoken}");
         _projects = await _http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Project");
         if (_projects != null)
             foreach (var project in _projects)
             {
-                if (project.AuthorToken == _token)
+                if (project.AuthorToken == _azureAdtoken)
                 {
                     _userProjects.Add(project);
                 }
@@ -136,6 +131,7 @@ else
     private async Task DeleteProject(int id)
     {
         var response = await _http.DeleteAsync($"/api/Project/{id}");
+        Console.WriteLine(response.StatusCode);
         _busyProfile = false;
         _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
     }

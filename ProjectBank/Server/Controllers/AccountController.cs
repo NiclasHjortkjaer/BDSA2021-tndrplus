@@ -23,7 +23,7 @@ public class AccountController : ControllerBase
         => await _repository.ReadAllAsync();
 
     [AllowAnonymous]
-    [HttpGet("getBy{id}")]
+    [HttpGet("getBy/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
     public async Task<AccountDetailsDto>? Get(int id)
@@ -35,6 +35,14 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(AccountDto), 200)]
     public async Task<AccountDetailsDto>? Get(string azureAdToken)
         => await _repository.ReadFromTokenAsync(azureAdToken);
+    
+    [Authorize]
+    [HttpGet("likedProduct/{azureToken}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(ICollection<int>), 200)]
+    public async Task<ICollection<int>>? GetLiked(string azureToken)
+        => await _repository.ReadLikedProjectsFromTokenAsync(azureToken);
+
     
     [Authorize]
     [HttpPost("{azureToken}")] 

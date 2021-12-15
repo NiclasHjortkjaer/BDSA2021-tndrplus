@@ -149,6 +149,27 @@ public class AccountRepositoryTests
         
         Assert.Null(await _context.Accounts.FindAsync(1));
     }
+    
+    [Fact]
+    public async Task ReadLikedProjectsFromTokenAsync_return_saved_projects_from_azureToken()
+    {
+        var account = await _context.Accounts.FindAsync(3);
+        var actualProject = await _context.Projects.FindAsync(1);
+        
+        Assert.True(account.SavedProjects.Contains(actualProject));
+        
+        var projects = await _repo.ReadLikedProjectsFromTokenAsync("AuthorToken");
+        
+        Assert.Equal(actualProject.Id, projects.FirstOrDefault());
+    }
+    [Fact]
+    public async Task ReadLikedProjectsFromTokenAsync_return_empty_on_wrong_token()
+    {
+       var projects = await _repo.ReadLikedProjectsFromTokenAsync("SupYall");
+        
+       Assert.True(projects.Count==0);
+    }
+    
     [Fact]
     public async Task AddLikedProjectAsync_adds_given_project_from_title_and_azureToken()
     {
