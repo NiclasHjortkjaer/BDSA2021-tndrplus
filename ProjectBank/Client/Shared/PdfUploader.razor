@@ -13,8 +13,8 @@
         @if (!string.IsNullOrWhiteSpace(fileUrl))
         {
             <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><a style="color: #0a53be" href="@fileUrl" download="@fileName">Preview file</a></div>
-            <RadzenButton style="width: 160px; padding: 0.5rem" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@UploadFile Text="Upload" />
-            <RadzenButton style="width: 160px; padding: 0.5rem" IsBusy=@busy Click=@ClearFile Text="Clear" />
+            <RadzenButton style="width: 160px;" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@UploadFile Text="Upload" />
+            <RadzenButton style="width: 160px;" IsBusy=@busy Click=@ClearFile Text="Clear" />
             
         }@if (sizeExceeded)
          {
