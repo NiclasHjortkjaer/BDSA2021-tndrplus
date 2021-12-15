@@ -39,6 +39,7 @@
     </div>
 </RadzenFieldset>
 
+
 <RadzenButton Click=@Edit Text="Edit profile"/>
 <RadzenButton style="width: 160px" IsBusy=@_busyProfile Click=@OnBusyClickProfile Text="Save" />
 
@@ -58,10 +59,38 @@
 </RadzenFieldset>
 
  <ImageUploader id=@_account?.Id isProject="false"></ImageUploader>
+
+<h2>Projects created by you:</h2>
+@if (userProjects.Count() >0)
+{
+    <table class="table table-striped" style="color: white">
+        <thead>
+        <tr>
+            <th>Title</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var projects in userProjects)
+        { 
+            <tr style="color: white">
+                <td>@projects.Title  </td>
+                <td><RadzenButton style="width: 170px;height:30px;margin-left:80%" IsBusy=@busyProfile Click="@(e =>DeleteProject(projects.Id))" Text="Delete project"/></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+} else{
+    <h3>You have made no projects yet.</h3>
+
+    
+}
+
+
     
 @code {
 
     //VARIABLES
+
     private bool _editing = true;
     private bool _busyProfile;
     
@@ -70,6 +99,9 @@
     private string? _currentRole;
     private string? _token;
     private AccountDetailsDto? _account;
+    ProjectDetailsDto[]? projects;
+    private List<ProjectDetailsDto?> userProjects = new List<ProjectDetailsDto?>();
+
     
     //PAGE SCRIPTS
     private void Edit()
@@ -77,6 +109,7 @@
         _editing = !_editing;
     }
     protected override async Task OnInitializedAsync(){
+
         
             var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
             _name = user.Identity?.Name;
@@ -84,6 +117,20 @@
             _email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
             _token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             _account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{_token}");
+      
+         projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Project");
+               foreach (var project in projects)
+        { if(project.AuthorToken==token){
+            userProjects.Add(project);
+        }
+    }
+    }
+    private async Task DeleteProject(int id)
+    {
+        var response =  await Http.DeleteAsync($"/api/Project/{id}");
+         busyProfile = false;
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+
     }
   
     private async Task OnBusyClickProfile()

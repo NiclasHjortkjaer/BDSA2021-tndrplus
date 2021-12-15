@@ -4,9 +4,9 @@
 @inject HttpClient Http
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider;
-
+@inject NotificationService NotificationService;
 <PageTitle>ProjectBank - CreateProject</PageTitle>
-
+<RadzenNotification/>
 <h2>Create a new project:</h2>
 
 <RadzenFieldset class="mb-4">
@@ -55,6 +55,7 @@
     </div>
 </RadzenFieldset>
 
+
 @code {
     int value = 1;
     private string? name;
@@ -62,6 +63,7 @@
     private string? token;
     bool busy;
     private ProjectCreateDto project = new();
+
     private KeywordDto[]? DTOKeywords;
     //KeywordDto[]? multipleValues;
     private IEnumerable<string> multipleValues = new string[] {"AI"};
@@ -99,9 +101,11 @@
         }
     }
 
+
     async Task CreatesProject()
     {
         busy = true;
+
         project.AuthorName = name;
         project.AuthorToken = token;
         project.LastUpdated = DateTime.UtcNow;
@@ -111,21 +115,61 @@
             keySet.Add(keyword);
         }
         project.Keywords = keySet;
-        try
-        {
-            var response = await Http.PostAsJsonAsync("api/Project", project);
-            var created = await response.Content.ReadFromJsonAsync<ProjectDetailsDto>();
-            await Task.Delay(2000);
-            navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{created!.Id}");
-            busy = false;
+
+         if(project.AuthorName == null || project.AuthorToken ==null){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000 };
+            NotificationService.Notify(error);
+        } else  if(project.LastUpdated==null){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Cannot get current time right now", Detail = "", Duration = 4000 };
+            NotificationService.Notify(error);
+        }  else if(project.Title.Length<1){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000 };
+            NotificationService.Notify(error);
+        } else if(project.Keywords.Count ==0){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "You must choose at least 1 keyword", Detail = "Fix please", Duration = 4000 };
+            NotificationService.Notify(error);
         }
-        catch (AccessTokenNotAvailableException exception)
+        else{
+             if(project.Description.Length<1){
+            
+            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have no description", Detail = "", Duration = 4000 };
+            NotificationService.Notify(info);
+        }
+        if(project.Degree == null){
+            
+            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have chosen no degree", Detail = "", Duration = 4000 };
+            NotificationService.Notify(info);
+        }
+        if(project.Ects == null){
+            
+            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have chosen no ETCs", Detail = "", Duration = 4000 };
+            NotificationService.Notify(info);
+        }
+        
+try{
+       var response = await Http.PostAsJsonAsync("api/Project",project);
+            var created = await response.Content.ReadFromJsonAsync<ProjectDetailsDto>();
+
+       if(response.IsSuccessStatusCode){
+            NotificationMessage success = new NotificationMessage { Severity = NotificationSeverity.Success , Summary = "Success creating project!", Detail = "Now in database", Duration = 4000 };
+            NotificationService.Notify(success);
+       } else{
+           NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Something went wrong", Detail = "Project not saved", Duration = 4000 };
+            NotificationService.Notify(error);
+       }
+ }
+        catch(AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
-        catch (NullReferenceException nullex)
-        {
-            navigationManager.NavigateTo("/");
+    
+        await Task.Delay(2000);
+        busy = false;
+        navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{created!.Id}");
         }
     }
 
