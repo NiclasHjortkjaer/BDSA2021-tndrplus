@@ -6,12 +6,16 @@
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.8);
     padding: 20px;
-    font-size: 30px;
+    font-size: 25px;
     text-align: center;
     margin-top: 20px;
     margin-right: 20px;
     height: 200px;
     border-radius: 10px;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
     word-break: break-word;
     transition: all 0.25s ease;
   }
