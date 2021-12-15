@@ -23,7 +23,7 @@ public class AccountController : ControllerBase
         => await _repository.ReadAllAsync();
 
     [AllowAnonymous]
-    [HttpGet("getBy{id}")]
+    [HttpGet("getBy/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
     public async Task<AccountDetailsDto>? Get(int id)
