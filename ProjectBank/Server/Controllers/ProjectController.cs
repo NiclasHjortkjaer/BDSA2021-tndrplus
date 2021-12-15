@@ -41,10 +41,11 @@ public class ProjectController : ControllerBase {
 
     [Authorize]
     [HttpPost]
-    [ProducesResponseType(typeof(ProjectDetailsDto), 201)]
+    //[ProducesResponseType(typeof(ProjectDetailsDto), 201)]
     public async Task<IActionResult> Post(ProjectCreateDto project)
     {
         var created = await _repository.CreateAsync(project);
+        var response = CreatedAtAction(nameof(Get), new {created.Id}, created);
 
         return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }

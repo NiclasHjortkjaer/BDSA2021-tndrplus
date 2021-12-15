@@ -12,6 +12,7 @@ public class ImageController : Controller
     {
         "image/gif",
         "image/jpeg",
+        "image/jpg",
         "image/png"
     };
 

@@ -1,66 +1,72 @@
 ﻿@page "/search"
 @using System.Data.SqlTypes
+@using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 
 <PageTitle>ProjectBank - Search</PageTitle>
 
 <div class="searchBar_wrapper">
-    <input @bind="SearchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
+    <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
     <button class="btn_search" @onclick="LoadProjects"> <span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
 </div>
 
-@if (_projects == null)
+@if (_projects != null)
 {
-    
-}
-else{
     @foreach (var project in _projects)
     {
-     <br/>
-       <div class="project_center">
-          <div class="project_builder_search" id="P_@project.Id">
-              <div class="project_search_content">
-                  <div class="like_star">
-                      <input type="checkbox" class="star_checkbox" id="star_checkbox_@project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(project.Title)"/>
-                      <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label> 
-                  </div>
-                  <div id="project_search_title">Title: @project.Title </div>
-                  <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
-                  <br>
-                  <hr>
-                  <br>
-                  <textarea class="project_search_description" readonly="readonly">@project.Description</textarea>
-                  
-                  <label class="see_more" id="see_more_@project.Id" onclick="
+        <br/>
+        <div class="project_center">
+            <div class="project_builder_search" id="P_@project.Id">
+                <div class="project_search_content">
+                    <div class="like_star">
+                        @if (_likedProjects.Contains(project.Title))
+                        {
+                            <input type="checkbox" class="star_checkbox" id="star_checkbox_@project.Id" checked="checked" @onchange="() => AddOrRemoveFavorite(project.Title)"/>
+                            <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label>
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="star_checkbox" id="star_checkbox_@project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(project.Title)"/>
+                            <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label>
+                        }
+                    </div>
+                    <div id="project_search_title">Title: @project.Title </div>
+                    <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
+                    <br>
+                    <hr>
+                    <br>
+                    <textarea class="project_search_description" readonly="readonly">@project.Description</textarea>
+
+                    <label class="see_more" id="see_more_@project.Id" onclick="
                         document.getElementById('see_more_@project.Id').style.display='none';
                         document.getElementById('expand_@project.Id').style.display='block';
                     " for="P_@project.Id">See more</label>
-                  
-                  <div class="expanded_content" id="expand_@project.Id" for="P_@project.Id" style="display: none">
-                      <br>
-                      <hr>
-                      <br>
-                      <textarea class="project_search_keywords" readonly="readonly">@string.Join(", ",project.Keywords)</textarea> 
-                      <br>
-                      <hr>
-                      <br>
-                      <label class="project_search_Ects" readonly="readonly">Ects: @project.Ects </label> 
-                      <br>
-                      <label class="project_search_degree" readonly="readonly">Degree: @project.Degree </label>
-                      <br>
-                      <label class="close_more" id="close_more_@project.Id" onclick="
+
+                    <div class="expanded_content" id="expand_@project.Id" for="P_@project.Id" style="display: none">
+                        <br>
+                        <hr>
+                        <br>
+                        <textarea class="project_search_keywords" readonly="readonly">@string.Join(", ", project.Keywords)</textarea>
+                        <br>
+                        <hr>
+                        <br>
+                        <label class="project_search_Ects" readonly="readonly">Ects: @project.Ects </label>
+                        <br>
+                        <label class="project_search_degree" readonly="readonly">Degree: @project.Degree </label>
+                        <br>
+                        <label class="close_more" id="close_more_@project.Id" onclick="
                         document.getElementById('expand_@project.Id').style.display='none';
                         document.getElementById('see_more_@project.Id').style.display='block';
                         
                       ">Close</label>
-                  </div>
-              </div>
-          </div>
-       </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }
-<br/>
+    <br/>
 @if (_projects is {Length: >= 1 })
 {
     <button class="to_top_button" id="top_btn" onclick="document.body.scrollTop = 0; document.documentElement.scrollTop = 0;">
@@ -70,15 +76,16 @@ else{
 
 @code {
 
-    public string SearchText = "";
+    private string _searchText = "";
 
     ProjectDetailsDto[]? _projects;
 
     async Task LoadProjects()
     {
+        await OnSearch();
         try
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{SearchText}");
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -92,10 +99,11 @@ else{
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            //await LoadProjects();
+    //await LoadProjects();
+            await OnSearch();
             try
             {
-                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{SearchText}");
+                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
             }
             catch (AccessTokenNotAvailableException exception)
             {
@@ -104,21 +112,42 @@ else{
             await InvokeAsync(StateHasChanged);
         }
     }
-   
-    
-    private void AddOrRemoveFavorite(string title) //virker ikke
+
+
+    private IEnumerable<string> _likedProjects = null!;
+    private string _aToken;
+
+    protected async Task OnSearch()
     {
-        var alreadyliked = false;
-        
-        if (alreadyliked)
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated == true)
         {
-            // fjern fra liked liste
+            var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+            var _claims = _user.Claims;
+            _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+            var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
+            if (account != null)
+            {
+                _likedProjects = account.SavedProjects;
+            }
         }
-        if (!alreadyliked)
-        {
-            // skal add til fav_liste
-        }
-        
     }
     
+    
+
+    private async Task AddOrRemoveFavorite(string t)
+    {
+
+        if (_likedProjects.Contains(t))
+        {
+            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", t);
+        }
+        
+        if (!_likedProjects.Contains(t))
+        {
+            await Http.PostAsJsonAsync($"api/Account/{_aToken}", t);
+        }
+    }
 }
+

@@ -30,6 +30,7 @@ public class AccountRepository : IAccountRepository
             newAccount.Id,
             newAccount.AzureAdToken,
             newAccount.Name,
+            newAccount.PictureUrl,
             newAccount.SavedProjects.Select(a => a.Title).ToHashSet());
     }
 
@@ -41,6 +42,7 @@ public class AccountRepository : IAccountRepository
                 a.Id,
                 a.AzureAdToken,
                 a.Name,
+                a.PictureUrl,
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
@@ -55,6 +57,7 @@ public class AccountRepository : IAccountRepository
                 a.Id,
                 a.AzureAdToken,
                 a.Name,
+                a.PictureUrl,
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
@@ -98,6 +101,7 @@ public class AccountRepository : IAccountRepository
         
         entitiy.AzureAdToken = account.AzureAAdToken;
         entitiy.SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync();
+        entitiy.PictureUrl = account.PictureUrl;
         
         await _context.SaveChangesAsync();
         return Status.Updated;

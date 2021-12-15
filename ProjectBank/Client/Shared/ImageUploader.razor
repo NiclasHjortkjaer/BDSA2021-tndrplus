@@ -3,16 +3,17 @@
 @inject NavigationManager NavigationManager
 
 <div class="form-group input-group">
-    @*<RadzenUpload Multiple="true" id="Image" Accept="image/*" OnChange="@OnFileSelection" Url="upload/multiple" Style="margin-bottom: 15px;">Image</RadzenUpload>
-    <RadzenButton Text="Clear" Click="ClearImage" Style="margin-bottom: 15px;" />*@
-    <InputFile id="Image" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif" class="form-control"/>
-    <button type="button" @onclick="UploadImage" class="btn btn-secondary" style="background-color:darkgreen; opacity: 70">Upload</button>
-    <button type="button" @onclick="ClearImage" class="btn btn-secondary" >Clear</button>
+    <InputFile id="Image" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg" class="form-control"/>
 </div>
 <div class="form-group">
         @if (!string.IsNullOrWhiteSpace(imageUrl))
         {
             <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@imageUrl" alt="Project Image" class="img-thumbnail"></div>
+            <div style="padding: 0.5em">
+                <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@UploadImage Text="Upload" />
+                <RadzenButton style="width: 160px" IsBusy=@busy Click=@ClearImage Text="Clear" />
+            </div>
+            
         }@if (sizeExceeded)
          {
              <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
@@ -21,13 +22,18 @@
 @code {
 
     [Parameter]
-    public int projectId { get; set; }
+    public int Id { get; set; }
 
-    
+    [Parameter]
+    public bool isProject { get; set; }
+
     private ProjectDetailsDto toBeUpdated;
 
+    private AccountDetailsDto toBeUpdatedAccount;
 
-    private ProjectUpdateDto project;
+    private ProjectUpdateDto? project;
+
+    private AccountUpdateDto? account;
 
     private string imageName = Guid.NewGuid().ToString();
 
@@ -35,23 +41,42 @@
 
     private IBrowserFile? imageFile;
     private bool sizeExceeded;
+    private bool busy;
 
     protected override async Task OnInitializedAsync()
     {
-        toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{projectId}");
-        if (toBeUpdated != null)
+        if (isProject)//if project
         {
-            project = new ProjectUpdateDto()
+            toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{Id}");
+            if (toBeUpdated != null)
             {
-                Id = toBeUpdated.Id, Degree = toBeUpdated.Degree, Title = toBeUpdated.Title,
-                Description = toBeUpdated.Description, Ects = toBeUpdated.Ects, Keywords = toBeUpdated.Keywords, AuthorName = toBeUpdated.AuthorName,
-                AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
-            };
+                project = new ProjectUpdateDto()
+                {
+                    Id = toBeUpdated.Id, Degree = toBeUpdated.Degree, Title = toBeUpdated.Title,
+                    Description = toBeUpdated.Description, Ects = toBeUpdated.Ects, Keywords = toBeUpdated.Keywords, AuthorName = toBeUpdated.AuthorName,
+                    AuthorToken = toBeUpdated.AuthorToken, FileUrl = toBeUpdated.FileUrl, ImageUrl = toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
+                };
+            }
         }
+        else //if account
+        {
+            toBeUpdatedAccount = await Http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/getBy{Id}");
+            if (toBeUpdatedAccount != null)
+            {
+                account = new AccountUpdateDto()
+                {
+                    Id = toBeUpdatedAccount.Id, PictureUrl = toBeUpdatedAccount.PictureUrl, Name = toBeUpdatedAccount.Name,
+                    SavedProjects = toBeUpdatedAccount.SavedProjects, AzureAAdToken = toBeUpdatedAccount.AzureAdToken
+                };
+            }
+        }
+        
     }
 
     private async Task UploadImage()
     {
+        busy = true;
+
         if (imageFile != null)
         {
             var bytes = new byte[imageFile.Size];
@@ -64,24 +89,40 @@
 
             if (response.IsSuccessStatusCode)
             {
-                project.ImageUrl = response.Headers.Location?.ToString();
-                var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
-                Console.WriteLine(updated.StatusCode);
+                if (project != null)
+                {
+                    {
+                        project.ImageUrl = response.Headers.Location?.ToString();
+                        var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
+                        Console.WriteLine(updated.StatusCode);
+                    }
+                }
+                else if (account != null)
+                {
+                    {
+                        account.PictureUrl = response.Headers.Location?.ToString();
+                        var updated = await Http.PutAsJsonAsync($"api/Account/{account.Id}", account);
+                        Console.WriteLine(updated.StatusCode);
+                    }
+                }
+                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
+            await Task.Delay(2000);
+            busy = false;
         }
     }
-    
-    
-    private void ClearImage()
+    private async Task ClearImage()
     {
+        busy = true;
         imageUrl = string.Empty;
         imageFile = null;
-        StateHasChanged();
+        await Task.Delay(2000);
+        busy = false;
     }
 
     private void Cancel()
     {
-        var uri = $"{NavigationManager.BaseUri}characters";
+        var uri = $"{NavigationManager.BaseUri}";
 
         NavigationManager.NavigateTo(uri);
         

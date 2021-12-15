@@ -52,39 +52,37 @@ else
             <button id="like_btn" @onclick="(() => CheckClick(ClickType.Like))">
                 <label id="star_icon" class="oi oi-star"></label>
             </button>
-        </div>
-       
+        </div> 
 }
-
 
 @code
 {
     [Parameter]
-    public string keyword { get; set; }
+    public string? keyword { get; set; }
 
     private int _i = 10;
-
     private int _idCounter = 0;
+
 
     private ProjectDetailsDto[]? _projects;
 
     private List<int> _likedProjectIds; //This is only used to mimic the database collection of saved projects, st. we dont have to do unnecessary API calls. 
 
+
     private ProjectDetailsDto _lastProject;
     private ProjectDetailsDto _currentProject;
     private ClickType _lastClick;
-
     private ClaimsPrincipal? _user;
     private string? _aToken;
-
     private string _keywordString;
-
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+
             _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}"); //all projects containing the specified keyword
+
             _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
@@ -173,7 +171,7 @@ else
         _currentProject = _projects[_idCounter % _projects.Length]; //burde ik være nødvendigt med modulo længere
 
         _keywordString = getKeyWords();
-        
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -192,7 +190,4 @@ else
         var notiMsg = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "hhaha", Duration = 4000};
         NotificationService.Notify(notiMsg);
     }*/
-    
-    
-}
-    
+}   
