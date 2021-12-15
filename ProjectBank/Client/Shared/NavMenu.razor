@@ -120,8 +120,8 @@
         var user = authState.User;
         if (user.Identity?.IsAuthenticated == true)
         {
+            
             var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            var _claims = _user.Claims;
             var _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
             if (account != null)
@@ -130,7 +130,7 @@
             }
             trialList.Add("sup");
             projectsChanged.OnChange +=(()=>ChangeState());
-            
+
         }
     }
 

@@ -15,15 +15,27 @@ public class ProjectStateChanged : IDisposable
     
     public void AddSavedProjects(string title)
     {
-        projects.Add(title);
-        NotifyStateChanged();
+        if (!projects.Contains(title))
+        {
+            
+            projects.Add(title);
+            NotifyStateChanged(); 
+            
+        }
+        
     }
     
 
     public void RemoveSavedProjects(string title)
     {
-        projects.Remove(title); //if contains
-        NotifyStateChanged();
+        if (projects.Contains(title))
+        {
+            
+             projects.Remove(title);
+             NotifyStateChanged(); 
+                  
+        }
+        
     }
     
     public void setList(ISet<string> titles)

@@ -68,14 +68,13 @@ else
 
     private ProjectDetailsDto[]? _projects;
 
-    private List<int> _likedProjectIds; //vi kan kun bruge dette til at tjekke om vi det er unødvendigt med et API kald. 
+    private List<int> _likedProjectIds; //This is only used to mimic the database collection of saved projects, st. we dont have to do unnecessary API calls. 
 
     private ProjectDetailsDto _lastProject;
     private ProjectDetailsDto _currentProject;
     private ClickType _lastClick;
 
     private ClaimsPrincipal? _user;
-    private IEnumerable<Claim>? _claims;
     private string? _aToken;
 
     private string _keywordString;
@@ -85,11 +84,10 @@ else
     {
         try
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}");
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}"); //all projects containing the specified keyword
             _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            _claims = _user.Claims;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //hvis den ikke har noget, returnerer den en tom liste
+            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
             
             if (_projects != null)
             {
@@ -102,7 +100,6 @@ else
         {
             e.Redirect();
         }
-        await base.OnInitializedAsync();
     }
 
     private enum ClickType
@@ -114,42 +111,42 @@ else
 
     private async void CheckClick(ClickType s)
     {
-        if (s == ClickType.Like) //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
+        if (s == ClickType.Like) //vi skal lave check på status endpoint kald sender tilbage, så vi kan sende notifikation baseret på det
         {
-            
             if (!_likedProjectIds.Contains(_currentProject.Id))
             {
-                await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title);
+                await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title); //vil måske gerne lave om til den også får et id
                 _likedProjectIds.Add(_currentProject.Id);
                 projectChanged.AddSavedProjects(_currentProject.Title);
+                //ShowNotification("Project added!");
             }
-            
-            //ShowNotification("Project added!");
             
             if (_idCounter != _projects.Length - 1)
             {
                 _idCounter++;
             }
+            
             _lastClick = ClickType.Like;
+            
         }
-        if (s == ClickType.Rewatch)
+        else if (s == ClickType.Rewatch)
         {
             if (_lastClick == ClickType.Like)
             {
                 if (_likedProjectIds.Contains(_lastProject.Id))
                 {
-                   await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _lastProject.Title);
+                    await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _lastProject.Title);
                     _likedProjectIds.Remove(_lastProject.Id);
-                   projectChanged.RemoveSavedProjects(_lastProject.Title);
+                    projectChanged.RemoveSavedProjects(_lastProject.Title);
                 }
             }
-            if (_idCounter != 0) //scuffed? måske lidt. Men vi kan lave samme check, og bare give en notification, at der ikke er flere projekter bagi
+            if (_idCounter != 0) //scuffed? måske lidt. Men vi kan lave samme check, og bare give en notification, at der ikke er flere projekter bagi. "you have either rewatches all projects, or you havent liked/denied any yet"
             {
                 _idCounter--;
             }
             _lastClick = ClickType.Rewatch;
         }
-        if (s == ClickType.Dislike)
+        else if (s == ClickType.Dislike)
         {
             if (_likedProjectIds.Contains(_currentProject.Id))
             {
@@ -172,6 +169,7 @@ else
         {
             _lastProject = _projects[0];
         }
+        
         _currentProject = _projects[_idCounter % _projects.Length]; //burde ik være nødvendigt med modulo længere
 
         _keywordString = getKeyWords();
