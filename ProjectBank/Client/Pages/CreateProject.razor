@@ -4,9 +4,9 @@
 @inject HttpClient Http
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider;
-
+@inject NotificationService NotificationService;
 <PageTitle>ProjectBank - CreateProject</PageTitle>
-
+<RadzenNotification/>
 <h2>Create a new project:</h2>
 <RadzenFieldset class="mb-4">
     <div class="row">
@@ -55,6 +55,7 @@
     </div>
 </RadzenFieldset>
 
+
 @code {
     int value = 1;
      private string? name;
@@ -73,7 +74,11 @@
        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
                   if (user.Identity.IsAuthenticated)
         {
-            
+           project.Title="";
+           project.Description = "";
+           project.Degree =null;
+           project.Ects = null;
+
         name = user.Identity?.Name;
         token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
        
@@ -98,7 +103,7 @@
  }
    async Task CreatesProject()
     { 
-         project.AuthorName = name;
+        project.AuthorName = name;
         project.AuthorToken = token;
         project.LastUpdated = DateTime.UtcNow;
          ISet<string> keySet = new HashSet<string>();
@@ -106,8 +111,50 @@
                     keySet.Add(keyword);
                 }
         project.Keywords = keySet;
+         if(project.AuthorName == null || project.AuthorToken ==null){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000 };
+            NotificationService.Notify(error);
+        } else  if(project.LastUpdated==null){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Cannot get current time right now", Detail = "", Duration = 4000 };
+            NotificationService.Notify(error);
+        }  else if(project.Title.Length<1){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000 };
+            NotificationService.Notify(error);
+        } else if(project.Keywords.Count ==0){
+            
+            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "You must choose at least 1 keyword", Detail = "Fix please", Duration = 4000 };
+            NotificationService.Notify(error);
+        }
+        else{
+             if(project.Description.Length<1){
+            
+            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have no description", Detail = "", Duration = 4000 };
+            NotificationService.Notify(info);
+        }
+        if(project.Degree == null){
+            
+            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have chosen no degree", Detail = "", Duration = 4000 };
+            NotificationService.Notify(info);
+        }
+        if(project.Ects == null){
+            
+            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have chosen no ETCs", Detail = "", Duration = 4000 };
+            NotificationService.Notify(info);
+        }
+        
 try{
        var response = await Http.PostAsJsonAsync("api/Project",project);
+
+       if(response.IsSuccessStatusCode){
+            NotificationMessage success = new NotificationMessage { Severity = NotificationSeverity.Success , Summary = "Success creating project!", Detail = "Now in database", Duration = 4000 };
+            NotificationService.Notify(success);
+       } else{
+           NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Something went wrong", Detail = "Project not saved", Duration = 4000 };
+            NotificationService.Notify(error);
+       }
  }
         catch(AccessTokenNotAvailableException exception)
         {
@@ -117,6 +164,7 @@ try{
         busy = true;
         await Task.Delay(2000);
         busy = false;
+        }
     }
     void OnChange(string value, string name)
     {
