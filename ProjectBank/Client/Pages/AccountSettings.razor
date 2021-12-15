@@ -42,19 +42,44 @@
     </div>
 </RadzenFieldset>
 
-<RadzenButton Click=@Edit Text="Edit profile"/>
-<RadzenButton style="width: 160px" IsBusy=@busyProfile Click=@OnBusyClickProfile Text="Save" />
+<h2>Projects created by you:</h2>
+@if (userProjects.Count() >0)
+{
+    <table class="table table-striped" style="color: white">
+        <thead>
+        <tr>
+            <th>Title</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var projects in userProjects)
+        { 
+            <tr style="color: white">
+                <td>@projects.Title  </td>
+                <td><RadzenButton style="width: 170px;height:30px;margin-left:80%" IsBusy=@busyProfile Click="@(e =>DeleteProject(projects.Id))" Text="Delete project"/></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+} else{
+    <h3>You have made no projects yet.</h3>
+
+    
+}
+
     
 @code {
 
     //VARIABLES
     private bool editing = true;
     private bool busyProfile;
-    
     private string? name;
     private string? email;
     private string? currentRole;
     private string? token;
+
+    ProjectDetailsDto[]? projects;
+    private List<ProjectDetailsDto?> userProjects = new List<ProjectDetailsDto?>();
     
     //PAGE SCRIPTS
     private void Edit()
@@ -69,7 +94,19 @@
         currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
         email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
         token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-        
+
+         projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Project");
+               foreach (var project in projects)
+        { if(project.AuthorToken==token){
+            userProjects.Add(project);
+        }
+    }
+    }
+    private async Task DeleteProject(int id)
+    {
+        var response =  await Http.DeleteAsync($"/api/Project/{id}");
+         busyProfile = false;
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
     }
   
     private async Task OnBusyClickProfile()
