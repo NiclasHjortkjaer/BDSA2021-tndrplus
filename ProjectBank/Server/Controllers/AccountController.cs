@@ -37,6 +37,14 @@ public class AccountController : ControllerBase
         => await _repository.ReadFromTokenAsync(azureAdToken);
     
     [Authorize]
+    [HttpGet("likedProduct/{azureToken}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(ICollection<int>), 200)]
+    public async Task<ICollection<int>>? GetLiked(string azureToken)
+        => await _repository.ReadLikedProjectsFromTokenAsync(azureToken);
+
+    
+    [Authorize]
     [HttpPost("{azureToken}")] 
     [ProducesResponseType(typeof(Status),404)]
     [ProducesResponseType(typeof(Status),200)]
