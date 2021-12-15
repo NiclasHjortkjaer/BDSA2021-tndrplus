@@ -1,173 +1,180 @@
 @page "/createproject"
-@using System.Net
-@using System.Collections.Generic
-@inject HttpClient Http
-@inject NavigationManager navigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider;
-@inject NotificationService NotificationService;
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider _authenticationStateProvider;
+@inject NotificationService _notificationService;
 <PageTitle>ProjectBank - CreateProject</PageTitle>
 <RadzenNotification/>
 <h2>Create a new project:</h2>
+
 <RadzenFieldset class="mb-4">
     <div class="row">
         <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Title:" />
+            <RadzenLabel Text="Title:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=false Placeholder="Choose a title" @bind-Value="project.Title" Change=@(args => OnChange(args, "TextArea with placeholder")) style="width: 50%;" Name="ProjectName"/>
+            <RadzenTextBox Disabled=false Placeholder="Choose a title" @bind-Value="_project.Title" Change=@(args => OnChange(args, "TextArea with placeholder")) style="width: 50%;" Name="ProjectName"/>
         </div>
     </div>
     <div class="row">
         <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Description:" />
+            <RadzenLabel Text="Description:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextArea Placeholder="Enter here..." @bind-Value="project.Description" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="height:200px" Class="w-100"  />
+            <RadzenTextArea Placeholder="Enter here..." @bind-Value="_project.Description" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="height:200px" Class="w-100"/>
         </div>
     </div>
     <div class="row">
-        <div class="align-items-center d-flex col-md-3"> 
-            <RadzenLabel Text="Degree:" />
+        <div class="align-items-center d-flex col-md-3">
+            <RadzenLabel Text="Degree:"/>
         </div>
         <div class="col-md-9">
-             <RadzenDropDown AllowClear="true"   Item="enums" T="enums" Class="w-100" @bind-Value ="project.Degree"
-                            Data= "enums" />
+            <RadzenDropDown AllowClear="true" Item="enums" T="enums" Class="w-100" @bind-Value="_project.Degree" Data="_enums"/>
         </div>
     </div>
-        <div class="row">
+    <div class="row">
         <div class="align-item-center d-flex col-md-3">
-             <RadzenLabel Text="ETCs" />
+            <RadzenLabel Text="ETCs"/>
         </div>
-         <div class="col-md-9">
-            <RadzenDropDown AllowClear="true" TValue="float?" Class="w-100" @bind-Value="project.Ects" 
-                            Data= "etcs" />
+        <div class="col-md-9">
+            <RadzenDropDown AllowClear="true" TValue="float?" Class="w-100" @bind-Value="_project.Ects"
+                            Data="_etcs"/>
         </div>
-        </div>
-        <div class="row">
+    </div>
+    <div class="row">
         <div class="align-item-center d-flex col-md-3">
-             <RadzenLabel Text="Keywords:" />
-             </div>
-         <div class="col-md-9">
-<RadzenListBox AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@multipleValues Multiple="true" Data=@keywords
-                                Style="height:200px;color:black;" Class="w-100" />
+            <RadzenLabel Text="Keywords:"/>
         </div>
-          <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@CreatesProject Text="Save" />
+        <div class="col-md-9">
+            <RadzenListBox AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@_multipleValues Multiple="true" Data=@_keywords
+                           Style="height:200px;color:black;" Class="w-100"/>
+        </div>
+        <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@_busy Click=@CreatesProject Text="Save"/>
     </div>
 </RadzenFieldset>
 
 
 @code {
-    int value = 1;
-     private string? name;
-    
-    private string? token;
-     bool busy;
-    private ProjectCreateDto project = new();
- private KeywordDto[]? DTOKeywords;
- //KeywordDto[]? multipleValues;
-   private IEnumerable<string> multipleValues = new string[]{"AI"};
-  private List<string> keywords = new List<string>();
-  // IEnumerable<string> keywordstring;
-      List<Enum?> enums = new List<Enum?>();
-      List<float?> etcs = new List<float?>();
- protected override async Task OnInitializedAsync(){
-       var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-                  if (user.Identity.IsAuthenticated)
-        {
-           project.Title="";
-           project.Description = "";
-           project.Degree =null;
-           project.Ects = null;
+    private string? _name;
 
-        name = user.Identity?.Name;
-        token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-       
-    
-        etcs.Add(7.5f);
-        etcs.Add(15f);
-       enums.Add(Degree.Bachelor);
-       enums.Add(Degree.Master);
-       enums.Add(Degree.PHD);
- try 
+    private string? _token;
+    bool _busy;
+    private ProjectCreateDto _project = new();
+
+    private KeywordDto[]? _dtoKeywords;
+    //KeywordDto[]? multipleValues;
+    private IEnumerable<string> _multipleValues = new[] {"AI"};
+    private List<string> _keywords = new();
+    // IEnumerable<string> keywordstring;
+    List<Enum?> _enums = new List<Enum?>();
+    List<float?> _etcs = new List<float?>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            DTOKeywords = await Http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
-                foreach (var keyword in DTOKeywords){
-                    keywords.Add(keyword.Word);
-                }
-        }
-        catch(AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
+            _name = user.Identity?.Name;
+            _token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+
+
+            _etcs.Add(7.5f);
+            _etcs.Add(15f);
+            _enums.Add(Degree.Bachelor);
+            _enums.Add(Degree.Master);
+            _enums.Add(Degree.PHD);
+            try
+            {
+                _dtoKeywords = await _http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
+                if (_dtoKeywords != null)
+                    foreach (var keyword in _dtoKeywords)
+                    {
+                        _keywords.Add(keyword.Word);
+                    }
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
         }
     }
- }
-   async Task CreatesProject()
-    { 
-        project.AuthorName = name;
-        project.AuthorToken = token;
-        project.LastUpdated = DateTime.UtcNow;
-         ISet<string> keySet = new HashSet<string>();
-             foreach (var keyword in multipleValues){
-                    keySet.Add(keyword);
-                }
-        project.Keywords = keySet;
-         if(project.AuthorName == null || project.AuthorToken ==null){
-            
-            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000 };
-            NotificationService.Notify(error);
-        } else  if(project.LastUpdated==null){
-            
-            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Cannot get current time right now", Detail = "", Duration = 4000 };
-            NotificationService.Notify(error);
-        }  else if(project.Title.Length<1){
-            
-            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000 };
-            NotificationService.Notify(error);
-        } else if(project.Keywords.Count ==0){
-            
-            NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "You must choose at least 1 keyword", Detail = "Fix please", Duration = 4000 };
-            NotificationService.Notify(error);
-        }
-        else{
-             if(project.Description.Length<1){
-            
-            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have no description", Detail = "", Duration = 4000 };
-            NotificationService.Notify(info);
-        }
-        if(project.Degree == null){
-            
-            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have chosen no degree", Detail = "", Duration = 4000 };
-            NotificationService.Notify(info);
-        }
-        if(project.Ects == null){
-            
-            NotificationMessage info = new NotificationMessage { Severity = NotificationSeverity.Info , Summary = "You have chosen no ETCs", Detail = "", Duration = 4000 };
-            NotificationService.Notify(info);
-        }
-        
-try{
-       var response = await Http.PostAsJsonAsync("api/Project",project);
 
-       if(response.IsSuccessStatusCode){
-            NotificationMessage success = new NotificationMessage { Severity = NotificationSeverity.Success , Summary = "Success creating project!", Detail = "Now in database", Duration = 4000 };
-            NotificationService.Notify(success);
-       } else{
-           NotificationMessage error = new NotificationMessage { Severity = NotificationSeverity.Error , Summary = "Something went wrong", Detail = "Project not saved", Duration = 4000 };
-            NotificationService.Notify(error);
-       }
- }
-        catch(AccessTokenNotAvailableException exception)
+
+    async Task CreatesProject()
+    {
+        _busy = true;
+
+        _project.AuthorName = _name;
+        _project.AuthorToken = _token;
+        _project.LastUpdated = DateTime.UtcNow;
+        ISet<string> keySet = new HashSet<string>();
+        foreach (var keyword in _multipleValues)
         {
-            exception.Redirect();
+            keySet.Add(keyword);
         }
-    
-        busy = true;
-        await Task.Delay(2000);
-        busy = false;
+        _project.Keywords = keySet;
+
+        if (_project.AuthorName == null || _project.AuthorToken == null)
+        {
+            NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000};
+            _notificationService.Notify(error);
+        }
+        else if (_project.Title.Length < 1)
+        {
+            NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000};
+            _notificationService.Notify(error);
+        }
+        else if (_project.Keywords.Count == 0)
+        {
+            NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "You must choose at least 1 keyword", Detail = "Fix please", Duration = 4000};
+            _notificationService.Notify(error);
+        }
+        else
+        {
+            if (_project.Description != null && _project.Description.Length < 1)
+            {
+                NotificationMessage info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have no description", Detail = "", Duration = 4000};
+                _notificationService.Notify(info);
+            }
+            if (_project.Degree == null)
+            {
+                NotificationMessage info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have chosen no degree", Detail = "", Duration = 4000};
+                _notificationService.Notify(info);
+            }
+            if (_project.Ects == null)
+            {
+                NotificationMessage info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have chosen no ETCs", Detail = "", Duration = 4000};
+                _notificationService.Notify(info);
+            }
+
+            try
+            {
+                var response = await _http.PostAsJsonAsync("api/Project", _project);
+                var created = await response.Content.ReadFromJsonAsync<ProjectDetailsDto>();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success creating project!", Detail = "Now in database", Duration = 4000};
+                    _notificationService.Notify(success);
+                    await Task.Delay(2000);
+                    _busy = false;
+                    _navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{created!.Id}");
+                }
+                else
+                {
+                    NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Project not saved", Duration = 4000};
+                    _notificationService.Notify(error);
+                }
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
         }
     }
+
     void OnChange(string value, string name)
     {
-        
     }
- }
+
+}

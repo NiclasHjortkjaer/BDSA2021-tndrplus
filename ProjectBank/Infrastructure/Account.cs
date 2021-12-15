@@ -15,6 +15,8 @@ public class Account
     public string Name { get; set; }
 
     public string AzureAdToken { get; set; }
+    
+    public string? PictureUrl { get; set; }
     public ICollection<Project> AuthoredProjects { get; set; } = null!;
 
     public ICollection<Project> SavedProjects { get; set; } = null!;
