@@ -8,6 +8,7 @@
 <PageTitle>ProjectBank - CreateProject</PageTitle>
 
 <h2>Create a new project:</h2>
+
 <RadzenFieldset class="mb-4">
     <div class="row">
         <div class="align-items-center d-flex col-md-3">
@@ -46,11 +47,11 @@
         <div class="align-item-center d-flex col-md-3">
              <RadzenLabel Text="Keywords:" />
              </div>
-         <div class="col-md-9">
-<RadzenListBox AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@multipleValues Multiple="true" Data=@keywords
-                                Style="height:200px;color:black;" Class="w-100" />
-        </div>
-          <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@CreatesProject Text="Save" />
+            <div class="col-md-9">
+                <RadzenListBox AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@multipleValues Multiple="true" Data=@keywords
+                               Style="height:200px;color:black;" Class="w-100" />
+            </div>
+            <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@CreatesProject Text="Save" />
     </div>
 </RadzenFieldset>
 
@@ -100,6 +101,7 @@
 
     async Task CreatesProject()
     {
+        busy = true;
         project.AuthorName = name;
         project.AuthorToken = token;
         project.LastUpdated = DateTime.UtcNow;
@@ -112,17 +114,18 @@
         try
         {
             var response = await Http.PostAsJsonAsync("api/Project", project);
-            busy = true;
+            var created = await response.Content.ReadFromJsonAsync<ProjectDetailsDto>();
             await Task.Delay(2000);
-             Console.WriteLine("Cmon");
-            var created = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{project.Title}");
-           
-            navigationManager.NavigateTo("/createproject/AdditionalProjectSetup/" + created.Id);
+            navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{created!.Id}");
             busy = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
+        }
+        catch (NullReferenceException nullex)
+        {
+            navigationManager.NavigateTo("/");
         }
     }
 

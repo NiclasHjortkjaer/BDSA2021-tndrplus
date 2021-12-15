@@ -13,8 +13,8 @@
         @if (!string.IsNullOrWhiteSpace(fileUrl))
         {
             <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><a style="color: #0a53be" href="@fileUrl" download="@fileName">Preview file</a></div>
-            <button type="button" @onclick="UploadFile" class="btn btn-secondary" style="background-color:darkgreen; opacity: 70">Upload</button>
-            <button type="button" @onclick="ClearFile" class="btn btn-secondary" >Clear</button>
+            <RadzenButton style="width: 160px; padding: 0.5rem" Icon="save" BusyText="Saving ..." IsBusy=@busy Click=@UploadFile Text="Upload" />
+            <RadzenButton style="width: 160px; padding: 0.5rem" IsBusy=@busy Click=@ClearFile Text="Clear" />
             
         }@if (sizeExceeded)
          {
@@ -35,6 +35,7 @@
     private string fileUrl = string.Empty;
 
     private IBrowserFile? pdfFile;
+    private bool busy;
 
     private bool sizeExceeded;
     protected override async Task OnInitializedAsync()
@@ -53,6 +54,7 @@
     
     private async Task UploadFile()
     {
+        busy = true;
         if (pdfFile != null)
         {
             var bytes = new byte[pdfFile.Size];
@@ -71,13 +73,18 @@
                 NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
             }
         }
+        await Task.Delay(2000);
+        busy = false;
     }
 
-    private void ClearFile()
+    private async Task ClearFile()
     {
+        busy = true;
         fileUrl = string.Empty;
         pdfFile = null;
         StateHasChanged();
+        await Task.Delay(2000);
+        busy = false;
     }
 
     private void Cancel()

@@ -1,42 +1,55 @@
-@page "/createproject/AdditionalProjectSetup/{id}"
-@using System.Net
-@using System.Collections.Generic
-@inject HttpClient Http
-@inject NavigationManager navigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider;
+@page "/createproject/AdditionalProjectSetup/{Id}"
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider _authenticationStateProvider;
 
-<PageTitle>ProjectBank - CreateProjectAddtional</PageTitle>
+<PageTitle>ProjectBank - Additional Setup</PageTitle>
 
 <RadzenFieldset class="mb-4">
-    <div class="row">
+    <div class="row" style="padding: 1em">
         <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Project image" />
+            <RadzenLabel Text="Project image:" />
         </div>
         <div class="col-md-9">
-            <ImageUploader Id="id" isProject="true"></ImageUploader>
+            @if (_project?.ImageUrl != null)
+            {
+                <div style="padding: 1em;"><img src="@_project.ImageUrl" alt="Project Image missing" class="img-thumbnail" style="padding: 1em"></div>
+            }
+            <ImageUploader Id="int.Parse(Id ?? string.Empty)" isProject="true"></ImageUploader>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="padding: 1em">
         <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Project File" />
+            <RadzenLabel Text="Project File:" />
         </div>
         <div class="col-md-9">
-            <PdfUploader projectId="id"></PdfUploader>
+            @if (_project?.FileUrl != null)
+            {
+                <div style="justify-content: center; align-content: center; padding:1em;"><a style="color: #0a53be" href="@_project.FileUrl" download="@_project.FileUrl??.pdf">Project PDF</a></div>
+            }
+            <PdfUploader projectId="int.Parse(Id ?? String.Empty)"></PdfUploader>
         </div>
     </div>
-    <div>
-        <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." Click=@CompleteSetup Text="Finish Setup" />
+    <div style="padding: 2em">
+        <RadzenButton style="width: 160px;" BusyText="Saving ..." Click=@CompleteSetup Text="Finish" />
         </div>
 </RadzenFieldset>
 
 @code {
 
     [Parameter]
-    public int id { get; set; }
+    public string? Id { get; set; }
+
+    private ProjectDetailsDto? _project;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _project = await _http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{Id}");
+    }
 
     private void CompleteSetup()
     {
-       navigationManager.NavigateTo("project/"+id);
+       _navigationManager.NavigateTo("/projects/"+Id);
     }
 
 }
