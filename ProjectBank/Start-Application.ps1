@@ -1,10 +1,7 @@
 [CmdletBinding()]
 param (
     [switch]
-    $SQL,
-
-    [switch]
-    $Azurite
+    $SQL
 )
 
 $project = "Server"
@@ -20,15 +17,6 @@ if ($SQL) {
     Write-Host "Configuring Connection String"
     dotnet user-secrets init --project $project
     dotnet user-secrets set "ConnectionStrings:ProjectBank" "$connectionString" --project $project
-}
-
-if ($Azurite) {
-    Write-Host "Starting Azurite Storage Emulator"
-    docker run -p 10000:10000 -p 10001:10001 -p 10002:10002 `
-        -v "C:\Azurite:/data" `
-        -v "$env:USERPROFILE/.aspnet/https:/https" `
-        -d mcr.microsoft.com/azure-storage/azurite `
-        azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --oauth basic --cert "/https/aspnetapp.pfx" --pwd "localhost"
 }
 
 Write-Host "Starting App"
