@@ -1,0 +1,53 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+version: '3.9'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest #mcr.microsoft.com/azure-sql-edg
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
+    ports:
+      - "1433:1433"
+    secrets:
+      - db_password
+
+#  storage:
+#    image: mcr.microsoft.com/azure-storage/azurite
+#    ports:
+#      - 10000:10000
+#      - 10001:10001
+#      - 10002:10002
+#    volumes:
+#      - C:/Azurite:/data
+
+  server:
+    image: projectbankserver
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      ConnectionStrings__ProjectBank:
+      BlobContainerUri: https://projectbankstorage.blob.core.windows.net/azurecontainer
+      ASPNETCORE_URLS: https://+;http://+
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: localhost
+    ports:
+      - "5077:80"
+      - "7207:443"
+    depends_on:
+      - db
+    secrets:
+      - source: connection_string
+        target: ConnectionStrings__ProjectBank
+    volumes:
+      - ../../../.aspnet/https:/https/
+
+secrets:
+  db_password:
+    file: ../../../.local/db_password.txt
+  connection_string:
+    file: ../../../.local/connection_string.txt
+  storage_connection_string:
+    file: ../../../.local/storage_connection_string.txt

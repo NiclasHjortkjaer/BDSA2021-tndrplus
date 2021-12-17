@@ -1,7 +1,3 @@
-using System.Diagnostics.Tracing;
-using System.Runtime.InteropServices;
-using SQLitePCL;
-
 namespace ProjectBank.Infrastructure;
 
 public class KeywordRepository : IKeywordRepository
@@ -75,25 +71,25 @@ public class KeywordRepository : IKeywordRepository
     {
         if (string.IsNullOrWhiteSpace(input)) {
             return new List<ProjectDetailsDto>();
-        } else {
-            var entity = await _context.Keywords
-                //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
-                .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
-                .FirstOrDefaultAsync(e => e.Word == input);
-            if (entity == null)
-            {
-                return new List<ProjectDetailsDto>().AsReadOnly();
-            }
-
-            var list = new List<ProjectDetailsDto>();
-            foreach (var p in entity.Projects)
-            {
-                ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
-                list.Add(new ProjectDetailsDto(
-                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
-            }
-            return list.AsReadOnly();
         }
+
+        var entity = await _context.Keywords
+            //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
+            .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+            .FirstOrDefaultAsync(e => e.Word == input);
+        if (entity == null)
+        {
+            return new List<ProjectDetailsDto>().AsReadOnly();
+        }
+
+        var list = new List<ProjectDetailsDto>();
+        foreach (var p in entity.Projects)
+        {
+            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+            list.Add(new ProjectDetailsDto(
+                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+        }
+        return list.AsReadOnly();
     }
     
 
@@ -153,7 +149,7 @@ public class KeywordRepository : IKeywordRepository
 
         if (entity == null)
         {
-            return null;
+            return null!;
         }
 
         if (timesSeen < entity.Projects.Count())
@@ -163,13 +159,14 @@ public class KeywordRepository : IKeywordRepository
 
             return new ProjectDetailsDto(
                     p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
-        } else
-        {
-            //Returns random project, when there are no more projects with the given keyword
-            //Does not promise, not to show an already shown project
-            Random rand = new Random();
-            var randomIndex = rand.Next(_context.Projects.Count());
-            var projects = from p in _context.Projects
+        }
+
+
+        //Returns random project, when there are no more projects with the given keyword
+        //Does not promise, not to show an already shown project
+        Random rand = new Random();
+        var randomIndex = rand.Next(1, _context.Projects.Count());
+        var projects = from p in _context.Projects
             where p.Id == randomIndex
             select new ProjectDetailsDto(
                 p.Id,
@@ -185,7 +182,6 @@ public class KeywordRepository : IKeywordRepository
                 p.Keywords.Select(k => k.Word).ToHashSet()
             );
 
-            return projects.FirstOrDefault();
-        }
+        return projects.FirstOrDefault()!;
     }
 }
