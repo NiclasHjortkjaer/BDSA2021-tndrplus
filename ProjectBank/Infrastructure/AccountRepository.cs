@@ -63,6 +63,27 @@ public class AccountRepository : IAccountRepository
 
         return await accounts.FirstOrDefaultAsync();
     }
+    public async Task<ICollection<int>> ReadLikedProjectsFromTokenAsync(string azureToken)
+    {
+        var account = await _context.Accounts.Include(a => a.SavedProjects).FirstOrDefaultAsync(a => a.AzureAdToken == azureToken);
+        if (account == null)
+        {
+            return new List<int>();
+        }
+        
+        var projects = account.SavedProjects;
+        List<int> idsToReturn = new List<int>();
+        if (projects != null)
+        {
+            foreach (var p in projects)
+            {
+                idsToReturn.Add(p.Id);
+            }
+        }
+
+        return idsToReturn;
+    }
+    
     public async Task<IReadOnlyCollection<AccountDto>> ReadAllAsync() =>
         (await _context.Accounts
             .Select(a => new AccountDto(a.Id, a.AzureAdToken, a.Name))
@@ -143,12 +164,12 @@ public class AccountRepository : IAccountRepository
                 return Status.Conflict;
             }
             
-            projectTitles.Remove(projectTitle); //vi får en fejl fordi EF core ikke kan genkende "missing" properties. den kan kun genkende nye eller opdaterede ting i collections, ikke slettede. Så vi skal selv kunne fortælle den at den altså skal slettes.
-            //The instance of entity type 'Project' cannot be tracked because another instance with the same key value for {'Id'} is already being tracked.
+            projectTitles.Remove(projectTitle);
         }
         
         account.SavedProjects = await GetSavedProjectsAsync(projectTitles).ToListAsync();
         
+        //---
         var projectToRemove = await _context.Projects.Include(p => p.Accounts).FirstOrDefaultAsync(p => p.Title == projectTitle);
         
         if (projectToRemove == null)

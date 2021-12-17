@@ -11,4 +11,5 @@ public interface IAccountRepository
 
     Task<Status> AddLikedProjectAsync(string azureToken , string projectTitle);
     Task<Status> RemoveLikedProjectAsync(string azureToken, string projectTitle);
+    Task<ICollection<int>> ReadLikedProjectsFromTokenAsync(string azureToken);
 }

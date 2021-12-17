@@ -23,7 +23,7 @@ public class AccountController : ControllerBase
         => await _repository.ReadAllAsync();
 
     [AllowAnonymous]
-    [HttpGet("getBy{id}")]
+    [HttpGet("getBy/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
     public async Task<AccountDetailsDto>? Get(int id)
@@ -37,18 +37,37 @@ public class AccountController : ControllerBase
         => await _repository.ReadFromTokenAsync(azureAdToken);
     
     [Authorize]
-    [HttpPost("{azureToken}")] 
-    [ProducesResponseType(typeof(Status),404)]
-    [ProducesResponseType(typeof(Status),200)]
-    public async Task<Status> Post(string azureToken, [FromBody] string projectTitle)//lav den her til put i morgen
-        => await _repository.AddLikedProjectAsync(azureToken,projectTitle);
-    
+    [HttpGet("likedProduct/{azureToken}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(ICollection<int>), 200)]
+    public async Task<ICollection<int>>? GetLiked(string azureToken)
+        => await _repository.ReadLikedProjectsFromTokenAsync(azureToken);
+
+
     [Authorize]
-    [HttpPut("{azureToken}/remove")] 
-    [ProducesResponseType(typeof(Status),404)]
-    [ProducesResponseType(typeof(Status),200)]
-    public async Task<Status> Put(string azureToken, [FromBody] string projectTitle)
-        => await _repository.RemoveLikedProjectAsync(azureToken,projectTitle);
+    [HttpPost("{azureToken}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> Post(string azureToken, [FromBody] string projectTitle)
+    {
+     
+        var response = await _repository.AddLikedProjectAsync(azureToken,projectTitle);
+        
+        return CreatedAtAction(nameof(Get), response);
+    }
+
+
+    [Authorize]
+    [HttpPut("{azureToken}/remove")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> Put(string azureToken, [FromBody] string projectTitle)
+    {
+        
+        var response = await _repository.RemoveLikedProjectAsync(azureToken,projectTitle);
+
+        return CreatedAtAction(nameof(Get), response);
+    }
 
     [Authorize]
     [HttpPost]
