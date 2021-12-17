@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace Server.Integration.Tests;
 
 public class AccountTests : IClassFixture<CustomWebApplicationFactory>
@@ -38,6 +40,139 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotNull(account);
         Assert.Equal("Elon Musk",account.Name);
     }
+    
+    [Fact]
+    public async Task get_by_Token_returns_liked_project_ids() //heeer
+    { 
+        var azureAdToken = "AuthorToken2";
+
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+
+        Assert.NotNull(projectIDs);
+        Assert.True(projectIDs.Count > 0);
+        Assert.True(projectIDs.Contains(1));
+    }
+    
+    [Fact]
+    public async Task get_by_Token_returns_empty_list_on_no_liked()
+    {
+        var azureAdToken = "Token2";
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        
+        Assert.NotNull(projectIDs);
+        Assert.True(projectIDs.Count == 0);
+    }
+    
+    [Fact]
+    public async Task get_by_Token_returns_empty_list_on_wrong_token()
+    {
+        var azureAdToken = "wrongToken";
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        
+        Assert.NotNull(projectIDs);
+        Assert.Equal(projectIDs.Count, 0);
+    }
+    
+    [Fact]
+    public async Task Post_by_token_and_title_adds_to_accounts_list()
+    {
+        
+        var azureAdToken = "UnknownToken";
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        Assert.True(projectIDs.Count==0);
+        
+        var titleToAdd = "Artificial Intelligence 101";
+        var response = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
+        var actualResponse = await response.Content.ReadFromJsonAsync<Status>();
+        
+        var projectIDs2 = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        
+        Assert.True(projectIDs2.Count != 0);
+        Assert.True(projectIDs2.Contains(1));
+        Assert.Equal(Status.Updated.ToString(),actualResponse.ToString());
+        
+    }
+    
+    [Fact]
+    public async Task Post_by_token_and_title_return_not_found_on_wrong_token()
+    {
+        
+        var azureAdToken = "wrongToken";
+        
+        var titleToAdd = "Artificial Intelligence 101";
+        var response = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
+        
+        var actual = await response.Content.ReadFromJsonAsync<Status>();
+        
+        Assert.Equal(Status.NotFound.ToString(), actual.ToString());
+
+    }
+    [Fact]
+    public async Task Post_by_token_and_title_return_conflict_on_redundant_project()
+    {
+        
+        var azureAdToken = "AuthorToken";
+        var titleToAdd = "Artificial Intelligence 101";
+        var response1 = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
+        var response2 = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
+        var actual = await response2.Content.ReadFromJsonAsync<Status>();
+        
+        Assert.Equal(Status.Conflict.ToString(), actual.ToString());
+
+    }
+    
+    //til delete ogs
+    [Fact]
+    public async Task Put_by_token_and_title_remove_project_from_accounts_list()
+    {
+        var azureAdToken = "AuthorToken";
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        
+        Assert.True(projectIDs.Contains(1));
+        
+        var titleToRemove = "Artificial Intelligence 101";
+        
+        var response = await _client.PutAsJsonAsync($"api/Account/{azureAdToken}/remove", titleToRemove);
+        var actual = await response.Content.ReadFromJsonAsync<Status>();
+        
+        var projectIDs2 = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        
+        Assert.Equal(Status.Updated.ToString(), actual.ToString());
+        Assert.False(projectIDs2.Contains(1));
+        
+    }
+    [Fact]
+    public async Task Put_by_token_and_title_return_not_found_on_wrong_token()
+    {
+        var azureAdToken = "wrongToken";
+        
+        var titleToRemove = "Artificial Intelligence 101";
+        
+        var response = await _client.PutAsJsonAsync($"api/Account/{azureAdToken}/remove", titleToRemove);
+        var actual = await response.Content.ReadFromJsonAsync<Status>();
+
+        Assert.Equal(Status.NotFound.ToString(), actual.ToString());
+        
+    }
+
+    [Fact]
+    public async Task Put_by_token_and_title_return_conflict_on_not_liked_project()
+    {
+        
+        var azureAdToken = "UnknownToken";
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        
+        Assert.False(projectIDs.Contains(1));
+        
+        var titleToRemove = "Artificial Intelligence 101";
+        
+        var response = await _client.PutAsJsonAsync($"api/Account/{azureAdToken}/remove", titleToRemove);
+        var actual = await response.Content.ReadFromJsonAsync<Status>();
+
+        Assert.Equal(Status.Conflict.ToString(), actual.ToString());
+
+    }
+    
 
     [Fact]
     public async Task Post_returns_created()
@@ -52,7 +187,8 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/Account", account);
         
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        Assert.Equal(new Uri("http://localhost/api/Account/getBy/4"), response.Headers.Location);
+
+        Assert.Equal(new Uri("http://localhost/api/Account/getBy/5"), response.Headers.Location);
 
         var created = await response.Content.ReadFromJsonAsync<AccountDetailsDto>();
         

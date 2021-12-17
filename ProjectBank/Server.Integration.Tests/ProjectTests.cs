@@ -87,11 +87,13 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{author}");
 
         Assert.NotNull(projects);
-        Assert.Equal(1, projects!.Length);
+        Assert.Equal(2, projects!.Length);
 
-        var project = projects.FirstOrDefault();
-        Assert.Equal("Artificial Intelligence 101", project!.Title);
-        Assert.Equal("Elon Musk", project.AuthorName);
-        Assert.NotEmpty(project.Keywords);
+        Assert.Equal("Artificial Intelligence 101", projects.First().Title);
+        Assert.Equal("Elon Musk", projects.First().AuthorName);
+        Assert.NotEmpty(projects.First().Keywords);
+        Assert.Equal("Machine Learning for dummies", projects[1].Title);
+        Assert.Equal("Elon Musk", projects[1].AuthorName);
+        Assert.NotEmpty(projects[1].Keywords);
     }
 }

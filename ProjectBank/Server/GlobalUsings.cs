@@ -7,7 +7,6 @@ global using Microsoft.Identity.Web.Resource;
 global using Microsoft.OpenApi.Models;
 global using System.Text.Json.Serialization;
 global using Azure.Storage.Blobs;
-global using Newtonsoft.Json;
 
 global using ProjectBank.Infrastructure;
 global using ProjectBank.Server.Extensions;
