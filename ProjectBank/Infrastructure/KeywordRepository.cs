@@ -165,7 +165,7 @@ public class KeywordRepository : IKeywordRepository
         //Returns random project, when there are no more projects with the given keyword
         //Does not promise, not to show an already shown project
         Random rand = new Random();
-        var randomIndex = rand.Next(1, _context.Projects.Count()+1);
+        var randomIndex = rand.Next(1, _context.Projects.Count());
         var projects = from p in _context.Projects
             where p.Id == randomIndex
             select new ProjectDetailsDto(
