@@ -42,10 +42,10 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
     }
     
     [Fact]
-    public async Task get_by_Token_returns_liked_project_ids()
-    {
+    public async Task get_by_Token_returns_liked_project_ids() //heeer
+    { 
+        var azureAdToken = "AuthorToken2";
 
-        var azureAdToken = "AuthorToken";
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
 
         Assert.NotNull(projectIDs);
@@ -56,7 +56,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task get_by_Token_returns_empty_list_on_no_liked()
     {
-        var azureAdToken = "UnknownToken";
+        var azureAdToken = "Token2";
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
         Assert.NotNull(projectIDs);
@@ -113,9 +113,9 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         
         var azureAdToken = "AuthorToken";
         var titleToAdd = "Artificial Intelligence 101";
-        
-        var response = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
-        var actual = await response.Content.ReadFromJsonAsync<Status>();
+        var response1 = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
+        var response2 = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
+        var actual = await response2.Content.ReadFromJsonAsync<Status>();
         
         Assert.Equal(Status.Conflict.ToString(), actual.ToString());
 
@@ -187,7 +187,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/Account", account);
         
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        Assert.Equal(new Uri("http://localhost/api/Account/getBy/4"), response.Headers.Location);
+        Assert.Equal(new Uri("http://localhost/api/Account/getBy/5"), response.Headers.Location);
 
         var created = await response.Content.ReadFromJsonAsync<AccountDetailsDto>();
         
