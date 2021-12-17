@@ -3,7 +3,9 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider;
 @inject ProjectStateChanged projectChanged;
+@inject NotificationService notificationService;
 
+<RadzenNotification/>
 
 
 <button id="GoBack_btn" onclick="location.href='/browse'">
@@ -90,7 +92,7 @@ else
             if (_projects != null)
             {
                 _currentProject = _projects[0];
-                _keywordString = getKeyWords();
+                _keywordString = GetKeyWords();
                 _lastClick = ClickType.Rewatch;
             }
         }
@@ -109,21 +111,29 @@ else
 
     private async void CheckClick(ClickType s)
     {
-        if (s == ClickType.Like) //vi skal lave check på status endpoint kald sender tilbage, så vi kan sende notifikation baseret på det
+        if (s == ClickType.Like)
         {
             if (!_likedProjectIds.Contains(_currentProject.Id))
             {
                 await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title); //vil måske gerne lave om til den også får et id
                 _likedProjectIds.Add(_currentProject.Id);
                 projectChanged.AddSavedProjects(_currentProject.Title);
-                //ShowNotification("Project added!");
+                ShowNotification("Project added: "+_currentProject.Title,1);
             }
-            
+            else
+            {
+                ShowNotification("You had already liked project: " + _currentProject.Title ,3); 
+            }
+
             if (_idCounter != _projects.Length - 1)
             {
                 _idCounter++;
             }
-            
+            else
+            {
+                ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword",2);
+            }
+
             _lastClick = ClickType.Like;
             
         }
@@ -136,11 +146,16 @@ else
                     await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _lastProject.Title);
                     _likedProjectIds.Remove(_lastProject.Id);
                     projectChanged.RemoveSavedProjects(_lastProject.Title);
+                    ShowNotification("Project removed: "+_lastProject.Title, 1);
                 }
             }
-            if (_idCounter != 0) //scuffed? måske lidt. Men vi kan lave samme check, og bare give en notification, at der ikke er flere projekter bagi. "you have either rewatches all projects, or you havent liked/denied any yet"
+            if (_idCounter != 0)
             {
                 _idCounter--;
+            }
+            else
+            {
+                ShowNotification("No projects to rewatch, press like or dislike to scroll through projects", 2);
             }
             _lastClick = ClickType.Rewatch;
         }
@@ -151,10 +166,14 @@ else
                await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
                 _likedProjectIds.Remove(_currentProject.Id);
                 projectChanged.RemoveSavedProjects(_currentProject.Title);
+                ShowNotification("Project removed: " + _currentProject.Title, 1);
             }
             if (_idCounter != _projects.Length - 1)
             {
                 _idCounter++;
+            }else
+            {
+                ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword",2);
             }
             _lastClick = ClickType.Dislike;
         }
@@ -170,13 +189,13 @@ else
         
         _currentProject = _projects[_idCounter % _projects.Length]; //burde ik være nødvendigt med modulo længere
 
-        _keywordString = getKeyWords();
+        _keywordString = GetKeyWords();
 
         await InvokeAsync(StateHasChanged);
     }
 
 
-    private string getKeyWords()
+    private string GetKeyWords()
     {
 
         var keywords = string.Join(", ", _currentProject.Keywords);
@@ -185,9 +204,28 @@ else
     }
     
 
-    /*private void ShowNotification(string message)
+    private void ShowNotification(string message, int type)
     {
-        var notiMsg = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "hhaha", Duration = 4000};
-        NotificationService.Notify(notiMsg);
-    }*/
+        var notiMsg = new NotificationMessage();
+        
+        if (type == 1)
+        {
+            
+            notiMsg = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = message, Duration = 2000};
+           
+        }else if (type == 2)
+        {
+            
+            notiMsg = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Error", Detail = message, Duration = 4000};
+           
+        }else if (type == 3)
+        {
+            
+            notiMsg = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "Info", Detail = message, Duration = 4000};
+           
+        }
+        
+        notificationService.Notify(notiMsg); 
+        
+    }
 }   
