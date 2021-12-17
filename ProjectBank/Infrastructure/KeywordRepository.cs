@@ -57,6 +57,7 @@ public class KeywordRepository : IKeywordRepository
     {
         var entity = await _context.Keywords
             .Include("Projects.Author")
+            .Include("Projects.Keywords")
             .FirstOrDefaultAsync(e => e.Word == keyword.Word);
         if (entity == null)
         {
