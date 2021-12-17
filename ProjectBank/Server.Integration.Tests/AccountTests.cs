@@ -38,6 +38,28 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotNull(account);
         Assert.Equal("Elon Musk",account.Name);
     }
+    
+    [Fact]
+    public async Task get_by_Token_returns_liked_project_ids()
+    {
+
+        var azureAdToken = "AuthorToken";
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+
+        Assert.NotNull(projectIDs);
+        Assert.True(projectIDs.Count > 0);
+        Assert.True(projectIDs.Contains(1));
+    }
+    
+    [Fact]
+    public async Task get_by_Token_returns_empty_list_on_no_liked()
+    {
+        var azureAdToken = "UnknownToken";
+        var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
+        
+        Assert.NotNull(projectIDs);
+        Assert.True(projectIDs.Count == 0);
+    }
 
     [Fact]
     public async Task Post_returns_created()
