@@ -4,12 +4,12 @@ version: '3.9'
 
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest #mcr.microsoft.com/azure-sql-edge
+    image: mcr.microsoft.com/mssql/server:2019-latest #mcr.microsoft.com/azure-sql-edg
     environment:
       ACCEPT_EULA: 'Y'
       MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
     ports:
-      - 1431:1431
+      - "1433:1433"
     secrets:
       - db_password
 
@@ -34,8 +34,8 @@ services:
       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
       ASPNETCORE_Kestrel__Certificates__Default__Password: localhost
     ports:
-      - 5077:80
-      - 7207:443
+      - "5077:80"
+      - "7207:443"
     depends_on:
       - db
     secrets:
