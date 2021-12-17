@@ -70,7 +70,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
         Assert.NotNull(projectIDs);
-        Assert.True(projectIDs.Count == 0);
+        Assert.Equal(projectIDs.Count, 0);
     }
     
     [Fact]
