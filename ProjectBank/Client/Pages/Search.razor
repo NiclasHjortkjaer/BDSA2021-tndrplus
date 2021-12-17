@@ -1,6 +1,4 @@
 ﻿@page "/search"
-@using System.Data.SqlTypes
-@using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 
@@ -75,9 +73,7 @@
 }
 
 @code {
-
     private string _searchText = "";
-
     ProjectDetailsDto[]? _projects;
 
     async Task LoadProjects()
@@ -113,9 +109,8 @@
         }
     }
 
-
     private IEnumerable<string> _likedProjects = null!;
-    private string _aToken;
+    private string? _aToken;
 
     protected async Task OnSearch()
     {
@@ -124,18 +119,18 @@
         if (user.Identity?.IsAuthenticated == true)
         {
             var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            var _claims = _user.Claims;
-            _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
-            if (account != null)
-            {
-                _likedProjects = account.SavedProjects;
+            if (_user != null){
+                var _claims = _user.Claims;
+                _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+                var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
+                if (account != null)
+                {
+                    _likedProjects = account.SavedProjects;
+                }
             }
         }
     }
     
-    
-
     private async Task AddOrRemoveFavorite(string t)
     {
 
