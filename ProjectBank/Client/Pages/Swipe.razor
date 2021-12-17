@@ -58,10 +58,10 @@ else
 {
     [Parameter]
     public string? keyword { get; set; }
-
+    private IKeywordFinder keywordFinder = new KeywordFinder();
     private int _i = 10;
     private int _idCounter = 0;
-    private ProjectDetailsDto[] _projects = null!;
+    private IEnumerable<ProjectDetailsDto> _projects = null!;
     private List<ProjectDetailsDto> _likedProjects; 
     private ProjectDetailsDto _lastProject;
     private ProjectDetailsDto _currentProject;
@@ -75,17 +75,38 @@ else
     {
         try
         {
-            var projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}");
-            if (projects != null) _projects = projects;
-            _likedProjects = new List<ProjectDetailsDto>();
-            _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            _claims = _user.Claims;
-            _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            if (_projects != null)
+            if (keyword == "all"){
+                await keywordFinder.Setup(Http);
+                var project = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/1");
+                if (project != null)
+                {
+                    _projects = new List<ProjectDetailsDto>();
+                    _projects.Append(project);
+
+                    _likedProjects = new List<ProjectDetailsDto>();
+                    _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+                    _claims = _user.Claims;
+                    _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+                    
+                    _currentProject = project;
+                    _keywordString = getKeyWords();
+
+                }
+            } else
             {
-                _currentProject = _projects.First();
-                _keywordString = getKeyWords();
+                var projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}");
+                if (projects != null) _projects = projects;
+                _likedProjects = new List<ProjectDetailsDto>();
+                _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+                _claims = _user.Claims;
+                _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+                if (_projects != null)
+                {
+                    _currentProject = _projects.First();
+                    _keywordString = getKeyWords();
+                }
             }
+
         }
         catch (AccessTokenNotAvailableException e)
         {
@@ -103,7 +124,10 @@ else
 
     private async void CheckClick(ClickType s)
     {
-        if (s == ClickType.Like) //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
+        if (keyword == "all"){
+            await CheckClickAll(s);
+        }
+        else if (s == ClickType.Like) //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
         {
             if (!_likedProjects.Contains(_currentProject))
             {
@@ -113,10 +137,10 @@ else
             //ShowNotification("Project added!");
             _idCounter++;
             _lastProject = _currentProject;
-            _currentProject = _projects[_idCounter % _projects.Length];
+            _currentProject = _projects.ElementAt(_idCounter % _projects.Count());
             _lastClick = ClickType.Like;
         }
-        if (s == ClickType.Rewatch)
+        else if (s == ClickType.Rewatch)
         {
             
              //lav metode der ved initialize henter liked projects, så vi kan se om det er nødvendigt med api kald
@@ -132,29 +156,103 @@ else
                 _idCounter--;
             }
             
-            _currentProject = _projects[(_idCounter) % _projects.Length];
+            _currentProject = _projects.ElementAt(_idCounter % _projects.Count());
             _lastClick = ClickType.Rewatch;
         }
-        if (s == ClickType.Dislike)
+        else if (s == ClickType.Dislike)
         {
             //ogs tjek om det nuværende er i liked
             await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
             _idCounter++;
             _lastProject = _currentProject;
-            _currentProject = _projects[(_idCounter) % _projects.Length];
+            _currentProject = _projects.ElementAt(_idCounter % _projects.Count());
             _lastClick = ClickType.Dislike;
         }
         _keywordString = getKeyWords();
         await InvokeAsync(StateHasChanged);
     }
 
+    private async Task CheckClickAll(ClickType s){
+        switch(s)
+        {
+            case ClickType.Like:
+                if (!_likedProjects.Contains(_currentProject))
+                {
+                    _likedProjects.Add(_currentProject);
+                    await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title);
+                    await UpdateRatios(true);
+                }
+                //ShowNotification("Project added!");
+                _idCounter++;
+                _lastProject = _currentProject;
+                var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
+                var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
+                
+                if (project != null){
+                    _currentProject = project;
+                    _projects = _projects.Append(_currentProject);
+                }
+                _lastClick = ClickType.Like;
 
+                break;
+
+            case ClickType.Rewatch:
+                //lav metode der ved initialize henter liked projects, så vi kan se om det er nødvendigt med api kald
+                
+                //_likedProjects.Remove(_currentProject);
+                if (_lastClick == ClickType.Like)
+                {
+                    await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _lastProject.Title);
+                }
+
+                if (_idCounter != 0) //scuffed?
+                {
+                    _idCounter--;
+                }
+                
+                _currentProject = _projects.ElementAt(_idCounter % _projects.Count());
+                _lastClick = ClickType.Rewatch;
+                
+                break;
+
+            case ClickType.Dislike:
+                //ogs tjek om det nuværende er i liked
+                await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
+                await UpdateRatios(false);
+
+                _idCounter++;
+                _lastProject = _currentProject;
+                var newKeyword = keywordFinder.FindWeightedRandomKeyword();
+                var newProject = await keywordFinder.ReadProjectGivenKeywordAsync(newKeyword);
+                
+                if (newProject != null){
+                    _currentProject = newProject;
+                    _projects = _projects.Append(_currentProject);
+                }
+                _lastClick = ClickType.Dislike;
+
+                break;
+
+        }
+        
+    }
+
+    private async Task UpdateRatios(bool userLikedProject)
+    {
+        foreach (var keyWordName in _currentProject.Keywords)
+        {
+            var response = keywordFinder.UpdateRatioAsync(keyWordName, userLikedProject);
+            //BØR MAN GØRE NOGET HER I FORHOLD TIL RESPONSE?
+        }
+    }
     private string getKeyWords()
     {
+        if (_currentProject.Keywords != null) 
+        {
+            return string.Join(", ", _currentProject.Keywords);
+        }
 
-        var keywords = string.Join(", ", _currentProject.Keywords);
-
-        return keywords;
+        return "none";
     }
 
     /*private void ShowNotification(string message)

@@ -31,8 +31,9 @@ public class SearchQueryTests : IClassFixture<CustomWebApplicationFactory>
         var keyword = "AI";
         var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/SearchQuery/{keyword}");
         Assert.NotNull(projects);
-        Assert.True(projects.Length == 1);
+        Assert.True(projects.Length == 2);
         Assert.Contains(projects, p => p.Title == "Artificial Intelligence 101");
+        Assert.Contains(projects, p => p.Title == "Machine Learning for dummies");
         Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
     }
 
@@ -42,8 +43,9 @@ public class SearchQueryTests : IClassFixture<CustomWebApplicationFactory>
         var author = "Elon Musk";
         var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/SearchQuery/{author}");
         Assert.NotNull(projects);
-        Assert.True(projects.Length == 1);
+        Assert.True(projects.Length == 2);
         Assert.Contains(projects, p => p.Title == "Artificial Intelligence 101");
+        Assert.Contains(projects, p => p.Title == "Machine Learning for dummies");
         Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
     }
 
