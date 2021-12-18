@@ -1,6 +1,7 @@
 ﻿@page "/search"
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
+@inject ProjectStateChanged projectChanged;
 
 <PageTitle>ProjectBank - Search</PageTitle>
 
@@ -109,7 +110,7 @@
         }
     }
 
-    private IEnumerable<string> _likedProjects = null!;
+    private List<string> _likedProjects = null!;
     private string? _aToken;
 
     protected async Task OnSearch()
@@ -125,7 +126,7 @@
                 var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
                 if (account != null)
                 {
-                    _likedProjects = account.SavedProjects;
+                    _likedProjects = account.SavedProjects.ToList();
                 }
             }
         }
@@ -133,15 +134,17 @@
     
     private async Task AddOrRemoveFavorite(string t)
     {
-
         if (_likedProjects.Contains(t))
         {
             await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", t);
+            projectChanged.RemoveSavedProjects(t);
+            _likedProjects.Remove(t);
         }
-        
-        if (!_likedProjects.Contains(t))
+        else
         {
             await Http.PostAsJsonAsync($"api/Account/{_aToken}", t);
+            projectChanged.AddSavedProjects(t);
+            _likedProjects.Add(t);
         }
     }
 }
