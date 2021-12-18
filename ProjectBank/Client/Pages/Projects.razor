@@ -14,7 +14,7 @@ else
 {
 <div class="row my-4">
         <RadzenCard class="m-6">
-            <h3 class="h5" style="color:black;">Projects title: @_project?.Title":</h3>
+            <h3 class="h5" style="color:black;">Projects title: @_project?.Title</h3>
             <h4 style="color:black;">Authored by: @_project?.AuthorName 
                  <h5 style="color:black;"> (Role: @_role) </h5>
             </h4>
@@ -74,15 +74,15 @@ protected override void OnInitialized()
     }
     void Close(dynamic result)
     {
-       NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Message send", Detail = "", Duration = 4000};
-            _notificationService.Notify(success);
+      // NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Message send", Detail = "", Duration = 4000};
+        //    _notificationService.Notify(success);
     }
 
     // <div class="col-lg-6 col-xl-4 offset-lg-3 offset-xl-4"></div>
       void ShowNotification(NotificationMessage message)
     {
-        _notificationService.Notify(message);
-
+        
+         _notificationService.Notify(message);
        
     }
      protected override async Task OnParametersSetAsync()
@@ -115,13 +115,14 @@ protected override void OnInitialized()
         <div>
           <RadzenTextArea Placeholder="Write message" Style="height:75px;width:100px"/>
           <div>
-          <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="() => ds.Close(true)"/>
+             <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))"/>
+
+          <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
 </div>
         </div>
     
         </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
         }    
+    
     }
   
-
-}
