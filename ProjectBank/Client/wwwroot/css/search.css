@@ -30,6 +30,22 @@ input[type=text]{
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
 }
+
+.dropdown_menu_filter{
+     position: relative;
+     background: white;
+     color: #1a1e21;
+     border-bottom-left-radius: 10px;
+     border-bottom-right-radius: 10px;
+     width: 120px;
+     height: fit-content;
+     right: 1px;
+     top: 1px;
+ }
+.drop_filter_content{
+    margin-left: 10px;
+    margin-right: 10px;
+}
 .filter_btn{
     position: relative;
     height: 50px;
@@ -48,21 +64,7 @@ input[type=text]{
     float: right;
 }
 
-.dropdown_menu{
-    position: relative;
-    background: white;
-    color: #1a1e21;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    width: 120px;
-    height: fit-content;
-    right: 1px;
-    top: 1px;
-}
-.drop_content{
-    margin-left: 10px;
-    margin-right: 10px;
-}
+
 
 .clear_filter{
     background: none;
