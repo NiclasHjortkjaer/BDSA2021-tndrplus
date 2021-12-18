@@ -10,6 +10,13 @@
 <div class="browse_all">
     <button class="browse_all_btn" onclick="">Browse all</button>or look for a specific keyword to browse:
 </div>
+    <RadzenCheckBoxList @bind-Value=@values TValue="int" Change=@(args => OnChange(args))>
+      <Item>
+          <RadzenCheckBoxListItem Text="Orders" Value="1" />
+          <RadzenCheckBoxListItem Text="Employees" Value="2" />
+          <RadzenCheckBoxListItem Text="Customers" Value="3" />
+      </Item>
+    </RadzenCheckBoxList>
 
 @if (keywords == null)
     {
@@ -39,7 +46,16 @@
             exception.Redirect();
         }
     }
-
+    
+    IEnumerable<int> values = new int[] { 1 }; //kun brugt i forsøget på at ordne checkbox, skal ikke se sådan her ud til sidst
+    
+    void OnChange(IEnumerable<int> value)
+    {
+        //gør noget? sæt en parameter som kan sendes med, når vi redirecter 
+        var val = value;
+       
+    }
+    
     private void redirectToSwipePage(string keyword)
     {
         navigationManager.NavigateTo("swipe/"+keyword);
