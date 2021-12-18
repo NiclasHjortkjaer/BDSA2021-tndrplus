@@ -187,6 +187,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var response = await _client.PostAsJsonAsync("/api/Account", account);
         
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
         Assert.Equal(new Uri("http://localhost/api/Account/getBy/5"), response.Headers.Location);
 
         var created = await response.Content.ReadFromJsonAsync<AccountDetailsDto>();

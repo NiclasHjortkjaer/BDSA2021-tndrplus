@@ -55,6 +55,12 @@ public class KeywordController : ControllerBase
     public async Task<int> GetCount([FromRoute]string keyword)
         => await _repository.ReadNumberOfProjectsGivenKeyword(keyword); 
 
+    [HttpGet("withType/{keyword}/{degree}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
+        => await _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
+
 /*
     [AllowAnonymous]
     [HttpGet("singleProject/{keyword}/{seenProjectIDs}")]

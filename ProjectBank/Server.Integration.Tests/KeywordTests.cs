@@ -45,6 +45,28 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
     }
 
     [Fact]
+    public async Task get_projects_with_keyword_and_degree_returns_projects()
+    {
+        var keyword = "AI";
+        var degree = Degree.Bachelor;
+        var projects = await _client.GetFromJsonAsync<ProjectDto[]>($"/api/Keyword/withType/{keyword}/{degree}");
+        
+        Assert.NotEmpty(projects);
+        Assert.Contains(projects, p => p.Title == "Artificial Intelligence 101");
+        Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
+    }
+    
+    [Fact]
+    public async Task get_projects_with_keyword_and_degree_returns_empty_on_wrong_degree()
+    {
+        var keyword = "AI";
+        var degree = Degree.Master;
+        var projects = await _client.GetFromJsonAsync<ProjectDto[]>($"/api/Keyword/withType/{keyword}/{degree}");
+        
+        Assert.Empty(projects);
+    }
+
+    [Fact]
     public async Task GetKeywordStrings_returns_all_strings()
     {
         var words = await _client.GetFromJsonAsync<string[]>($"/api/Keyword/getStrings");

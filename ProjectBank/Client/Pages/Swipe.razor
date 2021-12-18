@@ -39,7 +39,8 @@ else
                 <br/>
                 <hr/>
                 <br/>
-                <textarea class="project_keywords" readonly="readonly">Keywords: @_keywordString</textarea>
+                <textarea class="project_keywords" readonly="readonly">Keywords: @_keywordString
+Degree: @_currentProject.Degree</textarea>
             </div>
         </div>
     </div>
@@ -67,6 +68,7 @@ else
     private List<int> _likedProjectIds; //This is only used to mimic the database collection of saved projects, st. we dont have to do unnecessary API calls. 
     private Stack<int> _seenProjectIds = new Stack<int>();
     private int _countOfProjects;
+
     private ProjectDetailsDto _currentProject;
     private ClickType _lastClick;
     private ClaimsPrincipal? _user;
@@ -241,7 +243,6 @@ else
                 break;
         }
 
-
         _keywordString = GetKeyWords();
 
         await InvokeAsync(StateHasChanged);
@@ -258,6 +259,7 @@ else
     private string GetKeyWords()
     {
         return _currentProject.Keywords != null ? string.Join(", ", _currentProject.Keywords) : "none";
+
     }
     
 

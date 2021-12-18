@@ -12,5 +12,6 @@ public interface IKeywordRepository
     Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string keyword);
     //Task<ProjectDetailsDto?> ReadProjectGivenKeywordAsync(string keyword, int[] seenProjectIDs);
     Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenAsync(string keyword, int timesSeen);
+    Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordAndDegreeAsync(string keyword, Degree degree = Degree.Unspecified);
     Task<int> ReadNumberOfProjectsGivenKeyword(string keyword);
 }
