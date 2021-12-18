@@ -169,6 +169,7 @@ public class AccountRepository : IAccountRepository
         
         account.SavedProjects = await GetSavedProjectsAsync(projectTitles).ToListAsync();
         
+        //---
         var projectToRemove = await _context.Projects.Include(p => p.Accounts).FirstOrDefaultAsync(p => p.Title == projectTitle);
         
         if (projectToRemove == null)

@@ -1,4 +1,3 @@
-@using System.Net.Http.Headers
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
 
@@ -32,12 +31,14 @@
     private string _imageName = Guid.NewGuid().ToString();
     private string _imageUrl = string.Empty;
     private IBrowserFile? _imageFile;
-    private bool _sizeExceeded;
-    private bool _busy;
+    private bool _sizeExceeded = false;
+    private bool _busy = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (IsProject)//if project
+        try
+        {
+            if (IsProject)//if project
         {
             _toBeUpdated = await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{Id}");
             if (_toBeUpdated != null)
@@ -52,23 +53,21 @@
         }
         else //if account
         {
-            try
-            {
-                _toBeUpdatedAccount = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/getBy/{Id}");
-            }
-            catch (NullReferenceException e)
-            {
-                //This works. Why is an exception thrown. Called before async is returned?
-                Console.WriteLine(e);
-            }
-            if (_toBeUpdatedAccount != null)
-            {
-                _account = new AccountUpdateDto()
+            _toBeUpdatedAccount = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/getBy/{Id}");
+
+                if (_toBeUpdatedAccount != null)
                 {
-                    Id = _toBeUpdatedAccount.Id, PictureUrl = _toBeUpdatedAccount.PictureUrl, Name = _toBeUpdatedAccount.Name,
-                    SavedProjects = _toBeUpdatedAccount.SavedProjects, AzureAAdToken = _toBeUpdatedAccount.AzureAdToken
-                };
-            }
+                    _account = new AccountUpdateDto()
+                    {
+                        Id = _toBeUpdatedAccount.Id, PictureUrl = _toBeUpdatedAccount.PictureUrl, Name = _toBeUpdatedAccount.Name,
+                        SavedProjects = _toBeUpdatedAccount.SavedProjects, AzureAAdToken = _toBeUpdatedAccount.AzureAdToken
+                    };
+                }
+        }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e); //Should not throw
         }
     }
 

@@ -1,7 +1,3 @@
-using System.Diagnostics.Tracing;
-using System.Runtime.InteropServices;
-using SQLitePCL;
-
 namespace ProjectBank.Infrastructure;
 
 public class KeywordRepository : IKeywordRepository
@@ -29,7 +25,7 @@ public class KeywordRepository : IKeywordRepository
         return new KeywordDto(entity.Id, entity.Word);
     }
 
-    public async Task<KeywordDto> ReadAsync(int keywordId)
+    public async Task<KeywordDto?> ReadAsync(int keywordId)
     {
         var keywords = from k in _context.Keywords
             where k.Id == keywordId
@@ -41,16 +37,23 @@ public class KeywordRepository : IKeywordRepository
         return await keywords.FirstOrDefaultAsync();
     }
 
-    public async Task<IReadOnlyCollection<KeywordDto>> ReadAllAsync() =>
+    public async Task<IReadOnlyCollection<KeywordDetailsDto>> ReadAllAsync() =>
         (await _context.Keywords
-            .Select(k => new KeywordDto(k.Id, k.Word))
+            .Select(k => new KeywordDetailsDto(k.Id, k.Word, k.Projects.Select(p => p.Title).ToHashSet()))
             .ToListAsync())
             .AsReadOnly();
+
+    public async Task<IReadOnlyCollection<string>> ReadAllWordsAsync()
+        => (await _context.Keywords
+                .Select(k => k.Word)
+                .ToListAsync())
+                .AsReadOnly();
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordAsync(KeywordDto keyword)
     {
         var entity = await _context.Keywords
             .Include("Projects.Author")
+            .Include("Projects.Keywords")
             .FirstOrDefaultAsync(e => e.Word == keyword.Word);
         if (entity == null)
         {
@@ -68,25 +71,25 @@ public class KeywordRepository : IKeywordRepository
     {
         if (string.IsNullOrWhiteSpace(input)) {
             return new List<ProjectDetailsDto>();
-        } else {
-            var entity = await _context.Keywords
-                //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
-                .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
-                .FirstOrDefaultAsync(e => e.Word == input);
-            if (entity == null)
-            {
-                return new List<ProjectDetailsDto>().AsReadOnly();
-            }
-
-            var list = new List<ProjectDetailsDto>();
-            foreach (var p in entity.Projects)
-            {
-                ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
-                list.Add(new ProjectDetailsDto(
-                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
-            }
-            return list.AsReadOnly();
         }
+
+        var entity = await _context.Keywords
+            //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
+            .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+            .FirstOrDefaultAsync(e => e.Word == input);
+        if (entity == null)
+        {
+            return new List<ProjectDetailsDto>().AsReadOnly();
+        }
+
+        var list = new List<ProjectDetailsDto>();
+        foreach (var p in entity.Projects)
+        {
+            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+            list.Add(new ProjectDetailsDto(
+                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+        }
+        return list.AsReadOnly();
     }
     
 
@@ -136,15 +139,49 @@ public class KeywordRepository : IKeywordRepository
         
         return Status.Deleted;
     }
-    private async IAsyncEnumerable<Project> GetSavedProjectsAsync(IEnumerable<string> projects)
-    {
-        var existing = await _context.Projects
-            .Where(p => projects.Contains(p.Title))
-            .ToDictionaryAsync(p => p.Title);
 
-        foreach (var project in projects)
+    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenAsync(string keyword, int timesSeen) 
+    {
+        var entity = await _context.Keywords
+            .Include("Projects.Author")
+            .Include("Projects.Keywords")
+            .FirstOrDefaultAsync(e => e.Word == keyword);
+
+        if (entity == null)
         {
-            yield return existing.TryGetValue(project, out var p) ? p : new Project(project);
+            return null!;
         }
+
+        if (timesSeen < entity.Projects.Count())
+        {
+            var p = entity.Projects.ElementAt(timesSeen);
+            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+
+            return new ProjectDetailsDto(
+                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
+        }
+
+
+        //Returns random project, when there are no more projects with the given keyword
+        //Does not promise, not to show an already shown project
+        Random rand = new Random();
+        var randomIndex = rand.Next(1, _context.Projects.Count());
+        var projects = from p in _context.Projects
+            where p.Id == randomIndex
+            select new ProjectDetailsDto(
+                p.Id,
+                p.Author == null ? null : p.Author.AzureAdToken,
+                p.Author == null ? null : p.Author.Name,
+                p.Title,
+                p.Description,
+                p.Degree,
+                p.ImageUrl,
+                p.FileUrl,
+                p.Ects,
+                p.LastUpdated,
+                p.Keywords.Select(k => k.Word).ToHashSet()
+            );
+
+        return projects.FirstOrDefault()!;
     }
 }

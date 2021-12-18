@@ -5,7 +5,7 @@
 <PageTitle>ProjectBank - Browse</PageTitle>
 
 <div class="browse_all">
-    <button class="browse_all_btn" onclick="">Browse all</button>or look for a specific keyword to browse:
+    <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
 </div>
 
 @if (keywords == null)
