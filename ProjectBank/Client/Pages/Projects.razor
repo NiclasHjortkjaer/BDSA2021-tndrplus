@@ -16,8 +16,10 @@
 else
 {
     <div class="row my-4">
-        <RadzenCard class="m-6">
-            <div class="like_star">
+        <RadzenCard class="m-6 project_card">
+            <div class="project_card_content">
+            <div class="radzen_card_projects">
+                <div class="like_star">
                         @if (_likedProjects.Contains(_project.Title))
                         {
                             <input type="checkbox" class="star_checkbox" id="star_checkbox_@_project.Id" checked="checked" @onchange="() => AddOrRemoveFavorite(_project.Title)"/>
@@ -25,12 +27,12 @@ else
                         }
                         else
                         {
-                            <input type="checkbox" class="star_checkbox" id="star_checkbox_@_project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(_project.Title)"/>
+                            <input type="checkbox" class="star_checkbox" style="color: #1a1e21" id="star_checkbox_@_project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(_project.Title)"/>
                             <label class="oi oi-star" id="star_@_project.Id" for="star_checkbox_@_project.Id"></label>
                         }
-            </div>
+                </div>
             <h3 class="h5" style="color:black;">Projects title: "@_project?.Title":</h3>
-            <h4 style="color:black;">Authored by: @_project?.AuthorName 
+            <h4 style="color:black;">Authored by: <x onclick="@(() => navigationManager.NavigateTo($"/user/{_project.AuthorName}"))" style="cursor: pointer;">@_project?.AuthorName</x>
                  <h5 style="color:black;"> (Role: @_role) </h5>
             </h4>
             <div class="d-flex flex-row">
@@ -65,8 +67,9 @@ else
 
                     </div>
                 </div>
+                </div>
             </div>
-            
+            </div>
         </RadzenCard>
     </div>
 }
