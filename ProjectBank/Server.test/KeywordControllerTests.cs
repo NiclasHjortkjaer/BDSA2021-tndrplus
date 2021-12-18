@@ -119,6 +119,7 @@ public class KeywordControllerTests
         repository.Setup(m => m.ReadAllProjectsWithKeywordAndDegreeAsync("AI", Degree.Bachelor)).ReturnsAsync(keyList);
         var controller = new KeywordController(logger.Object, repository.Object);
 
+
         // Act
         var response = await controller.Get("AI", Degree.Bachelor);
 
@@ -126,7 +127,6 @@ public class KeywordControllerTests
         Assert.Equal(keyList, response);
     }
     
-
     [Fact]
     public async Task GetKeywordStrings_returns_all_keywordStrings()
     {
@@ -162,6 +162,25 @@ public class KeywordControllerTests
 
         // Act
         var response = await controller.Get("AI", 0);
+
+        // Assert
+        Assert.Equal(expected, response);
+    }
+
+    [Fact]
+    public async Task GetCount_returns_number_of_projects_given_keyword()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<KeywordController>>();
+        var repository = new Mock<IKeywordRepository>();
+
+        var expected = 2;
+
+        repository.Setup(m => m.ReadNumberOfProjectsGivenKeyword("AI")).ReturnsAsync(expected);
+        var controller = new KeywordController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.GetCount("AI");
 
         // Assert
         Assert.Equal(expected, response);

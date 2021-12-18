@@ -194,10 +194,31 @@ public class KeywordRepositoryTests : IDisposable
     [Fact]
     public async Task ReadAsync_given_valid_id_returns_keyword()
     {
-        var keyword = await _repo.ReadAsync(1);
-        var expected = new KeywordDto(1, "AI");
+        var actual = await _repo.ReadAsync(1);
+        var expected = new KeywordDetailsDto(1, "AI", new HashSet<string>(){"Artificial Intelligence 101", "Machine Learning for dummies"});
         
-        Assert.Equal(expected, keyword);
+        Assert.Equal(expected.Id, actual.Id);
+        Assert.Equal(expected.Word, actual.Word);
+        Assert.Collection(actual.Projects,
+                        project => Assert.Equal("Artificial Intelligence 101", project),
+                        project => Assert.Equal("Machine Learning for dummies", project)
+                        );
+    }
+
+    [Fact]
+    public async Task ReadNumberOfProjectsGivenKeyword_returns_2_given_Machine_Learning()
+    {
+        var actual = await _repo.ReadNumberOfProjectsGivenKeyword("Machine Learning");
+
+        Assert.Equal(2, actual);
+    }
+
+    [Fact]
+    public async Task ReadNumberOfProjectsGivenKeyword_returns_0_given_Design()
+    {
+        var actual = await _repo.ReadNumberOfProjectsGivenKeyword("Design");
+
+        Assert.Equal(0, actual);
     }
 
     /* [Fact]

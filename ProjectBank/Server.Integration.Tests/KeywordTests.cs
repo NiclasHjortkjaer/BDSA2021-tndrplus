@@ -43,7 +43,7 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
 
     }
-    
+
     [Fact]
     public async Task get_projects_with_keyword_and_degree_returns_projects()
     {
@@ -105,5 +105,19 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
     {
         var actual = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/AI/1");
         Assert.NotNull(actual);
+    }
+
+    [Fact]
+    public async Task GetCount_returns_2_given_AI()
+    {
+        var actual = await _client.GetFromJsonAsync<int>($"/api/Keyword/count/AI");
+        Assert.Equal(2, actual);
+    }
+
+    [Fact]
+    public async Task GetCount_returns_0_given_Design()
+    {
+        var actual = await _client.GetFromJsonAsync<int>($"/api/Keyword/count/Design");
+        Assert.Equal(0, actual);
     }
 }

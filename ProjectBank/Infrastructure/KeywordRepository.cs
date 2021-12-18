@@ -25,13 +25,14 @@ public class KeywordRepository : IKeywordRepository
         return new KeywordDto(entity.Id, entity.Word);
     }
 
-    public async Task<KeywordDto?> ReadAsync(int keywordId)
+    public async Task<KeywordDetailsDto?> ReadAsync(int keywordId)
     {
         var keywords = from k in _context.Keywords
             where k.Id == keywordId
-            select new KeywordDto(
+            select new KeywordDetailsDto(
                 k.Id,
-                k.Word
+                k.Word,
+                k.Projects.Select(p => p.Title).ToHashSet()
             );
 
         return await keywords.FirstOrDefaultAsync();
@@ -76,6 +77,7 @@ public class KeywordRepository : IKeywordRepository
         var entity = await _context.Keywords
             //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
             .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+            .Include("Projects.Keywords")
             .FirstOrDefaultAsync(e => e.Word == input);
         if (entity == null)
         {
@@ -134,9 +136,14 @@ public class KeywordRepository : IKeywordRepository
     
     }
     
-
-
-
+    //TODO bør den her være async?
+    public async Task<int> ReadNumberOfProjectsGivenKeyword(string keyword)
+        => _context.Keywords
+            .Where(k => k.Word == keyword)
+            .Select(k => k.Projects)
+            .FirstOrDefault()!
+            .Count();
+    
     /* public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
     {
         var conflict = await _context.Keywords
@@ -191,7 +198,16 @@ public class KeywordRepository : IKeywordRepository
 
         if (entity == null)
         {
-            return null!;
+            return null;
+        }
+
+        if (timesSeen < entity.Projects.Count())
+        {
+            var p = entity.Projects.ElementAt(timesSeen);
+            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+
+            return new ProjectDetailsDto(
+                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
         }
 
         if (timesSeen < entity.Projects.Count())
