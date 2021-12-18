@@ -39,7 +39,8 @@ else
                 <br/>
                 <hr/>
                 <br/>
-                <textarea class="project_keywords" readonly="readonly">Keywords: @_keywordString</textarea>
+                <textarea class="project_keywords" readonly="readonly">Keywords: @_keywordString
+Degree: @_currentProject.Degree</textarea>
             </div>
         </div>
     </div>
@@ -66,7 +67,6 @@ else
     private int _idCounter = 0;
 
     private IList<ProjectDetailsDto> _projects;
-
     private List<int> _likedProjectIds; //This is only used to mimic the database collection of saved projects, st. we dont have to do unnecessary API calls. 
 
     private ProjectDetailsDto _lastProject;
