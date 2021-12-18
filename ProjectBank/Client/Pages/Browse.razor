@@ -1,14 +1,11 @@
 @page "/browse"
-@using System.Net
 @inject HttpClient Http
 @inject NavigationManager navigationManager
-@* @page "/" burde redirect til page "/browse"* *@
-
 
 <PageTitle>ProjectBank - Browse</PageTitle>
 
 <div class="browse_all">
-    <button class="browse_all_btn" onclick="">Browse all</button>or look for a specific keyword to browse:
+    <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
 </div>
 
 @if (keywords == null)
@@ -25,7 +22,6 @@
     }
 
 @code{
-
     private KeywordDto[]? keywords;
     
     protected override async Task OnInitializedAsync()
@@ -45,4 +41,8 @@
         navigationManager.NavigateTo("swipe/"+keyword);
     }
 
+    private void redirectToSwipeAllPage()
+    {
+        navigationManager.NavigateTo("swipe/all");
+    }
 }

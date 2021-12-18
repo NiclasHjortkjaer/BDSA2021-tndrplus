@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using ProjectBank.Infrastructure;
 using Xunit;
 
@@ -97,15 +98,16 @@ public class AccountControllerTests
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
+        //var expected = new ContentResult() {Content = Status.Updated.ToString()};
 
-        repository.Setup(m => m.AddLikedProjectAsync("ya","AI")).ReturnsAsync(Status.Updated);
+        repository.Setup(m => m.AddLikedProjectAsync("ya", "AI")).ReturnsAsync(Status.Created);
         var controller = new AccountController(logger.Object, repository.Object);
 
         // Act
         var response = await controller.Post("ya","AI");
-
+        
         // Assert
-        Assert.True(response == Status.Updated);
+        Assert.IsType<CreatedAtActionResult>(response);
     }
     
     [Fact]
@@ -115,14 +117,14 @@ public class AccountControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
 
-        repository.Setup(m => m.RemoveLikedProjectAsync("ya","AI")).ReturnsAsync(Status.Updated);
+        repository.Setup(m => m.RemoveLikedProjectAsync("ya","AI")).ReturnsAsync(Status.Deleted); //andreas se lige på de her returns pls
         var controller = new AccountController(logger.Object, repository.Object);
 
         // Act
         var response = await controller.Put("ya","AI");
 
         // Assert
-        Assert.True(response == Status.Updated);
+        Assert.IsType<CreatedAtActionResult>(response);
     }
 
     [Fact]
