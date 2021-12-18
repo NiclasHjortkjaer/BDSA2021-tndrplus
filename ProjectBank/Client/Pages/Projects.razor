@@ -93,8 +93,8 @@ else
 
     void Close(dynamic result)
     {
-       NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Message send", Detail = "", Duration = 4000};
-            _notificationService.Notify(success);
+      // NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Message send", Detail = "", Duration = 4000};
+        //    _notificationService.Notify(success);
     }
 
     void ShowNotification(NotificationMessage message)
@@ -148,13 +148,14 @@ else
         Email: @_email</div>
         <div>
             <RadzenTextArea Placeholder="Write message" Style="height:75px;width:100px"/>
-            <div>
-                <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="() => ds.Close(true)"/>
-            </div>
+          <div>
+            <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))"/>
+            <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
+          </div>
         </div>
-    
         </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
-    } 
+        }
+    }
 
     private async Task AddOrRemoveFavorite(string t)
     {

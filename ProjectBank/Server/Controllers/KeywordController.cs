@@ -47,6 +47,13 @@ public class KeywordController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword)
         => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
+    
+    [AllowAnonymous]
+    [HttpGet("withType/{keyword}/{degree}")] //bachelor, masters, phd.
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
+        => await _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
 /*
     [AllowAnonymous]
     [HttpGet("singleProject/{keyword}/{seenProjectIDs}")]
@@ -58,6 +65,7 @@ public class KeywordController : ControllerBase
         Console.WriteLine("I GETT ITTT");
         return await _repository.ReadProjectGivenKeywordAsync(keyword, seenKeywordIDs); 
     }
+
 
     /*[AllowAnonymous]
     [HttpGet("get/RandomProject")]
