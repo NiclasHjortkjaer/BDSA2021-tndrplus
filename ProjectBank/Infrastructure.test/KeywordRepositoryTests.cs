@@ -106,6 +106,30 @@ public class KeywordRepositoryTests : IDisposable
         Assert.Equal("A dummies guide to AI. Make your own AI friend today",projects.First().Description);
         
     }
+    [Fact]
+    public async Task ReadAllProjectsWithKeywordAndDegreeAsync_returns_all_allprojects_with_keyword_and_degree()
+    {
+        
+        var projects = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("AI", Degree.Bachelor);
+        foreach (var project in projects)
+        {
+            Assert.True(project.Degree == Degree.Bachelor);
+            Assert.True(project.Keywords.Contains("AI"));
+        }
+
+    }
+    [Fact]
+    public async Task ReadAllProjectsWithKeywordAndDegreeAsync_returns_all_allprojects_with_keyword_on_zero_degree()
+    {
+        
+        var projects = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("AI", 0);
+        var projects2 = await _repo.ReadAllProjectsWithKeywordStringAsync("AI");
+
+        Assert.True(projects.Count == 1);
+        Assert.True(projects2.Count == 1);
+        Assert.Equal(projects2.First().Id,projects.First().Id);
+
+    }
     
     [Fact]
     public async Task ReadAllProjectsWithKeywordStringAsync_returns_empty_list_given_invalid_keyword()
