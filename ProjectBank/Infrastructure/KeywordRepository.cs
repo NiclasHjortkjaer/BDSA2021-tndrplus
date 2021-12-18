@@ -125,7 +125,7 @@ public class KeywordRepository : IKeywordRepository
                         list.Add(new ProjectDetailsDto(
                             p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
                     }
-                }
+                } 
             }
             return list.AsReadOnly();
         }
