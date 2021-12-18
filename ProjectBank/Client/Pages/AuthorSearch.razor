@@ -1,0 +1,49 @@
+@page "/user/{AuthName}"
+@inject HttpClient Http
+@inject NavigationManager _navigationManager
+
+<h1>Search for @AuthName:</h1>
+
+@if (projects == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<div class="row my-5">
+    <div class="col-lg-6 col-xl-4 offset-lg-3 offset-xl-4">
+        <RadzenCard class="m-6">
+            <h3 class="h5" style="color:black;">"@AuthName":</h3>
+            <div class="d-flex flex-row">
+                <div>
+                    <div style="color:black;">Authored projects (@projects.Length):</div>
+                    <div style="color:black;">
+                        @if (projects != null)
+                        {
+                            foreach (var project in projects)
+                            {
+                                <div><i><x @onclick="() => Navigate(project)" style="cursor: pointer;">@project.Title</x></i></div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </RadzenCard>
+    </div>
+</div>
+}
+
+@code {
+    [Parameter]
+    public string? AuthName { get; set; }
+    private ProjectDetailsDto[]? projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>("/api/Project/"+AuthName);
+    }
+
+    private void Navigate(ProjectDetailsDto p){
+        _navigationManager.NavigateTo("/projects/" + p.Id);
+    }
+} 

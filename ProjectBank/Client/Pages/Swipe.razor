@@ -30,8 +30,8 @@ else
     <div class="outer_box">
         <div class="project_builder" id="p_@_indexCounter" style="z-index: @_i;">
             <div class="project_content">
-                <div id="project_title">Title: <x onclick="@(() => _navigationManager.NavigateTo($"/projects/{_currentProject.Id}"))">@_currentProject.Title</x></div>
-                <div id="supervisor">by: <x onclick=""> @_currentProject.AuthorName</x></div>
+                <div id="project_title">Title: <x onclick="@(() => _navigationManager.NavigateTo($"/projects/{_currentProject.Id}"))" style="cursor: pointer;">@_currentProject.Title</x></div>
+                <div id="supervisor">by: <x onclick="@(() => _navigationManager.NavigateTo($"/user/{_currentProject.AuthorName}"))" style="cursor: pointer;"> @_currentProject.AuthorName</x></div>
                 <br/>
                 <hr/>
                 <br/>

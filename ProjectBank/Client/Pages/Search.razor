@@ -57,8 +57,8 @@
                             <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label>
                         }
                     </div>
-                    <div id="project_search_title">Title: <x onclick="@(() => _navigationManager.NavigateTo($"/projects/{project.Id}"))">@project.Title</x></div>
-                    <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
+                    <div id="project_search_title">Title: <x onclick="@(() => _navigationManager.NavigateTo($"/projects/{project.Id}"))" style="cursor: pointer;">@project.Title</x></div>
+                    <div id="search_supervisor">by: <x onclick="@(() => _navigationManager.NavigateTo($"/user/{project.AuthorName}"))" style="cursor: pointer;">@project.AuthorName</x></div>
                     <br>
                     <hr>
                     <br>
