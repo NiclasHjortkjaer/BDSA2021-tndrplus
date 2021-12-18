@@ -64,6 +64,7 @@ public class KeywordRepository : IKeywordRepository
         return list.AsReadOnly();
     }
 
+    
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string input)
     {
         if (string.IsNullOrWhiteSpace(input)) {
@@ -84,6 +85,47 @@ public class KeywordRepository : IKeywordRepository
                 ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
                 list.Add(new ProjectDetailsDto(
                     p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+            }
+            return list.AsReadOnly();
+        }
+    }
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordAndDegreeAsync(string input, Degree degree)
+    {
+        if (string.IsNullOrWhiteSpace(input)) {
+            return new List<ProjectDetailsDto>();
+        } else {
+            var entity = await _context.Keywords
+                //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
+                .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+                .FirstOrDefaultAsync(e => e.Word == input);
+            if (entity == null)
+            {
+                return new List<ProjectDetailsDto>().AsReadOnly();
+            }
+
+            var list = new List<ProjectDetailsDto>();
+            
+            if (degree == 0) //an enums default value is 0
+            {
+                foreach (var p in entity.Projects)
+                {
+                
+                    ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+                    list.Add(new ProjectDetailsDto(
+                        p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+                }
+            }
+            else
+            {
+                foreach (var p in entity.Projects)
+                {
+                    if (p.Degree == degree)
+                    {
+                        ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+                        list.Add(new ProjectDetailsDto(
+                            p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+                    }
+                }
             }
             return list.AsReadOnly();
         }
