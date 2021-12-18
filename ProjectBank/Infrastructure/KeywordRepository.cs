@@ -208,29 +208,6 @@ public class KeywordRepository : IKeywordRepository
 
             return new ProjectDetailsDto(
                     p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
-        } else
-        {
-            //Returns random project, when there are no more projects with the given keyword
-            //Does not promise, not to show an already shown project
-            Random rand = new Random();
-            var randomIndex = rand.Next(1, _context.Projects.Count());
-            var projects = from p in _context.Projects
-            where p.Id == randomIndex
-            select new ProjectDetailsDto(
-                p.Id,
-                p.Author == null ? null : p.Author.AzureAdToken,
-                p.Author == null ? null : p.Author.Name,
-                p.Title,
-                p.Description,
-                p.Degree,
-                p.ImageUrl,
-                p.FileUrl,
-                p.Ects,
-                p.LastUpdated,
-                p.Keywords.Select(k => k.Word).ToHashSet()
-            );
-
-            return projects.FirstOrDefault();
         }
 
         if (timesSeen < entity.Projects.Count())
