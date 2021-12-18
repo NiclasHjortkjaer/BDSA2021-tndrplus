@@ -21,5 +21,6 @@ public class SearchManagement : ISearchManagement
 
         var projects = projectsGivenTitle.Union(projectsGivenAuthor, ProjectComparer).Union(projectsGivenKeyword, ProjectComparer);
         return projects.ToList();
+
     }
 }
