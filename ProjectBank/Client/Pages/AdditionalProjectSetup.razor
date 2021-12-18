@@ -32,14 +32,12 @@
     </div>
     <div style="padding: 2em">
         <RadzenButton style="width: 160px;" BusyText="Saving ..." Click=@CompleteSetup Text="Finish" />
-        </div>
+    </div>
 </RadzenFieldset>
 
 @code {
-
     [Parameter]
     public string? Id { get; set; }
-
     private ProjectDetailsDto? _project;
 
     protected override async Task OnInitializedAsync()
@@ -51,5 +49,4 @@
     {
        _navigationManager.NavigateTo("/projects/"+Id);
     }
-
 }

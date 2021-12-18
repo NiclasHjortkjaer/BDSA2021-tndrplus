@@ -1,9 +1,6 @@
 @page "/browse"
-@using System.Net
 @inject HttpClient Http
 @inject NavigationManager navigationManager
-@* @page "/" burde redirect til page "/browse"* *@
-
 
 <PageTitle>ProjectBank - Browse</PageTitle>
 
@@ -25,7 +22,6 @@
     }
 
 @code{
-
     private KeywordDto[]? keywords;
     
     protected override async Task OnInitializedAsync()
@@ -49,5 +45,4 @@
     {
         navigationManager.NavigateTo("swipe/all");
     }
-
 }

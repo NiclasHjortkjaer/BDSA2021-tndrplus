@@ -98,7 +98,9 @@
         <label class="oi oi-arrow-top" id="to_top_label" style="margin: 0;"></label>
     </button>
 }
+
 @code {
+
     private string _searchText = "";
 
     ProjectDetailsDto[]? _projects;
@@ -154,11 +156,14 @@
         if (user.Identity?.IsAuthenticated == true)
         {
             var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
-            if (account != null)
-            {
-                _likedProjects = account.SavedProjects;
+            if (_user != null){
+                var _claims = _user.Claims;
+                _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+                var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
+                if (account != null)
+                {
+                    _likedProjects = account.SavedProjects;
+                }
             }
         }
     }
