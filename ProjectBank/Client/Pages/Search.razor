@@ -116,7 +116,7 @@
 
 
     private IEnumerable<string> _likedProjects = null!;
-    private string _aToken;
+    private string? _aToken;
 
     protected async Task OnChange()
     {
@@ -125,7 +125,6 @@
         if (user.Identity?.IsAuthenticated == true)
         {
             var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            var _claims = _user.Claims;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
             if (account != null)
@@ -139,7 +138,6 @@
 
     private async Task AddOrRemoveFavorite(string title)
     {
-        await OnChange();
         if (_likedProjects.Contains(title))
         {
             await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", title);
@@ -151,6 +149,7 @@
             await Http.PostAsJsonAsync($"api/Account/{_aToken}", title);
             projectChanged.AddSavedProjects(title);
         }
+        await OnChange();
     }
 }
 
