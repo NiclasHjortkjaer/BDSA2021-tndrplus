@@ -6,7 +6,6 @@
 @inject AuthenticationStateProvider _authenticationStateProvider;
 @inject HttpClient _http
 
-
 @attribute [Authorize]
 
 <PageTitle>Settings</PageTitle>
@@ -38,7 +37,6 @@
         </div>
     </div>
 </RadzenFieldset>
-
 
 <RadzenButton Click=@Edit Text="Edit profile"/>
 <RadzenButton style="width: 160px" IsBusy=@_busyProfile Click=@OnBusyClickProfile Text="Save"/>
@@ -85,15 +83,10 @@ else
     <h3>You have made no projects yet.</h3>
 }
 
-
-
 @code {
-
     //VARIABLES
-
     private bool _editing = true;
     private bool _busyProfile;
-
     private string? _name;
     private string? _email;
     private string? _currentRole;
@@ -102,7 +95,6 @@ else
     private bool isProject = false;
     ProjectDetailsDto[]? _projects;
     private readonly List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
-
 
     //PAGE SCRIPTS
     private void Edit()
@@ -150,5 +142,4 @@ else
     {
     //...
     }
-
 }

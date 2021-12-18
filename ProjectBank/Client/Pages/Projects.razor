@@ -65,7 +65,6 @@ else
             _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
         } catch {
             _project = null;
-        }
-        
+        }    
     }
 }
