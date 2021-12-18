@@ -7,9 +7,33 @@
 
 <PageTitle>ProjectBank - Search</PageTitle>
 
-<div class="searchBar_wrapper">
-    <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
-    <button class="btn_search" @onclick="LoadProjects"> <span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
+<div class="search_container">
+    <div class="searchBar_wrapper">
+        @if (!_isDropedDown)
+        {
+            <button class="filter_btn" @onclick="dropdown">Filter <span class="oi oi-chevron-bottom"></span></button>
+        }
+        else
+        {
+            <button class="filter_btn" @onclick="dropdown" style="border-bottom-left-radius: 0">Filter <span class="oi oi-chevron-top"></span></button>
+        }
+        <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
+        <button class="btn_search" @onclick="LoadProjects"><span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
+        </div>
+    @if(_isDropedDown)
+            {
+                <div class="dropdown_menu">
+                    <div class="drop_content">
+                        <span style="text-decoration: underline">Degress:</span> <br/>
+                        <input type="checkbox" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/><span> Bachelor</span> <br/>
+                        <input type="checkbox" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/><span> Master</span> <br/>
+                        <input type="checkbox" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/><span> PHD</span> <br/>
+                        <div class="center_btn" style="text-align: center">
+                            <span class="clear_filter" @onclick="(() =>  OnCheck('C'))">Reset filter</span>
+                        </div>
+                    </div>
+                </div>
+            }
 </div>
 
 @if (_projects != null)
@@ -74,9 +98,7 @@
         <label class="oi oi-arrow-top" id="to_top_label" style="margin: 0;"></label>
     </button>
 }
-
 @code {
-
     private string _searchText = "";
 
     ProjectDetailsDto[]? _projects;
@@ -102,15 +124,22 @@
         {
     //await LoadProjects();
             await OnChange();
-            try
+            if (_bachelorChecked || _masterChecked || _phdChecked)
             {
-                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+                
             }
-            catch (AccessTokenNotAvailableException exception)
+            else
             {
-                exception.Redirect();
+                try
+                {
+                    _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+                }
+                catch (AccessTokenNotAvailableException exception)
+                {
+                    exception.Redirect();
+                }
+                await InvokeAsync(StateHasChanged);
             }
-            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -133,8 +162,8 @@
             }
         }
     }
-    
-    
+
+
 
     private async Task AddOrRemoveFavorite(string title)
     {
@@ -143,13 +172,56 @@
             await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", title);
             projectChanged.RemoveSavedProjects(title);
         }
-        
+
         if (!_likedProjects.Contains(title))
         {
             await Http.PostAsJsonAsync($"api/Account/{_aToken}", title);
             projectChanged.AddSavedProjects(title);
         }
         await OnChange();
+    }
+
+    private bool _isDropedDown;
+
+    private void dropdown()
+    {
+        if (_isDropedDown)
+        {
+            _isDropedDown = false;
+        }
+        else
+        {
+            _isDropedDown = true;
+        }
+    }
+
+    private bool _bachelorChecked = true;
+    private bool _masterChecked = true;
+    private bool _phdChecked = true;
+
+    private void OnCheck(char s)
+    {
+        if (s == 'B')
+        {
+            _bachelorChecked = !_bachelorChecked;
+        }
+
+        if (s == 'M')
+        {
+            _masterChecked = !_masterChecked;
+        }
+
+        if (s == 'P')
+        {
+            _phdChecked = !_phdChecked;
+        }
+
+        if (s == 'C')
+        {
+            _bachelorChecked = true;
+            _masterChecked = true;
+            _phdChecked = true;
+        }
     }
 }
 
