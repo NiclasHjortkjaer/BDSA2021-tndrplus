@@ -142,26 +142,27 @@ public class KeywordRepositoryTests : IDisposable
         
     }
     [Fact]
-    public async Task ReadAllProjectsWithKeywordAndDegreeAsync_returns_all_allprojects_with_keyword_and_degree()
+    public async Task ReadAllProjectsWithKeywordAndDegreeAsync_returns_all_projects_with_keyword_and_degree()
     {
         
-        var projects = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("AI", Degree.Bachelor);
-        foreach (var project in projects)
+        var projectsWithDegree = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("AI", Degree.Bachelor);
+        
+        foreach (var project in projectsWithDegree)
         {
-            Assert.True(project.Degree == Degree.Bachelor);
+            Assert.Equal(Degree.Bachelor,project.Degree);
             Assert.True(project.Keywords.Contains("AI"));
         }
 
     }
     [Fact]
-    public async Task ReadAllProjectsWithKeywordAndDegreeAsync_returns_all_allprojects_with_keyword_on_zero_degree()
+    public async Task ReadAllProjectsWithKeywordAndDegreeAsync_returns_all_projects_with_keyword_on_zero_degree()
     {
         
-        var projects = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("AI", 0);
+        var projects = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("AI");
         var projects2 = await _repo.ReadAllProjectsWithKeywordStringAsync("AI");
 
-        Assert.True(projects.Count == 1);
-        Assert.True(projects2.Count == 1);
+        Assert.Equal(projects.Count, 2);
+        Assert.Equal(projects2.Count, 2);
         Assert.Equal(projects2.First().Id,projects.First().Id);
 
     }
