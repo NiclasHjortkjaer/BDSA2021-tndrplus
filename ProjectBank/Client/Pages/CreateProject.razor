@@ -3,6 +3,7 @@
 @inject NavigationManager _navigationManager
 @inject AuthenticationStateProvider _authenticationStateProvider;
 @inject NotificationService _notificationService;
+
 <PageTitle>ProjectBank - CreateProject</PageTitle>
 <RadzenNotification/>
 <h2>Create a new project:</h2>
@@ -56,16 +57,12 @@
 
 @code {
     private string? _name;
-
     private string? _token;
     bool _busy;
     private ProjectCreateDto _project = new();
-
     private KeywordDto[]? _dtoKeywords;
-    //KeywordDto[]? multipleValues;
     private IEnumerable<string> _multipleValues = new[] {"AI"};
     private List<string> _keywords = new();
-    // IEnumerable<string> keywordstring;
     List<Enum?> _enums = new List<Enum?>();
     List<float?> _etcs = new List<float?>();
 
@@ -99,8 +96,7 @@
         }
     }
 
-
-    async Task CreatesProject()
+    private async Task CreatesProject()
     {
         _busy = true;
 
@@ -176,5 +172,4 @@
     void OnChange(string value, string name)
     {
     }
-
 }
