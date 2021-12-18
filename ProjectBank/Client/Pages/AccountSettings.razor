@@ -6,7 +6,6 @@
 @inject AuthenticationStateProvider _authenticationStateProvider;
 @inject HttpClient _http
 
-
 @attribute [Authorize]
 
 <PageTitle>Settings</PageTitle>
@@ -39,24 +38,23 @@
     </div>
 </RadzenFieldset>
 
-
 <RadzenButton Click=@Edit Text="Edit profile"/>
 <RadzenButton style="width: 160px" IsBusy=@_busyProfile Click=@OnBusyClickProfile Text="Save"/>
 
 <h2 style="padding-top: 2em">Profile picture:</h2>
 <RadzenFieldset class="mb-4">
     <div class="row">
-        <div class="col-md-9">
-            @if (_account?.PictureUrl != null)
-            {
-                <div>
-                    <img class="card-img-top" src=@_account?.PictureUrl alt="No Profile Picture" style="padding-bottom: 1em"/>
-                </div>
-            }
-        </div>
+        
+        @if (_account?.PictureUrl != null)
+        {
+            <div style="justify-content: center; align-content: center">
+                <img class="card-img-top" size="60%" src=@_account?.PictureUrl alt="No Profile Picture" style="padding: 1em;justify-content: center; align-content: center "/>
+            </div>
+        }
     </div>
+    <div><ImageUploader Id="_account!.Id" IsProject="isProject"></ImageUploader></div>
 </RadzenFieldset>
-<div><ImageUploader Id="_account!.Id" IsProject="false"></ImageUploader></div>
+
 
 <h2 style="padding-top: 3em; padding-bottom: 1em">Projects created by you:</h2>
 @if (_userProjects.Any())
@@ -73,7 +71,7 @@
             <tr style="color: white">
                 <td>@project?.Title </td>
                 <td>
-                    <RadzenButton style="width: 150px;height:30px;margin-left:80%" IsBusy=@_busyProfile Click="@(e => DeleteProject(project!.Id))" Text="Delete project"/>
+                    <RadzenButton style="width: 150px;height:30px;margin-left:80%" IsBusy=@_busyProfile Click="@(e => DeleteProject(project!.Id))" Text="Delete"/>
                 </td>
             </tr>
         }
@@ -85,23 +83,18 @@ else
     <h3>You have made no projects yet.</h3>
 }
 
-
-
 @code {
-
     //VARIABLES
-
     private bool _editing = true;
     private bool _busyProfile;
-
     private string? _name;
     private string? _email;
     private string? _currentRole;
     private string? _azureAdtoken;
     private AccountDetailsDto? _account;
+    private bool isProject = false;
     ProjectDetailsDto[]? _projects;
     private readonly List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
-
 
     //PAGE SCRIPTS
     private void Edit()
@@ -149,5 +142,4 @@ else
     {
     //...
     }
-
 }

@@ -31,8 +31,9 @@ public class KeywordRepositoryTests : IDisposable
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
+            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
         };
+        
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
         context.Accounts.Add( new Account("Token2", "John Bezos") { Id = 2 });
@@ -46,11 +47,16 @@ public class KeywordRepositoryTests : IDisposable
     [Fact]
     public async Task CreateAsync_creates_new_keyword_with_generated_Id()
     {
+        //var Ratio = _repo.Ratio_Total;
+
         var keyword = await _repo.CreateAsync(new KeywordCreateDto{Word = "OOP", Projects = new HashSet<string>()});
         var expectedId = 4;
         var actual = await _context.Keywords.FindAsync(expectedId);
         Assert.Equal(expectedId, actual!.Id);
         Assert.Equal(keyword.Word, actual.Word);
+        //Assert.True(_repo.Ratios.ContainsKey(keyword.Word));
+        //Assert.Equal(_repo.Ratio_Total, Ratio + 10);
+        
     }
 
     [Fact]
@@ -58,6 +64,7 @@ public class KeywordRepositoryTests : IDisposable
     {
         var keyword = await _repo.CreateAsync(new KeywordCreateDto{Word = "AI"});
         Assert.Null(keyword);
+       // Assert.True(_repo.Ratios.ContainsKey("AI"));
     }
     
     [Fact]
@@ -65,9 +72,34 @@ public class KeywordRepositoryTests : IDisposable
     {
         var keywords = await _repo.ReadAllAsync();
         Assert.Collection(keywords,
-            keyword => Assert.Equal(new KeywordDto(1, "AI"), keyword),
-            keyword => Assert.Equal(new KeywordDto(2, "Machine Learning"), keyword),
-            keyword => Assert.Equal(new KeywordDto(3, "Design"), keyword)
+            keyword => {
+                Assert.Equal(1, keyword.Id);
+                Assert.Equal("AI", keyword.Word);
+                Assert.True(keyword.Projects.Contains("Artificial Intelligence 101"));
+                Assert.True(keyword.Projects.Contains("Machine Learning for dummies"));
+            },
+            keyword => {
+                Assert.Equal(2, keyword.Id);
+                Assert.Equal("Machine Learning", keyword.Word);
+                Assert.True(keyword.Projects.Contains("Artificial Intelligence 101"));
+                Assert.True(keyword.Projects.Contains("Machine Learning for dummies"));
+            },
+            keyword => {
+                Assert.Equal(3, keyword.Id);
+                Assert.Equal("Design", keyword.Word);
+                Assert.Equal(0, keyword.Projects.Count());
+            }
+        );
+    }
+
+    [Fact]
+    public async Task ReadAllStringsAsync_returns_all_strings()
+    {
+        var words = await _repo.ReadAllWordsAsync();
+        Assert.Collection(words,
+            word => Assert.Equal("AI", word),
+            word => Assert.Equal("Machine Learning", word),
+            word => Assert.Equal("Design", word)
         );
     }
 
@@ -77,13 +109,16 @@ public class KeywordRepositoryTests : IDisposable
         var projectsAi = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(4, "AI"));
         Assert.Collection(projectsAi,
             project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
-                "A dummies guide to AI. Make your own AI friend today"), project)
+                "A dummies guide to AI. Make your own AI friend today"), project),
+            project => Assert.Equal(
+                new ProjectDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you"), project)
         );
         var projectsMl = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(5, "Machine Learning"));
         Assert.Collection(projectsMl,
             project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
-
-                "A dummies guide to AI. Make your own AI friend today"), project)
+                "A dummies guide to AI. Make your own AI friend today"), project),
+            project => Assert.Equal(
+                new ProjectDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you"), project)
         );
     }
     
@@ -226,7 +261,37 @@ public class KeywordRepositoryTests : IDisposable
         Assert.Equal(Status.Conflict, status);
         Assert.NotNull(await _context.Keywords.FindAsync(1));
     }
-    
+
+    [Fact]
+    public async Task ReadProjectGivenKeywordAndTimesSeenAsync_returns_mlProject_given_AI_and_1() 
+    {
+        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 1);
+
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+
+        Assert.Equal(2, actual.Id);
+        Assert.Equal(mlProject.AuthorToken, actual.AuthorToken);
+        Assert.Equal(mlProject.AuthorName, actual.AuthorName);
+        Assert.Equal(mlProject.Degree, actual.Degree);
+        Assert.Equal(mlProject.Title, actual.Title);
+        Assert.Equal(mlProject.Description, actual.Description);
+        Assert.Equal(mlProject.ImageUrl, actual.ImageUrl);
+        Assert.Equal(mlProject.FileUrl, actual.FileUrl);
+        Assert.Equal(mlProject.LastUpdated, actual.LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.Collection(actual.Keywords,
+                            word => Assert.Equal("AI", word),
+                            word => Assert.Equal("Machine Learning", word)
+                            );
+    }
+
+    [Fact]
+    public async Task ReadProjectGivenKeywordAndTimesSeenAsync_returns_random_project_given_AI_and_25() 
+    {
+        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 25);
+        
+        Assert.NotNull(actual);
+    }
+
     //Disposable methods-------------------------------------
     protected virtual void Dispose(bool disposing)
     {
