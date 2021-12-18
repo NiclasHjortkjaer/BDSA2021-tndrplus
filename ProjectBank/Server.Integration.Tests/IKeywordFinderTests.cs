@@ -109,4 +109,14 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(mlProject.LastUpdated, actual.LastUpdated, TimeSpan.FromSeconds(5));
         Assert.True(actual.Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
     }
+
+    [Fact]
+    public async Task ReadProjectGivenKeywordAsync_returns_null_given_Hardware()
+    {
+        await finder.Setup(_client);
+        ProjectDetailsDto? actual = await finder.ReadProjectGivenKeywordAsync("Hardware");
+
+        Assert.Null(actual);
+
+    }
 }
