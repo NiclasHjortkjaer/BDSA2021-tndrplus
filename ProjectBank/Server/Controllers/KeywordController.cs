@@ -39,10 +39,10 @@ public class KeywordController : ControllerBase
         => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
     
     [AllowAnonymous]
-    [HttpGet("withType/{keyword}")] //bachelor, masters, phd.
+    [HttpGet("withType/{keyword}/{degree}")] //bachelor, masters, phd.
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromBody] Degree degree)
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
         => await _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
 
 
