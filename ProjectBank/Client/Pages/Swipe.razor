@@ -1,9 +1,10 @@
 @page "/swipe/{keyword}"
 @inject HttpClient Http
 @using System.Security.Claims
-@inject AuthenticationStateProvider AuthenticationStateProvider;
-@inject ProjectStateChanged projectChanged;
-@inject NotificationService notificationService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ProjectStateChanged projectChanged
+@inject NotificationService notificationService
+@inject NavigationManager _navigationManager
 
 <RadzenNotification/>
 
@@ -29,7 +30,7 @@ else
     <div class="outer_box">
         <div class="project_builder" id="p_@_indexCounter" style="z-index: @_i;">
             <div class="project_content">
-                <div id="project_title">Title: @_currentProject.Title </div>
+                <div id="project_title">Title: <x onclick="@(() => _navigationManager.NavigateTo($"/projects/{_currentProject.Id}"))">@_currentProject.Title</x></div>
                 <div id="supervisor">by: <x onclick=""> @_currentProject.AuthorName</x></div>
                 <br/>
                 <hr/>
