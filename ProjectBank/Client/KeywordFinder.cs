@@ -86,6 +86,6 @@ public class KeywordFinder : IKeywordFinder
 
         _keywords[keyword]++;
 
-        return await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/keyword/{keyword}/{timesSeen}");  
+        return await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/keyword/{keyword}/{timesSeen}");
     }
 }

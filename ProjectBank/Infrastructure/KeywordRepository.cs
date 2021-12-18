@@ -29,13 +29,14 @@ public class KeywordRepository : IKeywordRepository
         return new KeywordDto(entity.Id, entity.Word);
     }
 
-    public async Task<KeywordDto?> ReadAsync(int keywordId)
+    public async Task<KeywordDetailsDto?> ReadAsync(int keywordId)
     {
         var keywords = from k in _context.Keywords
             where k.Id == keywordId
-            select new KeywordDto(
+            select new KeywordDetailsDto(
                 k.Id,
-                k.Word
+                k.Word,
+                k.Projects.Select(p => p.Title).ToHashSet()
             );
 
         return await keywords.FirstOrDefaultAsync();
@@ -79,6 +80,7 @@ public class KeywordRepository : IKeywordRepository
             var entity = await _context.Keywords
                 //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
                 .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+                .Include("Projects.Keywords")
                 .FirstOrDefaultAsync(e => e.Word == input);
             if (entity == null)
             {
@@ -96,9 +98,14 @@ public class KeywordRepository : IKeywordRepository
         }
     }
     
-
-
-
+    //TODO bør den her være async?
+    public async Task<int> ReadNumberOfProjectsGivenKeyword(string keyword)
+        => _context.Keywords
+            .Where(k => k.Word == keyword)
+            .Select(k => k.Projects)
+            .FirstOrDefault()!
+            .Count();
+    
     /* public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
     {
         var conflict = await _context.Keywords
@@ -168,7 +175,7 @@ public class KeywordRepository : IKeywordRepository
             //Returns random project, when there are no more projects with the given keyword
             //Does not promise, not to show an already shown project
             Random rand = new Random();
-            var randomIndex = rand.Next(_context.Projects.Count());
+            var randomIndex = rand.Next(1, _context.Projects.Count());
             var projects = from p in _context.Projects
             where p.Id == randomIndex
             select new ProjectDetailsDto(
