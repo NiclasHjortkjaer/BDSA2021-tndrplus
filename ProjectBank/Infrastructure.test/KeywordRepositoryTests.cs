@@ -132,6 +132,15 @@ public class KeywordRepositoryTests : IDisposable
     }
     
     [Fact]
+    public async Task ReadAllProjectsWithKeywordAndDegreeAsync_returns_empty_list_on_empty_string()
+    {
+        
+        var projects = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("", Degree.Master);
+
+        Assert.True(projects.Count == 0);
+    }
+    
+    [Fact]
     public async Task ReadAllProjectsWithKeywordStringAsync_returns_empty_list_given_invalid_keyword()
     {
         var projects = await _repo.ReadAllProjectsWithKeywordStringAsync("Not AI");
