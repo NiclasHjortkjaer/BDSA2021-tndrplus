@@ -61,16 +61,15 @@ Degree: @_currentProject.Degree</textarea>
 @code
 {
     [Parameter]
-    public string? keyword { get; set; } //vi skal have ekstra paramter - en int nok bare, 3 forskellige
+    public string? keyword { get; set; }
+    private IKeywordFinder keywordFinder = new KeywordFinder();
 
     private int _i = 10;
     private int _idCounter = 0;
 
-
-    private ProjectDetailsDto[]? _projects;
+    private IList<ProjectDetailsDto> _projects;
 
     private List<int> _likedProjectIds; //This is only used to mimic the database collection of saved projects, st. we dont have to do unnecessary API calls. 
-
 
     private ProjectDetailsDto _lastProject;
     private ProjectDetailsDto _currentProject;
@@ -84,23 +83,30 @@ Degree: @_currentProject.Degree</textarea>
     {
         try
         {
+            if (keyword == "all"){
+                await keywordFinder.Setup(Http);
+                var project = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/1");
+                
+                _projects = new List<ProjectDetailsDto>();
+                _projects.Add(project);
 
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}"); //all projects containing the specified keyword
-            //vi laver en metode ekstra til at få type med, HVIS IKKE ALLE 3 ER SELECTED, så bliver det bare vores _projects. ez
+
+            } else
+            {
+                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Keyword/{keyword}"); //all projects containing the specified keyword
+            }
             
-
             _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
-            
+
             if (_projects != null)
             {
                 _currentProject = _projects[0];
                 _keywordString = GetKeyWords();
                 _lastClick = ClickType.Rewatch;
             }
-        }
-        catch (AccessTokenNotAvailableException e)
+        } catch (AccessTokenNotAvailableException e)
         {
             e.Redirect();
         }
@@ -115,7 +121,7 @@ Degree: @_currentProject.Degree</textarea>
 
     private async void CheckClick(ClickType s)
     {
-        if (s == ClickType.Like)
+        if (s == ClickType.Like) //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
         {
             if (!_likedProjectIds.Contains(_currentProject.Id))
             {
@@ -123,17 +129,21 @@ Degree: @_currentProject.Degree</textarea>
                 _likedProjectIds.Add(_currentProject.Id);
                 projectChanged.AddSavedProjects(_currentProject.Title);
                 ShowNotification("Project added: "+_currentProject.Title,1);
-            }
-            else
+                
+                if (keyword == "all") 
+                {
+                    await UpdateRatios(true);
+                }
+                
+            } else
             {
                 ShowNotification("You had already liked project: " + _currentProject.Title ,3); 
             }
 
-            if (_idCounter != _projects.Length - 1)
+            if (_idCounter != _projects.Count - 1)
             {
                 _idCounter++;
-            }
-            else
+            } else
             {
                 ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword",2);
             }
@@ -172,13 +182,19 @@ Degree: @_currentProject.Degree</textarea>
                 projectChanged.RemoveSavedProjects(_currentProject.Title);
                 ShowNotification("Project removed: " + _currentProject.Title, 1);
             }
-            if (_idCounter != _projects.Length - 1)
+            if (_idCounter != _projects.Count - 1)
             {
                 _idCounter++;
             }else
             {
                 ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword",2);
             }
+
+            if (keyword == "all")
+            {
+                await UpdateRatios(false);
+            }
+
             _lastClick = ClickType.Dislike;
         }
         
@@ -191,20 +207,42 @@ Degree: @_currentProject.Degree</textarea>
             _lastProject = _projects[0];
         }
         
-        _currentProject = _projects[_idCounter % _projects.Length]; //burde ik være nødvendigt med modulo længere
+        if (keyword == "all") 
+        {
+            _lastProject = _currentProject;
+            var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
+            var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
+            
+            if (project != null){
+                _currentProject = project;
+                _projects.Add(_currentProject);
+            }
+        } else {
+            //TODO Lad være med at have alle databasens projekter på clientside
+            _currentProject = _projects[_idCounter % _projects.Count]; //burde ik være nødvendigt med modulo længere
+        }
 
         _keywordString = GetKeyWords();
 
         await InvokeAsync(StateHasChanged);
     }
 
-
+    private async Task UpdateRatios(bool userLikedProject)
+    {
+        foreach (var keyWordName in _currentProject.Keywords)
+        {
+            var response = keywordFinder.UpdateRatioAsync(keyWordName, userLikedProject);
+            //BØR MAN GØRE NOGET HER I FORHOLD TIL RESPONSE?
+        }
+    }
     private string GetKeyWords()
     {
+        if (_currentProject.Keywords != null) 
+        {
+            return string.Join(", ", _currentProject.Keywords);
+        }
 
-        var keywords = string.Join(", ", _currentProject.Keywords);
-
-        return keywords;
+        return "none";
     }
 
 
