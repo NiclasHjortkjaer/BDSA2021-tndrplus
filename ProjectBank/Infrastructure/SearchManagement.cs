@@ -17,7 +17,10 @@ public class SearchManagement : ISearchManagement
         var projectsGivenAuthor = await _project_repo.ReadAuthorAsync(input);
         var projectsGivenKeyword = await _keyword_repo.ReadAllProjectsWithKeywordStringAsync(input);
     
-        var projects = projectsGivenTitle.Union(projectsGivenAuthor).Union(projectsGivenKeyword);
-        return projects.ToHashSet();
+        var ProjectComparer = new ProjectComparer();
+
+        var projects = projectsGivenTitle.Union(projectsGivenAuthor, ProjectComparer).Union(projectsGivenKeyword, ProjectComparer);
+        return projects.ToList();
+
     }
 }
