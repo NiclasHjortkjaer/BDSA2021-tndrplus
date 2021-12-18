@@ -22,8 +22,8 @@
         </div>
     @if(_isDropedDown)
             {
-                <div class="dropdown_menu">
-                    <div class="drop_content">
+                <div class="dropdown_menu_filter">
+                    <div class="drop_filter_content">
                         <span style="text-decoration: underline">Degress:</span> <br/>
                         <input type="checkbox" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/><span> Bachelor</span> <br/>
                         <input type="checkbox" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/><span> Master</span> <br/>
