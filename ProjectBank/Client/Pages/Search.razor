@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
+@inject ProjectStateChanged projectChanged;
 
 <PageTitle>ProjectBank - Search</PageTitle>
 
@@ -82,7 +83,7 @@
 
     async Task LoadProjects()
     {
-        await OnSearch();
+        await OnChange();
         try
         {
             _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
@@ -100,7 +101,7 @@
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
     //await LoadProjects();
-            await OnSearch();
+            await OnChange();
             try
             {
                 _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
@@ -117,7 +118,7 @@
     private IEnumerable<string> _likedProjects = null!;
     private string _aToken;
 
-    protected async Task OnSearch()
+    protected async Task OnChange()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -136,17 +137,19 @@
     
     
 
-    private async Task AddOrRemoveFavorite(string t)
+    private async Task AddOrRemoveFavorite(string title)
     {
-
-        if (_likedProjects.Contains(t))
+        await OnChange();
+        if (_likedProjects.Contains(title))
         {
-            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", t);
+            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", title);
+            projectChanged.RemoveSavedProjects(title);
         }
         
-        if (!_likedProjects.Contains(t))
+        if (!_likedProjects.Contains(title))
         {
-            await Http.PostAsJsonAsync($"api/Account/{_aToken}", t);
+            await Http.PostAsJsonAsync($"api/Account/{_aToken}", title);
+            projectChanged.AddSavedProjects(title);
         }
     }
 }
