@@ -37,6 +37,14 @@ public class KeywordController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword)
         => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
+    
+    [AllowAnonymous]
+    [HttpGet("withType/{keyword}")] //bachelor, masters, phd.
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromBody] Degree degree)
+        => await _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
+
 
     [Authorize]
     [HttpPost]

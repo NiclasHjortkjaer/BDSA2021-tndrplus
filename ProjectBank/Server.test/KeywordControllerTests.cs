@@ -99,6 +99,33 @@ public class KeywordControllerTests
         // Assert
         Assert.Equal(keyList, response);
     }
+    
+    [Fact]
+    public async Task Get_by_keyword_and_degree_returns_projects_of_those()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<KeywordController>>();
+        var repository = new Mock<IKeywordRepository>();
+        //var keyword = new KeywordDto(1, "API");
+        
+        var keyList = new List<ProjectDetailsDto>()
+        {
+            new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
+                new DateTime(50), new HashSet<string>() {"AI"})
+
+        };
+
+        repository.Setup(m => m.ReadAllProjectsWithKeywordAndDegreeAsync("AI", Degree.Bachelor)).ReturnsAsync(keyList);
+        var controller = new KeywordController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Get("AI", Degree.Bachelor);
+
+        // Assert
+        Assert.Equal(keyList, response);
+    }
+    
 
     /* [Fact]
     public async Task Put_given_unknown_id_returns_NotFound()
