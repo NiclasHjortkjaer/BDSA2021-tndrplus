@@ -25,7 +25,7 @@ public class KeywordRepository : IKeywordRepository
         return new KeywordDto(entity.Id, entity.Word);
     }
 
-    public async Task<KeywordDetailsDto?> ReadAsync(int keywordId)
+public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
     {
         var keywords = from k in _context.Keywords
             where k.Id == keywordId
@@ -35,7 +35,7 @@ public class KeywordRepository : IKeywordRepository
                 k.Projects.Select(p => p.Title).ToHashSet()
             );
 
-        return await keywords.FirstOrDefaultAsync();
+        return keywords.FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyCollection<KeywordDetailsDto>> ReadAllAsync() =>
