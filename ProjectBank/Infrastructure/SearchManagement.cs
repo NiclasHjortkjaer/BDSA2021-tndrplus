@@ -18,6 +18,6 @@ public class SearchManagement : ISearchManagement
         var projectsGivenKeyword = await _keyword_repo.ReadAllProjectsWithKeywordStringAsync(input);
     
         var projects = projectsGivenTitle.Union(projectsGivenAuthor).Union(projectsGivenKeyword);
-        return projects.ToList().AsReadOnly();
+        return projects.ToHashSet();
     }
 }
