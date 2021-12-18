@@ -25,7 +25,7 @@ public class KeywordRepository : IKeywordRepository
         return new KeywordDto(entity.Id, entity.Word);
     }
 
-    public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
+public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
     {
         var keywords = from k in _context.Keywords
             where k.Id == keywordId

@@ -2,21 +2,21 @@
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
   }
-  .grid-item {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    font-size: 30px;
-    text-align: center;
-    margin-top: 20px;
-    margin-right: 20px;
-    height: 200px;
-    border-radius: 10px;
-    word-break: break-word;
-    transition: all 0.25s ease;
-  }
-  
-  .grid-item:hover{
+.grid-item {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+  margin-top: 20px;
+  margin-right: 20px;
+  height: 220px;
+  border-radius: 10px;
+  word-break: normal;
+  transition: all 0.25s ease;
+}
+
+.grid-item:hover{
     transition-delay: 0.25s;
     background: linear-gradient(10deg, #fd297b, #ff655b);
     color: white;

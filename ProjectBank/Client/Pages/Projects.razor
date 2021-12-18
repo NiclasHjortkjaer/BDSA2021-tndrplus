@@ -4,6 +4,9 @@
 @inject DialogService DialogService
 @inject NotificationService _notificationService;
 @inject NavigationManager _uriHelper;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ProjectStateChanged projectChanged;
+
 <RadzenDialog />
 <RadzenNotification/>
 @if (_project == null)
@@ -12,9 +15,21 @@
 }
 else
 {
-<div class="row my-4">
+    <div class="row my-4">
         <RadzenCard class="m-6">
-            <h3 class="h5" style="color:black;">Projects title: @_project?.Title</h3>
+            <div class="like_star">
+                        @if (_likedProjects.Contains(_project.Title))
+                        {
+                            <input type="checkbox" class="star_checkbox" id="star_checkbox_@_project.Id" checked="checked" @onchange="() => AddOrRemoveFavorite(_project.Title)"/>
+                            <label class="oi oi-star" id="star_@_project.Id" for="star_checkbox_@_project.Id"></label>
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="star_checkbox" id="star_checkbox_@_project.Id" unchecked="true" @onchange="() => AddOrRemoveFavorite(_project.Title)"/>
+                            <label class="oi oi-star" id="star_@_project.Id" for="star_checkbox_@_project.Id"></label>
+                        }
+            </div>
+            <h3 class="h5" style="color:black;">Projects title: "@_project?.Title":</h3>
             <h4 style="color:black;">Authored by: @_project?.AuthorName 
                  <h5 style="color:black;"> (Role: @_role) </h5>
             </h4>
@@ -31,7 +46,7 @@ else
                     <b style="color:black;">ECTS:</b>
                     <div style="color:black;">@(_project?.Ects)</div>
                     <b style="color:black;">Last updated:</b>
-                    <div style="color:black;">@(_project?.LastUpdated)</div>
+                    <div style="color:black;">@(_project?.LastUpdated.Date)</div>
                     <b style="color:black;">Tags:</b>
                     <div style="color:black;">@if (_project != null){foreach (var keyword in _project.Keywords)
                     {
@@ -46,7 +61,7 @@ else
                         </div>
                         
                         <RadzenButton style="width: 160px" Icon="favorite" BusyText="Saving ..." Text="Apply" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))" />
-                         <RadzenButton style="width: 250px" Icon="accessibility" BusyText="Saving ..." Text="Contact Author" Click=@ShowCloseableFromOverlayDialog  />
+                        <RadzenButton style="width: 250px" Icon="accessibility" BusyText="Saving ..." Text="Contact Author" Click=@ShowCloseableFromOverlayDialog  />
 
                     </div>
                 </div>
@@ -61,36 +76,55 @@ else
     public string? Id { get; set; }
     private string? _role;
     private ProjectDetailsDto? _project;
+    private List<string> _likedProjects = null!;
+    private string? _aToken; 
 
-protected override void OnInitialized()
+    protected override void OnInitialized()
     {
         DialogService.OnOpen += Open;
         DialogService.OnClose += Close;
         
     }
+
     void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options)
     {
        
     }
+
     void Close(dynamic result)
     {
       // NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Message send", Detail = "", Duration = 4000};
         //    _notificationService.Notify(success);
     }
 
-    // <div class="col-lg-6 col-xl-4 offset-lg-3 offset-xl-4"></div>
-      void ShowNotification(NotificationMessage message)
+    void ShowNotification(NotificationMessage message)
     {
-        
-         _notificationService.Notify(message);
-       
+        _notificationService.Notify(message);
     }
-     protected override async Task OnParametersSetAsync()
+
+    protected override async Task OnInitializedAsync(){
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+            if (_user != null){
+                var _claims = _user.Claims;
+                _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+                var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
+                if (account != null)
+                {
+                    _likedProjects = account.SavedProjects.ToList();
+                }
+            }
+        }
+    }
+    
+    protected override async Task OnParametersSetAsync()
     {
         try {
             _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
         } catch {
-          
             _project = null;
         }
           if(_project.AuthorName.Length >15){
@@ -100,11 +134,11 @@ protected override void OnInitialized()
             }
     }
    
-     async Task ShowCloseableFromOverlayDialog()
+    async Task ShowCloseableFromOverlayDialog()
     {
-         var _email =_project.AuthorName.ToString()+".gmail.com";
-         _email =_email.Replace(" ", String.Empty);
-     await DialogService.OpenAsync("", ds =>
+        var _email =_project.AuthorName.ToString()+".gmail.com";
+        _email =_email.Replace(" ", String.Empty);
+        await DialogService.OpenAsync("", ds =>
         @<div style="color:black;">
             <div>
             <h2 style="color:black;">Author Information</h2> </div>
@@ -113,16 +147,28 @@ protected override void OnInitialized()
         <div> 
         Email: @_email</div>
         <div>
-          <RadzenTextArea Placeholder="Write message" Style="height:75px;width:100px"/>
+            <RadzenTextArea Placeholder="Write message" Style="height:75px;width:100px"/>
           <div>
-             <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))"/>
-
-          <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
-</div>
+            <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))"/>
+            <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
+          </div>
         </div>
-    
         </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
-        }    
-    
     }
-  
+    
+    private async Task AddOrRemoveFavorite(string t)
+    {
+        if (_likedProjects.Contains(t))
+        {
+            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", t);
+            projectChanged.RemoveSavedProjects(t);
+            _likedProjects.Remove(t);
+        }
+        else
+        {
+            await Http.PostAsJsonAsync($"api/Account/{_aToken}", t);
+            projectChanged.AddSavedProjects(t);
+            _likedProjects.Add(t);
+        }
+    }
+}

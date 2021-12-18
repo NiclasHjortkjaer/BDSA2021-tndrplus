@@ -10,16 +10,20 @@
 
 @if (keywords == null)
     {
-       <h1>Loading...</h1> 
+        <div id="app">
+            <div class="centered">
+                <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+        </div>
     }else{
         <div class="grid-container">
             @foreach (var keyword in keywords)
             {
-                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))" >@keyword.Word</button>
+                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))">@keyword.Word</button>
             }
 
         </div>
     }
+<br>
 
 @code{
     private KeywordDto[]? keywords;
