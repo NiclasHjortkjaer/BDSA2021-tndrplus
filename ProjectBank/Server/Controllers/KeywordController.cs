@@ -35,11 +35,18 @@ public class KeywordController : ControllerBase
        => await _repository.ReadAsync(id);
 
     [AllowAnonymous]
+    [HttpGet("typeOption/{keyword}/{timesSeen}/{degree}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
+    public async Task<ProjectDetailsDto>? Get(string keyword, int timesSeen, [FromRoute] Degree degree)
+       => await _repository.ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
+    
+    [AllowAnonymous]
     [HttpGet("{keyword}/{timesSeen}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
     public async Task<ProjectDetailsDto>? Get(string keyword, int timesSeen)
-       => await _repository.ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen);
+        => await _repository.ReadProjectGivenKeywordAndTimesSeenRandAsync(keyword, timesSeen);
 
     [AllowAnonymous]
     [HttpGet("{keyword}")]

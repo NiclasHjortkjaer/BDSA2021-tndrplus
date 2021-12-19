@@ -145,7 +145,7 @@ public class KeywordControllerTests
     }
 
     [Fact]
-    public async Task GetProjectGivenKeywordAndTimesSeen_returns()
+    public async Task GetProjectGivenKeywordAndTimesSeenRand_returns()
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
@@ -157,7 +157,7 @@ public class KeywordControllerTests
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
                 new DateTime(50), new HashSet<string>() {"AI"});
 
-        repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0)).ReturnsAsync(expected);
+        repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 0)).ReturnsAsync(expected);
         var controller = new KeywordController(logger.Object, repository.Object);
 
         // Act
@@ -166,6 +166,30 @@ public class KeywordControllerTests
         // Assert
         Assert.Equal(expected, response);
     }
+    
+    [Fact]
+    public async Task GetProjectGivenKeywordAndTimesSeen_returns_on_degree()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<KeywordController>>();
+        var repository = new Mock<IKeywordRepository>();
+        //var keyword = new KeywordDto(1, "API");
+
+
+        var expected = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
+            "A dummies guide to AI. Make your own AI friend today", Degree.Master, null, null, 7.5f,
+            new DateTime(50), new HashSet<string>() {"AI"});
+
+        repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.Master)).ReturnsAsync(expected);
+        var controller = new KeywordController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Get("AI", 0, Degree.Master);
+
+        // Assert
+        Assert.Equal(expected, response);
+    }
+    
 
     [Fact]
     public async Task GetCount_returns_number_of_projects_given_keyword()

@@ -128,22 +128,15 @@ Degree: @_currentProject.Degree</textarea>
             
                 if (!_likedProjectIds.Contains(_currentProject.Id))
                 {
-                    await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title); //vil måske gerne lave om til den også får et id
-                    _likedProjectIds.Add(_currentProject.Id);
-                    projectChanged.AddSavedProjects(_currentProject.Title);
-                    
-                    ShowNotification("Project added: "+_currentProject.Title, Notification.Success);
-                    
+                    await addLikedProject();
                     if (keyword == "all") 
                     {
                         await UpdateRatios(true);
                     }
-                    
                 } else
                 {
                     ShowNotification("You had already liked project: " + _currentProject.Title, Notification.Info); 
                 }
-
                 
                 if (_indexCounter < _countOfProjects)
                 {
@@ -152,7 +145,6 @@ Degree: @_currentProject.Degree</textarea>
                 {
                     ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword", Notification.Error);
                 }
-
                 _lastClick = ClickType.Like;
 
                 if (keyword == "all") 
@@ -173,15 +165,21 @@ Degree: @_currentProject.Degree</textarea>
                 break;
 
             case ClickType.Rewatch:
-                            
+            
                 if (_seenProjectIds.Count() > 1)
                 {
                     var index = _seenProjectIds.Peek();
                     if (_currentProject.Id == index){
                         _seenProjectIds.Pop();
-                        index = _seenProjectIds.Peek();
                     }
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Pop()}");
+                    if (_seenProjectIds.Count > 2)
+                    {
+                        _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Pop()}");
+                    }
+                    else
+                    {
+                        _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Peek()}");
+                    }
                 } else
                 {
                     _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Peek()}");
@@ -190,10 +188,7 @@ Degree: @_currentProject.Degree</textarea>
 
                 if (_lastClick == ClickType.Like && _likedProjectIds.Contains(_currentProject.Id))
                 {
-                    await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
-                    _likedProjectIds.Remove(_currentProject.Id);
-                    projectChanged.RemoveSavedProjects(_currentProject.Title);
-                    ShowNotification("Project removed: "+_currentProject.Title, Notification.Success);
+                    await removeLikedProject();
                 }
                 
                 _lastClick = ClickType.Rewatch;
@@ -204,10 +199,7 @@ Degree: @_currentProject.Degree</textarea>
             
                 if (_likedProjectIds.Contains(_currentProject.Id))
                 {
-                    await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
-                    _likedProjectIds.Remove(_currentProject.Id);
-                    projectChanged.RemoveSavedProjects(_currentProject.Title);
-                    ShowNotification("Project removed: " + _currentProject.Title, Notification.Success);
+                    await removeLikedProject();
                 }
 
                 if (_indexCounter < _countOfProjects)
@@ -217,17 +209,12 @@ Degree: @_currentProject.Degree</textarea>
                 {
                     ShowNotification("No more projects to show in this category. You are now browsing all projects", Notification.Error);
                 }
-                _indexCounter++;
-
-                if (keyword == "all")
-                {
-                    await UpdateRatios(false);
-                }
-
+                
                 _lastClick = ClickType.Dislike;
 
                 if (keyword == "all") 
                 {
+                    await UpdateRatios(false);
                     var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
                     var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
                     
@@ -289,4 +276,25 @@ Degree: @_currentProject.Degree</textarea>
         notificationService.Notify(notiMsg); 
         
     }
+    
+    //----- private helper methods -----
+
+    private async Task removeLikedProject()
+    {
+        await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
+        _likedProjectIds.Remove(_currentProject.Id);
+        projectChanged.RemoveSavedProjects(_currentProject.Title);
+        
+        ShowNotification("Project removed: " + _currentProject.Title, Notification.Success);
+    }
+    
+    private async Task addLikedProject()
+    {
+        await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title); //vil måske gerne lave om til den også får et id, nah fuck it
+        _likedProjectIds.Add(_currentProject.Id);
+        projectChanged.AddSavedProjects(_currentProject.Title);
+                    
+        ShowNotification("Project added: "+_currentProject.Title, Notification.Success);
+    }
+
 }   

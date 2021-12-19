@@ -77,12 +77,15 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
             word => Assert.Equal("Design", word)
         );
     }
-
     [Fact]
-    public async Task GetProjectGivenKeywordAndTimesSeen_returns_mlProject_given_AI_and_1()
+    public async Task GetProjectGivenKeywordAndTimesSeen_returns_mlProject_given_AI_and_0_and_type()
     {
-        var actual = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/AI/1");
-
+        var keyword = "AI";
+        var timesSeen = 0;
+        var degree = Degree.PHD;
+        
+        ProjectDetailsDto actual = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{timesSeen}/{degree}");
+        
         var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
 
         Assert.Equal(2, actual.Id);
@@ -95,15 +98,14 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(mlProject.FileUrl, actual.FileUrl);
         Assert.Equal(mlProject.LastUpdated, actual.LastUpdated, TimeSpan.FromSeconds(5));
         Assert.Collection(actual.Keywords,
-                            word => Assert.Equal("AI", word),
-                            word => Assert.Equal("Machine Learning", word)
-                            );
+            word => Assert.Equal("AI", word),
+            word => Assert.Equal("Machine Learning", word)
+        );
     }
-
     [Fact]
-    public async Task GetProjectGivenKeywordAndTimesSeen_returns_randomProject_given_AI_and_25()
+    public async Task GetProjectGivenKeywordAndTimesSeenRand_returns_randomProject_given_AI_and_25()
     {
-        var actual = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/AI/1");
+        var actual = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/AI/25");
         Assert.NotNull(actual);
     }
 

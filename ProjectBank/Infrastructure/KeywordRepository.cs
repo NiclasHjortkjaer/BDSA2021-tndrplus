@@ -189,57 +189,68 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         return Status.Deleted;
     }
 
-    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenAsync(string keyword, int timesSeen) 
+    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenRandAsync(string keyword, int timesSeen) //find bedre navn carl 
+    {
+        var project = await ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen);
+        if (project != null)
+        {
+            return project;
+        }
+
+        //Returns random project, when there are no more projects with the given keyword
+        //Does not promise, not to show an already shown project
+        Random rand = new Random();
+                  var randomIndex = rand.Next(1, _context.Projects.Count());
+                  var projects = from p in _context.Projects
+                      where p.Id == randomIndex
+                      select new ProjectDetailsDto(
+                          p.Id,
+                          p.Author == null ? null : p.Author.AzureAdToken,
+                          p.Author == null ? null : p.Author.Name,
+                          p.Title,
+                          p.Description,
+                          p.Degree,
+                          p.ImageUrl,
+                          p.FileUrl,
+                          p.Ects,
+                          p.LastUpdated,
+                          p.Keywords.Select(k => k.Word).ToHashSet()
+                      );
+          
+                  return projects.FirstOrDefault()!;
+    }
+    
+    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenAsync(string keyword, int timesSeen, Degree degree = Degree.Unspecified) 
     {
         var entity = await _context.Keywords
             .Include("Projects.Author")
             .Include("Projects.Keywords")
             .FirstOrDefaultAsync(e => e.Word == keyword);
-
+       
+        var keyProjects = new List<Project>();
         if (entity == null)
         {
-            return null;
+            return null; //skal vi lave lidt error handling på nulls i denne sammenhæng
+        }
+        
+        if (degree == Degree.Unspecified)
+        {
+            keyProjects = entity.Projects.ToList();
+        }
+        else
+        {
+           keyProjects = entity.Projects.Where(p => p.Degree == degree).ToList();
         }
 
-        if (timesSeen < entity.Projects.Count())
+        if (timesSeen < keyProjects.Count())
         {
-            var p = entity.Projects.ElementAt(timesSeen);
+            var p = keyProjects.ElementAt(timesSeen);
             ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
 
             return new ProjectDetailsDto(
-                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
+                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
         }
-
-        if (timesSeen < entity.Projects.Count())
-        {
-            var p = entity.Projects.ElementAt(timesSeen);
-            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
-
-            return new ProjectDetailsDto(
-                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
-        }
-
-
-        //Returns random project, when there are no more projects with the given keyword
-        //Does not promise, not to show an already shown project
-        Random rand = new Random();
-        var randomIndex = rand.Next(1, _context.Projects.Count());
-        var projects = from p in _context.Projects
-            where p.Id == randomIndex
-            select new ProjectDetailsDto(
-                p.Id,
-                p.Author == null ? null : p.Author.AzureAdToken,
-                p.Author == null ? null : p.Author.Name,
-                p.Title,
-                p.Description,
-                p.Degree,
-                p.ImageUrl,
-                p.FileUrl,
-                p.Ects,
-                p.LastUpdated,
-                p.Keywords.Select(k => k.Word).ToHashSet()
-            );
-
-        return projects.FirstOrDefault()!;
+        return null;
     }
+    
 }
