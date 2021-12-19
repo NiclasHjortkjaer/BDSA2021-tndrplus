@@ -1,5 +1,5 @@
 <!---- ROUTING ---->
-@page "/account/settings"
+@page "/account/myprofile"
 
 <!---- USINGS ATTRIBUTES AND INJECTIONS  ---->
 @inject NavigationManager _uriHelper;
@@ -8,58 +8,36 @@
 
 @attribute [Authorize]
 
-<PageTitle>Settings</PageTitle>
+<PageTitle>ProjectBank - My Profile</PageTitle>
 
-<h2>Profile:</h2>
-<RadzenFieldset class="mb-4">
-    <div class="row">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Name:"/>
-        </div>
-        <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_name style="width: 50%; background-color: white;" Name="Name"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Email:"/>
-        </div>
-        <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_email style="width: 50%; background-color: white;" Name="Email"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Role:"/>
-        </div>
-        <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_currentRole style="width: 50%; background-color: white;" Name="Role"/>
-        </div>
-    </div>
-</RadzenFieldset>
-
-<h2 style="padding-top: 2em">Profile picture:</h2>
+<h3 style="text-decoration: underline">Profile:</h3>
 @if (_account != null)
 {
-    <RadzenFieldset class="mb-4">
-        <div class="row">
+    <div class="profile_info">
+        <div class="picture_container">
             @if (_account?.PictureUrl != null)
             {
-                <div style="justify-content: center; align-content: center">
-                    <img class="card-img-top" size="60%" src=@_account?.PictureUrl alt="No Profile Picture" style="padding: 1em;justify-content: center; align-content: center "/>
-                </div>
+                <div class="profile_pic" style="background-image: url('@_account?.PictureUrl')"><span>Change</span></div>
+            }
+            else
+            {
+                <ImageUploader Id="_account!.Id" IsProject="false"></ImageUploader>
             }
         </div>
-        @if (_account?.Id != null)
-        {
-            <div><ImageUploader Id="_account!.Id" IsProject="false"></ImageUploader></div>
-        }
-    </RadzenFieldset>
+        <div class="profile_contact_info">
+            <span class="profile_name">Name: @_account?.Name</span>
+            <br/>
+            <span class="profile_email">Email: @_email</span>
+            <br/>
+            <span class="profile_role">Role: @_currentRole</span>
+        </div>
+        <br/>
+    </div>
 }
-
-
-
-<h2 style="padding-top: 3em; padding-bottom: 1em">Projects ideas created by you:</h2>
+<br>
+<hr id="MyProfile_line">
+<br/>
+<h3 style="text-decoration: underline">My project ideas :</h3>
 @if (_userProjects.Any())
 {
     <table class="table table-striped" style="color: white">
@@ -123,5 +101,10 @@ else
         var response = await _http.DeleteAsync($"/api/Project/{id}");
         Console.WriteLine(response.StatusCode);
         _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
+    }
+
+    private void UploadPicture()
+    {
+        
     }
 }
