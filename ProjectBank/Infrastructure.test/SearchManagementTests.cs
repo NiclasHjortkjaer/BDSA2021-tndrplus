@@ -142,6 +142,34 @@ public class SearchManagementTests
         Assert.Empty(projects);
     }
 
+    [Fact]
+    public async Task ReadSearchQueryAsync_returns_list_with_aiProject_given_Machine_Learning_and_Bachelor()
+    {
+        var projects = await _management.ReadSearchQueryAsync("Machine Learning", Degree.Bachelor);
+
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, new DateTime(50), new HashSet<string>(){"AI", "Machine Learning"});
+
+        Assert.Equal(1, projects.Count());
+        Assert.Equal(1, projects.First().Id);
+        Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
+        Assert.Equal(aiProject.AuthorName, projects.First().AuthorName);
+        Assert.Equal(aiProject.Degree, projects.First().Degree);
+        Assert.Equal(aiProject.Title, projects.First().Title);
+        Assert.Equal(aiProject.Description, projects.First().Description);
+        Assert.Equal(aiProject.ImageUrl, projects.First().ImageUrl);
+        Assert.Equal(aiProject.FileUrl, projects.First().FileUrl);
+        Assert.Equal(aiProject.LastUpdated, projects.First().LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
+    }
+
+    [Fact]
+    public async Task ReadSearchQueryAsync_returns_empty_list_given_Elon_Musk_and_Master()
+    {
+        var projects = await _management.ReadSearchQueryAsync("Elon Musk", Degree.Master);
+
+        Assert.Empty(projects);
+    }
+
     // Disposable methods.-----------------------------
     protected virtual void Dispose(bool disposing)
     {
