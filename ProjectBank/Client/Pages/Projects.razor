@@ -48,7 +48,7 @@ else
                     <b style="color:black;">ECTS:</b>
                     <div style="color:black;">@(_project?.Ects)</div>
                     <b style="color:black;">Last updated:</b>
-                    <div style="color:black;">@(_project?.LastUpdated.Date)</div>
+                    @if (_lastUpdated.Days > 0){<div style="color:black;">@(_lastUpdated.Days) days ago</div>}else if (_lastUpdated.Hours > 0){<div style="color:black;">@(_lastUpdated.Hours) hours ago</div>}else if (_lastUpdated.Minutes > 0){<div style="color:black;">@(_lastUpdated.Minutes) minutes ago</div>}else{<div style="color:black;">@(_lastUpdated.Seconds) seconds ago</div>}
                     <b style="color:black;">Tags:</b>
                     <div style="color:black;">@if (_project != null){foreach (var keyword in _project.Keywords)
                     {
@@ -81,12 +81,12 @@ else
     private ProjectDetailsDto? _project;
     private List<string> _likedProjects = null!;
     private string? _aToken; 
+    private TimeSpan _lastUpdated;
 
     protected override void OnInitialized()
     {
         DialogService.OnOpen += Open;
         DialogService.OnClose += Close;
-        
     }
 
     void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options)
@@ -127,6 +127,7 @@ else
     {
         try {
             _project = await Http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/"+Id);
+            _lastUpdated = DateTime.Now - _project.LastUpdated;
         } catch {
             _project = null;
         }
@@ -135,6 +136,7 @@ else
             } else{
                 _role = "Supervisor";
             }
+
     }
    
     async Task ShowCloseableFromOverlayDialog()
