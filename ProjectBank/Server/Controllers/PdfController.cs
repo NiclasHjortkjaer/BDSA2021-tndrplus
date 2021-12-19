@@ -1,10 +1,11 @@
+namespace ProjectBank.Server.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class PdfController : Controller
 {
-    private readonly IPdfRepository _repository;
+    private readonly IFileRepository _repository;
 
     private readonly IReadOnlyCollection<string> _allowedContentTypes = new[]
     {
@@ -12,7 +13,7 @@ public class PdfController : Controller
         
     };
 
-    public PdfController(IPdfRepository repository)
+    public PdfController(IFileRepository repository)
     {
         _repository = repository;
     }
@@ -27,7 +28,7 @@ public class PdfController : Controller
             return BadRequest("Content type not allowed");
         }
 
-        var (status, uri) = await _repository.CreatePdfAsync(name, file.ContentType, file.OpenReadStream());
+        var (status, uri) = await _repository.CreateFileAsync(name, file.ContentType, file.OpenReadStream());
 
         return status == Status.Created
             ? new CreatedResult(uri, null)

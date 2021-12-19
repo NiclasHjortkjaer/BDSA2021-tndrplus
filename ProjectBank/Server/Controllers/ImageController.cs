@@ -6,7 +6,7 @@ namespace ProjectBank.Server.Controllers;
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class ImageController : Controller
 {
-    private readonly IImageRepository _repository;
+    private readonly IFileRepository _repository;
 
     private readonly IReadOnlyCollection<string> _allowedContentTypes = new[]
     {
@@ -16,7 +16,7 @@ public class ImageController : Controller
         "image/png"
     };
 
-    public ImageController(IImageRepository repository)
+    public ImageController(IFileRepository repository)
     {
         _repository = repository;
     }
@@ -31,7 +31,7 @@ public class ImageController : Controller
             return BadRequest("Content type not allowed");
         }
 
-        var (status, uri) = await _repository.CreateImageAsync(name, file.ContentType, file.OpenReadStream());
+        var (status, uri) = await _repository.CreateFileAsync(name, file.ContentType, file.OpenReadStream());
 
         return status == Status.Created
             ? new CreatedResult(uri, null)

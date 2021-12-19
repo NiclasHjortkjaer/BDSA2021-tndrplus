@@ -44,18 +44,23 @@
 <RadzenButton style="width: 160px" IsBusy=@_busyProfile Click=@OnBusyClickProfile Text="Save"/>
 
 <h2 style="padding-top: 2em">Profile picture:</h2>
-<RadzenFieldset class="mb-4">
-    <div class="row">
-        
-        @if (_account?.PictureUrl != null)
+@if (_account != null)
+{
+    <RadzenFieldset class="mb-4">
+        <div class="row">
+            @if (_account?.PictureUrl != null)
+            {
+                <div style="justify-content: center; align-content: center">
+                    <img class="card-img-top" size="60%" src=@_account?.PictureUrl alt="No Profile Picture" style="padding: 1em;justify-content: center; align-content: center "/>
+                </div>
+            }
+        </div>
+        @if (_account?.Id != null)
         {
-            <div style="justify-content: center; align-content: center">
-                <img class="card-img-top" size="60%" src=@_account?.PictureUrl alt="No Profile Picture" style="padding: 1em;justify-content: center; align-content: center "/>
-            </div>
+            <div><ImageUploader Id="_account!.Id" IsProject="false"></ImageUploader></div>
         }
-    </div>
-    <div><ImageUploader Id="_account!.Id" IsProject="isProject"></ImageUploader></div>
-</RadzenFieldset>
+    </RadzenFieldset>
+}
 
 
 <h2 style="padding-top: 3em; padding-bottom: 1em">Projects created by you:</h2>
@@ -99,7 +104,6 @@ else
     private string? _currentRole;
     private string? _azureAdtoken;
     private AccountDetailsDto? _account;
-    private bool isProject = false;
     ProjectDetailsDto[]? _projects;
     private readonly List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
 
@@ -150,5 +154,4 @@ else
     {
     //...
     }
-
 }
