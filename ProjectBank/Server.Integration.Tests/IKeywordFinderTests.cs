@@ -20,7 +20,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task FindWeightedRandomKeyword_returns_not_null()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
         var keyword = finder.FindWeightedRandomKeyword();
 
         Assert.True(keyword == "AI" || keyword == "Machine Learning" || keyword == "Design");
@@ -29,7 +29,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task UpdateRatioAsync_returns_NotFound_given_Hardware()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
         var status = finder.UpdateRatioAsync("Hardware", true);
 
         Assert.Equal(Status.NotFound, status);
@@ -38,7 +38,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task UpdateRatioAsync_returns_Updated_given_AI()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
         var status = finder.UpdateRatioAsync("AI", true);
 
         Assert.Equal(Status.Updated, status);
@@ -47,7 +47,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task UpdateRatioAsync_sets_aiRatio_20_given_AI_true()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
         var status = finder.UpdateRatioAsync("AI", true);
 
         var aiRatio = finder.Ratios["AI"];
@@ -59,7 +59,8 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task UpdateRatioAsync_sets_mlRatio_5_given_Machine_Learning_false()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
+
         var status = finder.UpdateRatioAsync("Machine Learning", false);
 
         var mlRatio = finder.Ratios["Machine Learning"];
@@ -71,7 +72,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task ReadProjectGivenKeywordAsync_returns_aiProject_given_ai()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
         var actual = await finder.ReadProjectGivenKeywordAsync("AI");
 
         var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
@@ -91,7 +92,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task ReadProjectGivenKeywordAsync_returns_mlProject_given_Machine_Learning_and_called_twice()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
         await finder.ReadProjectGivenKeywordAsync("Machine Learning");
 
         var actual = await finder.ReadProjectGivenKeywordAsync("Machine Learning");
@@ -113,7 +114,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task ReadProjectGivenKeywordAsync_returns_null_given_Hardware()
     {
-        await finder.Setup(_client);
+        await finder.Setup(_client, Degree.Unspecified);
         ProjectDetailsDto? actual = await finder.ReadProjectGivenKeywordAsync("Hardware");
 
         Assert.Null(actual);

@@ -20,6 +20,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<DialogService>();
 
 
+
 builder.Services.AddMsalAuthentication<RemoteAuthenticationState, CustomAccount>(options =>
 {
     builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);

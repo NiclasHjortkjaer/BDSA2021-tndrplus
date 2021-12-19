@@ -32,12 +32,12 @@
                     <div>
                         <InputRadioGroup @bind-Value="model.Selected">
                             @foreach (var option in model.Options)
-                                {
+                            {
                                 <div>
                                     <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/> 
                                         <label for="@option.Value" style="cursor: pointer">@option.Value</label>
                                 </div>
-                                }
+                            }
                         </InputRadioGroup>
                     </div>
                 </EditForm>
@@ -85,11 +85,11 @@
     
     private void redirectToSwipePage(string keyword)
     {
-        navigationManager.NavigateTo("swipe/"+keyword);
+        navigationManager.NavigateTo($"swipe/{keyword}/{(int) model.Selected}");
     }
     private void redirectToSwipeAllPage()
     {
-        navigationManager.NavigateTo("swipe/all");
+        navigationManager.NavigateTo($"swipe/all/{(int) model.Selected}");
     }
 
 
