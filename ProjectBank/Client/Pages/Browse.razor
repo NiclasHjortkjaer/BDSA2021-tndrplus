@@ -25,19 +25,20 @@
     <div class="align-right">
         <div class="dropdown_menu_filter_browse">
             <div class="drop_filter_content_browse">
-                <span style="text-decoration: underline">Degrees:</span> <br/>
-                <input type="radio" id="bCheck" checked="@_bachelorChecked" @onclick="(() => OnCheck('B'))"/>
-                <label for="bCheck" style="cursor: pointer">Bachelor</label> <br/>
-
-                <input type="radio" id="mCheck" checked="@_masterChecked" @onclick="(() => OnCheck('M'))"/>
-                <label for="mCheck" style="cursor: pointer"> Master</label> <br/>
-
-                <input type="radio" id="pCheck" checked="@_phdChecked" @onclick="(() => OnCheck('P'))"/>
-                <label for="pCheck" style="cursor: pointer"> PHD</label> <br/>
-
-                <div class="center_btn" style="text-align: center">
-                    <span class="clear_filter" @onclick="(() => OnCheck('C'))">Reset filter</span>
-                </div>
+                <EditForm EditContext="this.editContext">
+                    <h3>@model.Value</h3>
+                    <h5>Option Select</h5>
+                    <div>
+                        <InputRadioGroup @bind-Value="model.Selected">
+                            @foreach (var option in model.Options)
+                                {
+                                <div>
+                                    <InputRadio Value="option.Value" /> @option.Value
+                                </div>
+                                }
+                        </InputRadioGroup>
+                    </div>
+                </EditForm>
             </div>
         </div>
     </div>
@@ -62,12 +63,17 @@
 
 @code{
     private KeywordDto[]? keywords;
-    
+
+    private EditContext editContext;
+    private DegreeModel model;
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
             keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
+            model = new DegreeModel() { Value = "Degrees" };
+            editContext = new EditContext(model);
         }
         catch(AccessTokenNotAvailableException exception)
         {
@@ -75,12 +81,10 @@
         }
     }
     
-    
     private void redirectToSwipePage(string keyword)
     {
         navigationManager.NavigateTo("swipe/"+keyword);
     }
-
     private void redirectToSwipeAllPage()
     {
         navigationManager.NavigateTo("swipe/all");
@@ -98,41 +102,6 @@
         else
         {
             _isDropedDown = true;
-        }
-    }
-
-    private bool _bachelorChecked = true;
-    private bool _masterChecked = true;
-    private bool _phdChecked = true;
-
-    private void OnCheck(char s)
-    {
-        if (s == 'B')
-        {
-            _bachelorChecked = true;
-            _masterChecked = false;
-            _phdChecked = false;
-        }
-
-        if (s == 'M')
-        {
-            _bachelorChecked = false;
-            _masterChecked = true;
-            _phdChecked = false;
-        }
-
-        if (s == 'P')
-        {
-            _bachelorChecked = false;
-            _masterChecked = false;
-            _phdChecked = true;
-        }
-
-        if (s == 'C')
-        {
-            _bachelorChecked = true;
-            _masterChecked = true;
-            _phdChecked = true;
         }
     }
 }
