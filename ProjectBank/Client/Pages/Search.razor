@@ -25,10 +25,16 @@
             {
                 <div class="dropdown_menu_filter">
                     <div class="drop_filter_content">
-                        <span style="text-decoration: underline">Degress:</span> <br/>
-                        <input type="checkbox" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/><span> Bachelor</span> <br/>
-                        <input type="checkbox" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/><span> Master</span> <br/>
-                        <input type="checkbox" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/><span> PHD</span> <br/>
+                        <span style="text-decoration: underline">Degrees:</span> <br/>
+                        <input type="radio" id="bCheck" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/>
+                            <label for="bCheck" style="cursor: pointer">Bachelor</label> <br/>
+                        
+                        <input type="radio" id="mCheck" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/>
+                            <label for="mCheck" style="cursor: pointer"> Master</label> <br/>
+                        
+                        <input type="radio" id="pCheck" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/>
+                            <label for="pCheck" style="cursor: pointer"> PHD</label> <br/>
+                        
                         <div class="center_btn" style="text-align: center">
                             <span class="clear_filter" @onclick="(() =>  OnCheck('C'))">Reset filter</span>
                         </div>
@@ -127,21 +133,23 @@
         {
     //await LoadProjects();
             await OnChange();
-            if (_bachelorChecked || _masterChecked || _phdChecked)
-            {
-                
-            }
-            else
+            if (_bachelorChecked && _masterChecked && _phdChecked)
             {
                 try
                 {
-                    _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+                   _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
                 }
-                catch (AccessTokenNotAvailableException exception)
+                   catch (AccessTokenNotAvailableException exception)
                 {
-                    exception.Redirect();
+                   exception.Redirect();
+                                    
                 }
-                await InvokeAsync(StateHasChanged);
+                   await InvokeAsync(StateHasChanged);
+            }
+            //need to look for filter checks
+            else
+            {
+                
             }
         }
     }
@@ -167,6 +175,7 @@
                 }
             }
         }
+        _isDropedDown = false;
     }
 
     
@@ -208,17 +217,23 @@
     {
         if (s == 'B')
         {
-            _bachelorChecked = !_bachelorChecked;
+            _bachelorChecked = true;
+            _masterChecked = false;
+            _phdChecked = false;
         }
 
         if (s == 'M')
         {
-            _masterChecked = !_masterChecked;
+            _bachelorChecked = false;
+            _masterChecked = true;
+            _phdChecked = false;
         }
 
         if (s == 'P')
         {
-            _phdChecked = !_phdChecked;
+            _bachelorChecked = false;
+            _masterChecked = false;
+            _phdChecked = true;
         }
 
         if (s == 'C')
