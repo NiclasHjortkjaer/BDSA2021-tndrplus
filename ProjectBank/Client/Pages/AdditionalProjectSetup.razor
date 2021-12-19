@@ -15,7 +15,7 @@
             {
                 <div style="padding: 1em;"><img src="@_project.ImageUrl" alt="Project Image missing" class="img-thumbnail" style="padding: 1em"></div>
             }
-            <ImageUploader Id="int.Parse(Id ?? string.Empty)" isProject="true"></ImageUploader>
+            <ImageUploader Id="int.Parse(Id ?? string.Empty)" IsProject="true"></ImageUploader>
         </div>
     </div>
     <div class="row" style="padding: 1em">
@@ -32,14 +32,12 @@
     </div>
     <div style="padding: 2em">
         <RadzenButton style="width: 160px;" BusyText="Saving ..." Click=@CompleteSetup Text="Finish" />
-        </div>
+    </div>
 </RadzenFieldset>
 
 @code {
-
     [Parameter]
     public string? Id { get; set; }
-
     private ProjectDetailsDto? _project;
 
     protected override async Task OnInitializedAsync()
@@ -51,5 +49,4 @@
     {
        _navigationManager.NavigateTo("/projects/"+Id);
     }
-
 }

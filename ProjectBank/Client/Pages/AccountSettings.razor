@@ -6,7 +6,6 @@
 @inject AuthenticationStateProvider _authenticationStateProvider;
 @inject HttpClient _http
 
-
 @attribute [Authorize]
 
 <PageTitle>Settings</PageTitle>
@@ -18,7 +17,7 @@
             <RadzenLabel Text="Name:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_name style="width: 50%;" Name="Name"/>
+            <RadzenTextBox Disabled=true Placeholder=@_name style="width: 50%; background-color: white;" Name="Name"/>
         </div>
     </div>
     <div class="row">
@@ -26,7 +25,7 @@
             <RadzenLabel Text="Email:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_email style="width: 50%;" Name="Email"/>
+            <RadzenTextBox Disabled=true Placeholder=@_email style="width: 50%; background-color: white;" Name="Email"/>
         </div>
     </div>
     <div class="row">
@@ -34,35 +33,26 @@
             <RadzenLabel Text="Role:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_currentRole style="width: 50%;" Name="Role"/>
+            <RadzenTextBox Disabled=true Placeholder=@_currentRole style="width: 50%; background-color: white;" Name="Role"/>
         </div>
     </div>
 </RadzenFieldset>
-
-
-<RadzenButton Click=@Edit Text="Edit profile"/>
-<RadzenButton style="width: 160px" IsBusy=@_busyProfile Click=@OnBusyClickProfile Text="Save"/>
 
 <h2 style="padding-top: 2em">Profile picture:</h2>
 <RadzenFieldset class="mb-4">
     <div class="row">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Profile Picture:"/>
-        </div>
-        <div class="col-md-9">
-            @if (_account?.PictureUrl != null)
-            {
-                <div>
-                    <img class="card-img-top" src=@_account?.PictureUrl alt="No Profile Picture" style="padding-bottom: 1em"/>
-                </div>
-            }
-        </div>
+        @if (_account?.PictureUrl != null)
+        {
+            <div style="justify-content: center; align-content: center">
+                <img class="card-img-top" size="60%" src=@_account?.PictureUrl alt="No Profile Picture" style="padding: 1em;justify-content: center; align-content: center "/>
+            </div>
+        }
     </div>
+    <div><ImageUploader Id="_account!.Id" IsProject="isProject"></ImageUploader></div>
 </RadzenFieldset>
 
-<ImageUploader id=@_account?.Id isProject="false"></ImageUploader>
 
-<h2 style="padding: 3em">Projects created by you:</h2>
+<h2 style="padding-top: 3em; padding-bottom: 1em">Projects ideas created by you:</h2>
 @if (_userProjects.Any())
 {
     <table class="table table-striped" style="color: white">
@@ -77,7 +67,7 @@
             <tr style="color: white">
                 <td>@project?.Title </td>
                 <td>
-                    <RadzenButton style="width: 150px;height:30px;margin-left:80%" IsBusy=@_busyProfile Click="@(e => DeleteProject(project!.Id))" Text="Delete project"/>
+                    <RadzenButton style="width: 150px;height:30px;margin-left:80%" IsBusy=@_busyProfile Click="@(e => DeleteProject(project!.Id))" Text="Delete"/>
                 </td>
             </tr>
         }
@@ -89,44 +79,32 @@ else
     <h3>You have made no projects yet.</h3>
 }
 
-
-
 @code {
-
     //VARIABLES
-
-    private bool _editing = true;
     private bool _busyProfile;
-
     private string? _name;
     private string? _email;
     private string? _currentRole;
-    private string? _token;
+    private string? _azureAdtoken;
     private AccountDetailsDto? _account;
+    private bool isProject = false;
     ProjectDetailsDto[]? _projects;
-    private List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
-
+    private readonly List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
 
     //PAGE SCRIPTS
-    private void Edit()
-    {
-        _editing = !_editing;
-    }
-
     protected override async Task OnInitializedAsync()
     {
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         _name = user.Identity?.Name;
         _currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
         _email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
-        _token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-        _account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{_token}");
-
+        _azureAdtoken = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+        _account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{_azureAdtoken}");
         _projects = await _http.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/Project");
         if (_projects != null)
             foreach (var project in _projects)
             {
-                if (project.AuthorToken == _token)
+                if (project.AuthorToken == _azureAdtoken)
                 {
                     _userProjects.Add(project);
                 }
@@ -136,22 +114,7 @@ else
     private async Task DeleteProject(int id)
     {
         var response = await _http.DeleteAsync($"/api/Project/{id}");
-        _busyProfile = false;
+        Console.WriteLine(response.StatusCode);
         _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
     }
-
-    private async Task OnBusyClickProfile()
-    {
-        _busyProfile = true;
-        await Task.Delay(2000);
-        UpdateProfile();
-        _busyProfile = false;
-        _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
-    }
-
-    private void UpdateProfile()
-    {
-    //...
-    }
-
 }

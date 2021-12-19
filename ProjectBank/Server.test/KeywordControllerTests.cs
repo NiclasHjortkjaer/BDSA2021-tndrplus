@@ -29,7 +29,7 @@ public class KeywordControllerTests
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
-        var expected = Array.Empty<KeywordDto>();
+        var expected = Array.Empty<KeywordDetailsDto>();
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.ReadAllAsync()).ReturnsAsync(expected);
         var controller = new KeywordController(logger.Object, repository.Object);
@@ -99,40 +99,92 @@ public class KeywordControllerTests
         // Assert
         Assert.Equal(keyList, response);
     }
-
-    /* [Fact]
-    public async Task Put_given_unknown_id_returns_NotFound()
+    
+    [Fact]
+    public async Task Get_by_keyword_and_degree_returns_projects_of_those()
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
-        var keyword = new KeywordUpdateDto(1, "Word");
         var repository = new Mock<IKeywordRepository>();
-        repository.Setup(m => m.UpdateAsync(1, keyword)).ReturnsAsync(NotFound);
+        //var keyword = new KeywordDto(1, "API");
+        
+        var keyList = new List<ProjectDetailsDto>()
+        {
+            new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
+                new DateTime(50), new HashSet<string>() {"AI"})
+
+        };
+
+        repository.Setup(m => m.ReadAllProjectsWithKeywordAndDegreeAsync("AI", Degree.Bachelor)).ReturnsAsync(keyList);
+        var controller = new KeywordController(logger.Object, repository.Object);
+
+
+        // Act
+        var response = await controller.Get("AI", Degree.Bachelor);
+
+        // Assert
+        Assert.Equal(keyList, response);
+    }
+    
+    [Fact]
+    public async Task GetKeywordStrings_returns_all_keywordStrings()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<KeywordController>>();
+        var repository = new Mock<IKeywordRepository>();
+        var expected = Array.Empty<string>();
+        repository.Setup(m => m.ReadAllWordsAsync()).ReturnsAsync(expected);
         var controller = new KeywordController(logger.Object, repository.Object);
 
         // Act
-        var response = await controller.Put(1, keyword);
+        var actual = await controller.GetKeywordStrings();
 
         // Assert
-        Assert.IsType<NotFoundResult>(response);
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
-    public async Task Put_updates_keyword()
+    public async Task GetProjectGivenKeywordAndTimesSeen_returns()
     {
         // Arrange
         var logger = new Mock<ILogger<KeywordController>>();
-        var keyword = new KeywordUpdateDto(1, "Word");
         var repository = new Mock<IKeywordRepository>();
-        repository.Setup(m => m.UpdateAsync(1, keyword)).ReturnsAsync(Updated);
+        //var keyword = new KeywordDto(1, "API");
+
+
+        var expected = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
+                new DateTime(50), new HashSet<string>() {"AI"});
+
+        repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0)).ReturnsAsync(expected);
         var controller = new KeywordController(logger.Object, repository.Object);
 
         // Act
-        var response = await controller.Put(1, keyword);
+        var response = await controller.Get("AI", 0);
 
         // Assert
-        Assert.IsType<NoContentResult>(response);
-    } */
+        Assert.Equal(expected, response);
+    }
+
+    [Fact]
+    public async Task GetCount_returns_number_of_projects_given_keyword()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<KeywordController>>();
+        var repository = new Mock<IKeywordRepository>();
+
+        var expected = 2;
+
+        repository.Setup(m => m.ReadNumberOfProjectsGivenKeyword("AI")).ReturnsAsync(expected);
+        var controller = new KeywordController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.GetCount("AI");
+
+        // Assert
+        Assert.Equal(expected, response);
+    }
 
     [Fact]
     public async Task Delete_given_non_existing_returns_NotFound()

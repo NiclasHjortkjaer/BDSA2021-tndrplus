@@ -40,7 +40,7 @@ public class ProjectRepository : IProjectRepository
     }
 
 
-    public async Task<ProjectDetailsDto> ReadAsync(int projectId)
+    public Task<ProjectDetailsDto> ReadAsync(int projectId)
     {
         var projects = from p in _context.Projects
             where p.Id == projectId
@@ -57,7 +57,7 @@ public class ProjectRepository : IProjectRepository
                 p.LastUpdated,
                 p.Keywords.Select(k => k.Word).ToHashSet()
             );
-        return await projects.FirstOrDefaultAsync();
+        return projects.FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyCollection<ProjectDto>> ReadAllAsync() =>

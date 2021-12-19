@@ -2,39 +2,46 @@
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider;
 @inject HttpClient Http
-@using Microsoft.AspNetCore.Authorization;
+
 <AuthorizeView>
     <NotAuthorized>
         <h1>Welcome to the ProjectBank! </h1>
-            <h3>You are currently not logged in and can therefore not access the rest of the ProjectBank. 
-                Please press "Log in" in the top-Right corner and log in.</h3>
+        <h3>You are currently not logged in and can therefore not access the rest of the ProjectBank. 
+                Please press "Log in" in the top-right corner and log in with your Microsoft Account.</h3>
     </NotAuthorized>
     <Authorized>
         <h1>Hello and Welcome, @context.User.Identity?.Name!</h1>
-
         <h3>You are now signed in as and can use the ProjectBank. </h3>
-
+        @if (newUser){
+            <h4>We can see this is your first time using the ProjectBank! A profile has been setup based on your Microsoft credentials!</h4>
+        }
     </Authorized>
 </AuthorizeView>
+
 @code{
     private string? name;
     private string? currentRole;
     private string? token;
+    private bool newUser = false;
 
     protected override async Task OnInitializedAsync(){
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
         if (user.Identity != null && user.Identity.IsAuthenticated)
-        {
+        {   
             name = user.Identity?.Name;
             currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
             token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-        
-            if (token != null && name != null){
-                AccountCreateDto account = new AccountCreateDto{
-                    AzureAAdToken = token,
-                    Name = name
-                };
-                var response = await Http.PostAsJsonAsync("api/Account",account);
+            try { 
+                var accountCheck = await Http.GetFromJsonAsync<AccountDetailsDto>("api/Account/"+token);
+            } catch {
+                if (token != null && name != null){
+                    AccountCreateDto account = new AccountCreateDto{
+                        AzureAAdToken = token,
+                        Name = name
+                    };
+                    var response = await Http.PostAsJsonAsync("api/Account",account);
+                    newUser = true;
+                }
             }
         }
     }

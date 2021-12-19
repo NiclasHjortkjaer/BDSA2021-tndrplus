@@ -1,5 +1,6 @@
-@page "/user/{Token}"
+@page "/profile/{Token}"
 @inject HttpClient Http
+@inject NavigationManager _navigationManager
 
 <h1>Profile</h1>
 
@@ -13,17 +14,21 @@ else
     <div class="col-lg-6 col-xl-4 offset-lg-3 offset-xl-4">
         <RadzenCard class="m-6">
             <h3 class="h5" style="color:black;">"@User?.Name":</h3>
-            @if (User.PictureUrl != null)
-            {
-                <div><img class="card-img-top" src=@User.PictureUrl alt="Project image"></div>
-            }
             <div class="d-flex flex-row">
+                 @if (User?.PictureUrl != null)
+                 {
+                     <div><img class="card-img-top" src=@User.PictureUrl alt="Project image" style="align-content: center; justify-content: center; padding: 3em"></div>
+                 }
                 <div>
-                    <b style="color:black;">Authored (@User?.SavedProjects.Count):</b>
-                    <div style="color:black;">@if (User != null){foreach (var project in User.SavedProjects)
-                    {
-                        <div>@project</div>
-                    }}
+                    <b style="color:black;">Favorite projects (@User?.SavedProjects.Count):</b>
+                    <div style="color:black;">
+                        @if (User != null)
+                        {
+                            foreach (var project in User.SavedProjects)
+                            {
+                                <div><x @onclick="() => navigateToProject(project)">@project</x></div>
+                            }
+                        }
                     </div>
                 </div>
             </div>
@@ -31,6 +36,7 @@ else
     </div>
 </div>
 }
+
 @code {
     [Parameter]
     public string? Token { get; set; }
@@ -39,5 +45,14 @@ else
     protected override async Task OnInitializedAsync()
     {
         User = await Http.GetFromJsonAsync<AccountDetailsDto>("/api/Account/"+Token);
+    }
+
+    private async Task navigateToProject(string p)
+    {
+        var project = await Http.GetFromJsonAsync<IReadOnlyCollection<ProjectDetailsDto>>("/api/Project/"+p);
+        if (project != null)
+        {
+            _navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
+        }
     }
 } 

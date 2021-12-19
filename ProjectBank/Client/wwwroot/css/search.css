@@ -1,22 +1,18 @@
-
-.searchBar_wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
+.search_container{
+    position: relative;
+    left: 19%;
+    
 }
-
 .searchBar{
     position: relative;
-    width: 55%;
+    padding: 0;
+    width: 50%;
     height: 50px;
     margin: 0;
-    padding: 0;
     background-color: #fff;
     border: none;
-    border-bottom-left-radius: 10px;
-    border-top-left-radius: 10px;
     outline: none;
+    
 }
 
 input[type=text]{
@@ -28,13 +24,59 @@ input[type=text]{
     position: relative;
     height: 50px;
     width: 50px;
-    border-left:1  #212121;
-    border-bottom: none;
-    border-top: none;
-    border-right: none;
+    left: -3px;
+    border: none;
     background-color:#fff;
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
+}
+
+.dropdown_menu_filter{
+     position: relative;
+     background: white;
+     color: #1a1e21;
+     border-bottom-left-radius: 10px;
+     border-bottom-right-radius: 10px;
+     width: 120px;
+     height: fit-content;
+     right: 1px;
+     top: 1px;
+ }
+.drop_filter_content{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.filter_btn{
+    position: relative;
+    height: 50px;
+    width: 70px;
+    right: 1px;
+    border: none;
+    background-color:#fff;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    transition: all 0.5s ease;
+}
+
+.close_filter{
+    background: none;
+    border: none;
+    float: right;
+}
+
+
+
+.clear_filter{
+    background: none;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    color: #5c636a;
+    text-decoration: underline;
+}
+
+.clear_filter:hover{
+    color: #1a1e21;
 }
 
 .project_center{
@@ -162,3 +204,4 @@ input[type=text]{
 .to_top_button:hover{
     background-color: #ffffff;
 }
+
