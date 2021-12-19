@@ -3,7 +3,7 @@ namespace ProjectBank.Core;
 public interface IKeywordRepository
 {
     Task<KeywordDto> CreateAsync(KeywordCreateDto keyword);
-    Task<KeywordDto?> ReadAsync(int keywordId);
+    Task<KeywordDetailsDto?> ReadAsync(int keywordId);
     Task<IReadOnlyCollection<KeywordDetailsDto>> ReadAllAsync();
     Task<IReadOnlyCollection<string>> ReadAllWordsAsync();
     Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordAsync(KeywordDto keyword);
@@ -12,4 +12,6 @@ public interface IKeywordRepository
     Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string keyword);
     //Task<ProjectDetailsDto?> ReadProjectGivenKeywordAsync(string keyword, int[] seenProjectIDs);
     Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenAsync(string keyword, int timesSeen);
+    Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordAndDegreeAsync(string keyword, Degree degree = Degree.Unspecified);
+    Task<int> ReadNumberOfProjectsGivenKeyword(string keyword);
 }

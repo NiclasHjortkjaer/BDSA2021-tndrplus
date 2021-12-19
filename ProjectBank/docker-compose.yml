@@ -4,7 +4,7 @@ version: '3.9'
 
 services:
   db:
-    image: mcr.microsoft.com/azure-sql-edge #mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2019-latest #mcr.microsoft.com/azure-sql-edg
     environment:
       ACCEPT_EULA: 'Y'
       MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
@@ -43,6 +43,7 @@ services:
         target: ConnectionStrings__ProjectBank
       - source: storage_key
         target: StorageAccountKey
+
     volumes:
       - ../../../.aspnet/https:/https/
 

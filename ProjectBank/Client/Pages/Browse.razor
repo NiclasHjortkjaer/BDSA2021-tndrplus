@@ -1,31 +1,36 @@
 @page "/browse"
-@using System.Net
 @inject HttpClient Http
 @inject NavigationManager navigationManager
-@* @page "/" burde redirect til page "/browse"* *@
-
 
 <PageTitle>ProjectBank - Browse</PageTitle>
-
-<div class="browse_all">
-    <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
-</div>
-
+<div class="aligner">
+    <div class="browse_all">
+            <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
+    </div>
+    <div class="filter_browse">
+            <button onclick="" style="background: none; border: none;">
+                <img src="filter.png" alt="" style="height: 20px"/>
+            </button>
+    </div>
+</div>  
 @if (keywords == null)
     {
-       <h1>Loading...</h1> 
+        <div id="app">
+            <div class="centered">
+                <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+        </div>
     }else{
         <div class="grid-container">
             @foreach (var keyword in keywords)
             {
-                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))" >@keyword.Word</button>
+                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))">@keyword.Word</button>
             }
 
         </div>
     }
+<br>
 
 @code{
-
     private KeywordDto[]? keywords;
     
     protected override async Task OnInitializedAsync()
@@ -39,7 +44,8 @@
             exception.Redirect();
         }
     }
-
+    
+    
     private void redirectToSwipePage(string keyword)
     {
         navigationManager.NavigateTo("swipe/"+keyword);
@@ -49,5 +55,4 @@
     {
         navigationManager.NavigateTo("swipe/all");
     }
-
 }

@@ -6,7 +6,6 @@
 @inject AuthenticationStateProvider _authenticationStateProvider;
 @inject HttpClient _http
 
-
 @attribute [Authorize]
 
 <PageTitle>Settings</PageTitle>
@@ -18,7 +17,7 @@
             <RadzenLabel Text="Name:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_name style="width: 50%;" Name="Name"/>
+            <RadzenTextBox Disabled=true Placeholder=@_name style="width: 50%; background-color: white;" Name="Name"/>
         </div>
     </div>
     <div class="row">
@@ -26,7 +25,7 @@
             <RadzenLabel Text="Email:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_email style="width: 50%;" Name="Email"/>
+            <RadzenTextBox Disabled=true Placeholder=@_email style="width: 50%; background-color: white;" Name="Email"/>
         </div>
     </div>
     <div class="row">
@@ -34,14 +33,10 @@
             <RadzenLabel Text="Role:"/>
         </div>
         <div class="col-md-9">
-            <RadzenTextBox Disabled=true Placeholder=@_currentRole style="width: 50%;" Name="Role"/>
+            <RadzenTextBox Disabled=true Placeholder=@_currentRole style="width: 50%; background-color: white;" Name="Role"/>
         </div>
     </div>
 </RadzenFieldset>
-
-
-<RadzenButton Click=@Edit Text="Edit profile"/>
-<RadzenButton style="width: 160px" IsBusy=@_busyProfile Click=@OnBusyClickProfile Text="Save"/>
 
 <h2 style="padding-top: 2em">Profile picture:</h2>
 @if (_account != null)
@@ -63,7 +58,8 @@
 }
 
 
-<h2 style="padding-top: 3em; padding-bottom: 1em">Projects created by you:</h2>
+
+<h2 style="padding-top: 3em; padding-bottom: 1em">Projects ideas created by you:</h2>
 @if (_userProjects.Any())
 {
     <table class="table table-striped" style="color: white">
@@ -90,30 +86,19 @@ else
     <h3>You have made no projects yet.</h3>
 }
 
-
-
 @code {
-
     //VARIABLES
-
-    private bool _editing = true;
     private bool _busyProfile;
-
     private string? _name;
     private string? _email;
     private string? _currentRole;
     private string? _azureAdtoken;
     private AccountDetailsDto? _account;
+    private bool isProject = false;
     ProjectDetailsDto[]? _projects;
     private readonly List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
 
-
     //PAGE SCRIPTS
-    private void Edit()
-    {
-        _editing = !_editing;
-    }
-
     protected override async Task OnInitializedAsync()
     {
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
@@ -137,21 +122,6 @@ else
     {
         var response = await _http.DeleteAsync($"/api/Project/{id}");
         Console.WriteLine(response.StatusCode);
-        _busyProfile = false;
         _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
-    }
-
-    private async Task OnBusyClickProfile()
-    {
-        _busyProfile = true;
-        await Task.Delay(2000);
-        UpdateProfile();
-        _busyProfile = false;
-        _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
-    }
-
-    private void UpdateProfile()
-    {
-    //...
     }
 }
