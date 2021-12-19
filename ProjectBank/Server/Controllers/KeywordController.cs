@@ -61,31 +61,6 @@ public class KeywordController : ControllerBase
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
         => await _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
 
-/*
-    [AllowAnonymous]
-    [HttpGet("singleProject/{keyword}/{seenProjectIDs}")]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
-    public async Task<ProjectDetailsDto?> GetSingleProject([FromRoute]string keyword, [FromRoute] int[] seenKeywordIDs)
-    {
-        Console.WriteLine("OKAYYYYY");
-        Console.WriteLine("I GETT ITTT");
-        return await _repository.ReadProjectGivenKeywordAsync(keyword, seenKeywordIDs); 
-    }
-
-    /*[AllowAnonymous]
-    [HttpGet("get/RandomProject")]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(typeof(ProjectDto), 200)]
-    public async Task<ProjectDto>? GetRandomProject()
-       => await _repository.ReadWeightedRandomProjectAsync();
-
-    [Authorize]
-    [HttpPut("{keywordName}")]
-    [ProducesResponseType(204)]
-    public async Task<Status> Put(string keywordName, [FromBody] bool userLikedProject)
-        => await _repository.UpdateRatioAsync(keywordName, userLikedProject);
-*/
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(KeywordDto), 201)]
@@ -95,13 +70,6 @@ public class KeywordController : ControllerBase
 
         return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }
-
-    /* [Authorize]
-    [HttpPut("{id}")]
-    [ProducesResponseType(204)]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> Put(int id, [FromBody] KeywordUpdateDto keyword)
-        => (await _repository.UpdateAsync(id, keyword)).ToActionResult(); */
 
     [Authorize]
     [HttpDelete("{id}")]

@@ -144,30 +144,6 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
             .Select(k => k.Projects)
             .FirstOrDefault()!
             .Count();
-    
-    /* public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
-    {
-        var conflict = await _context.Keywords
-            .Where(k => k.Id != keyword.Id)
-            .Where(k => k.Word == keyword.Word)
-            .Select(k => new KeywordDto(k.Id, k.Word))
-            .AnyAsync();
-        if (conflict)
-        {
-            return Status.Conflict;
-        }
-
-        var entity = await _context.Keywords.FirstOrDefaultAsync(k => k.Id == id);
-        
-        if (entity == default)
-        {
-            return Status.NotFound;
-        }
-
-        entity.Word = keyword.Word;
-        await _context.SaveChangesAsync();
-        return Status.Updated;
-    } */
 
     public async Task<Status> DeleteAsync(int keywordId)
     {
