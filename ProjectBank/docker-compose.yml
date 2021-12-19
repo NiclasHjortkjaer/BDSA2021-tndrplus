@@ -41,6 +41,9 @@ services:
     secrets:
       - source: connection_string
         target: ConnectionStrings__ProjectBank
+      - source: storage_key
+        target: StorageAccountKey
+
     volumes:
       - ../../../.aspnet/https:/https/
 
@@ -49,5 +52,5 @@ secrets:
     file: ../../../.local/db_password.txt
   connection_string:
     file: ../../../.local/connection_string.txt
-  storage_connection_string:
-    file: ../../../.local/storage_connection_string.txt
+  storage_key:
+    file: ../../../.local/storage_key.txt

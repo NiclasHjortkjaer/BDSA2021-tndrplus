@@ -1,5 +1,6 @@
-@page "/user/{Token}"
+@page "/profile/{Token}"
 @inject HttpClient Http
+@inject NavigationManager _navigationManager
 
 <h1>Profile</h1>
 
@@ -19,13 +20,16 @@ else
                      <div><img class="card-img-top" src=@User.PictureUrl alt="Project image" style="align-content: center; justify-content: center; padding: 3em"></div>
                  }
                 <div>
-                    <b style="color:black;">Authored (@User?.SavedProjects.Count):</b>
+
+                    <b style="color:black;">Favorite projects (@User?.SavedProjects.Count):</b>
+
                     <div style="color:black;">
                         @if (User != null)
                         {
                             foreach (var project in User.SavedProjects)
                             {
-                                <div>@project</div>
+                                <div><x @onclick="() => navigateToProject(project)">@project</x></div>
+
                             }
                         }
                     </div>
@@ -44,5 +48,14 @@ else
     protected override async Task OnInitializedAsync()
     {
         User = await Http.GetFromJsonAsync<AccountDetailsDto>("/api/Account/"+Token);
+    }
+
+    private async Task navigateToProject(string p)
+    {
+        var project = await Http.GetFromJsonAsync<IReadOnlyCollection<ProjectDetailsDto>>("/api/Project/"+p);
+        if (project != null)
+        {
+            _navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
+        }
     }
 } 

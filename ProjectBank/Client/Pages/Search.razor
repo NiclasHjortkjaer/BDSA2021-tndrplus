@@ -1,12 +1,46 @@
 ﻿@page "/search"
+@using System.Data.SqlTypes
+@using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
+@inject ProjectStateChanged projectChanged
+@inject NavigationManager _navigationManager
 
 <PageTitle>ProjectBank - Search</PageTitle>
 
-<div class="searchBar_wrapper">
-    <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
-    <button class="btn_search" @onclick="LoadProjects"> <span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
+<div class="search_container">
+    <div class="searchBar_wrapper">
+        @if (!_isDropedDown)
+        {
+            <button class="filter_btn" @onclick="dropdown">Filter <span class="oi oi-chevron-bottom"></span></button>
+        }
+        else
+        {
+            <button class="filter_btn" @onclick="dropdown" style="border-bottom-left-radius: 0">Filter <span class="oi oi-chevron-top"></span></button>
+        }
+        <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
+        <button class="btn_search" @onclick="LoadProjects"><span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
+        </div>
+    @if(_isDropedDown)
+            {
+                <div class="dropdown_menu_filter">
+                    <div class="drop_filter_content">
+                        <span style="text-decoration: underline">Degrees:</span> <br/>
+                        <input type="radio" id="bCheck" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/>
+                            <label for="bCheck" style="cursor: pointer">Bachelor</label> <br/>
+                        
+                        <input type="radio" id="mCheck" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/>
+                            <label for="mCheck" style="cursor: pointer"> Master</label> <br/>
+                        
+                        <input type="radio" id="pCheck" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/>
+                            <label for="pCheck" style="cursor: pointer"> PHD</label> <br/>
+                        
+                        <div class="center_btn" style="text-align: center">
+                            <span class="clear_filter" @onclick="(() =>  OnCheck('C'))">Reset filter</span>
+                        </div>
+                    </div>
+                </div>
+            }
 </div>
 
 @if (_projects != null)
@@ -29,8 +63,8 @@
                             <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label>
                         }
                     </div>
-                    <div id="project_search_title">Title: @project.Title </div>
-                    <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
+                    <div id="project_search_title">Title: <x onclick="@(() => _navigationManager.NavigateTo($"/projects/{project.Id}"))" style="cursor: pointer;">@project.Title</x></div>
+                    <div id="search_supervisor">by: <x onclick="@(() => _navigationManager.NavigateTo($"/user/{project.AuthorName}"))" style="cursor: pointer;">@project.AuthorName</x></div>
                     <br>
                     <hr>
                     <br>
@@ -73,12 +107,14 @@
 }
 
 @code {
+
     private string _searchText = "";
+
     ProjectDetailsDto[]? _projects;
 
     async Task LoadProjects()
     {
-        await OnSearch();
+        await OnChange();
         try
         {
             _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
@@ -96,23 +132,33 @@
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
     //await LoadProjects();
-            await OnSearch();
-            try
+            await OnChange();
+            if (_bachelorChecked && _masterChecked && _phdChecked)
             {
-                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+                try
+                {
+                   _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+                }
+                   catch (AccessTokenNotAvailableException exception)
+                {
+                   exception.Redirect();
+                                    
+                }
+                   await InvokeAsync(StateHasChanged);
             }
-            catch (AccessTokenNotAvailableException exception)
+            //need to look for filter checks
+            else
             {
-                exception.Redirect();
+                
             }
-            await InvokeAsync(StateHasChanged);
         }
     }
+
 
     private IEnumerable<string> _likedProjects = null!;
     private string? _aToken;
 
-    protected async Task OnSearch()
+    protected async Task OnChange()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -129,20 +175,72 @@
                 }
             }
         }
+        _isDropedDown = false;
     }
-    
-    private async Task AddOrRemoveFavorite(string t)
-    {
 
-        if (_likedProjects.Contains(t))
+    
+    private async Task AddOrRemoveFavorite(string title)
+    {
+        if (_likedProjects.Contains(title))
         {
-            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", t);
+            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", title);
+            projectChanged.RemoveSavedProjects(title);
         }
-        
-        if (!_likedProjects.Contains(t))
+
+        if (!_likedProjects.Contains(title))
         {
-            await Http.PostAsJsonAsync($"api/Account/{_aToken}", t);
+            await Http.PostAsJsonAsync($"api/Account/{_aToken}", title);
+            projectChanged.AddSavedProjects(title);
+        }
+        await OnChange();
+    }
+
+    private bool _isDropedDown;
+
+    private void dropdown()
+    {
+        if (_isDropedDown)
+        {
+            _isDropedDown = false;
+        }
+        else
+        {
+            _isDropedDown = true;
+        }
+    }
+
+    private bool _bachelorChecked = true;
+    private bool _masterChecked = true;
+    private bool _phdChecked = true;
+
+    private void OnCheck(char s)
+    {
+        if (s == 'B')
+        {
+            _bachelorChecked = true;
+            _masterChecked = false;
+            _phdChecked = false;
+        }
+
+        if (s == 'M')
+        {
+            _bachelorChecked = false;
+            _masterChecked = true;
+            _phdChecked = false;
+        }
+
+        if (s == 'P')
+        {
+            _bachelorChecked = false;
+            _masterChecked = false;
+            _phdChecked = true;
+        }
+
+        if (s == 'C')
+        {
+            _bachelorChecked = true;
+            _masterChecked = true;
+            _phdChecked = true;
         }
     }
 }
-

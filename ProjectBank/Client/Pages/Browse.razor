@@ -3,23 +3,62 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>ProjectBank - Browse</PageTitle>
-
 <div class="browse_all">
-    <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
+            <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
+    </div>
+<div class="filter_browse">
+    @if (!_isDropedDown)
+    {
+        <button @onclick="dropdown" style="background: none; border: none;">
+            <img src="filter.png" alt="" style="height: 20px"/>
+        </button>
+    }
+    @if(_isDropedDown)
+    {
+        <button @onclick="dropdown" style="background: #ffffff; border: none; border-top-left-radius: 10px; border-top-right-radius: 10px">
+            <img src="filterBlack.png" alt="" style="height: 20px"/>
+        </button>
+    }
 </div>
+@if (_isDropedDown)
+{
+    <div class="align-right">
+        <div class="dropdown_menu_filter_browse">
+            <div class="drop_filter_content_browse">
+                <span style="text-decoration: underline">Degrees:</span> <br/>
+                <input type="radio" id="bCheck" checked="@_bachelorChecked" @onclick="(() => OnCheck('B'))"/>
+                <label for="bCheck" style="cursor: pointer">Bachelor</label> <br/>
+
+                <input type="radio" id="mCheck" checked="@_masterChecked" @onclick="(() => OnCheck('M'))"/>
+                <label for="mCheck" style="cursor: pointer"> Master</label> <br/>
+
+                <input type="radio" id="pCheck" checked="@_phdChecked" @onclick="(() => OnCheck('P'))"/>
+                <label for="pCheck" style="cursor: pointer"> PHD</label> <br/>
+
+                <div class="center_btn" style="text-align: center">
+                    <span class="clear_filter" @onclick="(() => OnCheck('C'))">Reset filter</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @if (keywords == null)
     {
-       <h1>Loading...</h1> 
+        <div id="app">
+            <div class="centered">
+                <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+        </div>
     }else{
         <div class="grid-container">
             @foreach (var keyword in keywords)
             {
-                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))" >@keyword.Word</button>
+                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))">@keyword.Word</button>
             }
 
         </div>
     }
+<br>
 
 @code{
     private KeywordDto[]? keywords;
@@ -35,7 +74,8 @@
             exception.Redirect();
         }
     }
-
+    
+    
     private void redirectToSwipePage(string keyword)
     {
         navigationManager.NavigateTo("swipe/"+keyword);
@@ -44,5 +84,55 @@
     private void redirectToSwipeAllPage()
     {
         navigationManager.NavigateTo("swipe/all");
+    }
+
+
+    private bool _isDropedDown;
+
+    private void dropdown()
+    {
+        if (_isDropedDown)
+        {
+            _isDropedDown = false;
+        }
+        else
+        {
+            _isDropedDown = true;
+        }
+    }
+
+    private bool _bachelorChecked = true;
+    private bool _masterChecked = true;
+    private bool _phdChecked = true;
+
+    private void OnCheck(char s)
+    {
+        if (s == 'B')
+        {
+            _bachelorChecked = true;
+            _masterChecked = false;
+            _phdChecked = false;
+        }
+
+        if (s == 'M')
+        {
+            _bachelorChecked = false;
+            _masterChecked = true;
+            _phdChecked = false;
+        }
+
+        if (s == 'P')
+        {
+            _bachelorChecked = false;
+            _masterChecked = false;
+            _phdChecked = true;
+        }
+
+        if (s == 'C')
+        {
+            _bachelorChecked = true;
+            _masterChecked = true;
+            _phdChecked = true;
+        }
     }
 }

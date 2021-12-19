@@ -82,10 +82,17 @@ public class KeywordFinder : IKeywordFinder
 
     public async Task<ProjectDetailsDto?> ReadProjectGivenKeywordAsync(string keyword)
     {
+
+        if (!_keywords.ContainsKey(keyword))
+        {
+            return null;
+        }
+
         var timesSeen = _keywords.GetValueOrDefault(keyword);
 
         _keywords[keyword]++;
-
-        return await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/keyword/{keyword}/{timesSeen}");  
+        
+        return await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/keyword/{keyword}/{timesSeen}");
+        
     }
 }

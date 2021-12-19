@@ -34,7 +34,7 @@ public class AccountRepository : IAccountRepository
             newAccount.SavedProjects.Select(a => a.Title).ToHashSet());
     }
 
-    public async Task<AccountDetailsDto> ReadAsync(int accountId)
+    public Task<AccountDetailsDto> ReadAsync(int accountId)
     {
         var accounts = from a in _context.Accounts
             where a.Id == accountId
@@ -46,10 +46,10 @@ public class AccountRepository : IAccountRepository
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
-        return await accounts.FirstOrDefaultAsync();
+        return accounts.FirstOrDefaultAsync();
     }
     
-    public async Task<AccountDetailsDto> ReadFromTokenAsync(string azureAdToken)
+    public Task<AccountDetailsDto> ReadFromTokenAsync(string azureAdToken)
     {
         var accounts = from a in _context.Accounts
             where a.AzureAdToken == azureAdToken
@@ -61,7 +61,7 @@ public class AccountRepository : IAccountRepository
                 a.SavedProjects.Select(p => p.Title).ToHashSet()
             );
 
-        return await accounts.FirstOrDefaultAsync();
+        return accounts.FirstOrDefaultAsync();
     }
     public async Task<ICollection<int>> ReadLikedProjectsFromTokenAsync(string azureToken)
     {

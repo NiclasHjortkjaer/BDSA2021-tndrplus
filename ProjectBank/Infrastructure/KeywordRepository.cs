@@ -25,16 +25,17 @@ public class KeywordRepository : IKeywordRepository
         return new KeywordDto(entity.Id, entity.Word);
     }
 
-    public async Task<KeywordDto?> ReadAsync(int keywordId)
+public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
     {
         var keywords = from k in _context.Keywords
             where k.Id == keywordId
-            select new KeywordDto(
+            select new KeywordDetailsDto(
                 k.Id,
-                k.Word
+                k.Word,
+                k.Projects.Select(p => p.Title).ToHashSet()
             );
 
-        return await keywords.FirstOrDefaultAsync();
+        return keywords.FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyCollection<KeywordDetailsDto>> ReadAllAsync() =>
@@ -67,15 +68,17 @@ public class KeywordRepository : IKeywordRepository
         return list.AsReadOnly();
     }
 
+    
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string input)
     {
         if (string.IsNullOrWhiteSpace(input)) {
             return new List<ProjectDetailsDto>();
-        }
 
+        }
         var entity = await _context.Keywords
             //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
             .Include("Projects.Author") //Eager load multople levels. Use string to specify reltaionship
+            .Include("Projects.Keywords")
             .FirstOrDefaultAsync(e => e.Word == input);
         if (entity == null)
         {
@@ -91,10 +94,57 @@ public class KeywordRepository : IKeywordRepository
         }
         return list.AsReadOnly();
     }
+   
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordAndDegreeAsync(string input, Degree degree = Degree.Unspecified)
+    {
+        if (string.IsNullOrWhiteSpace(input)) {
+            return new List<ProjectDetailsDto>();
+        } 
+        var entity = await _context.Keywords
+            .Include("Projects.Author")
+            .FirstOrDefaultAsync(e => e.Word == input);
+        
+        if (entity == null)
+        {
+            return new List<ProjectDetailsDto>().AsReadOnly();
+        }
+
+        var list = new List<ProjectDetailsDto>();
+        
+        if (degree == Degree.Unspecified) //The default parameter value of degree is Unspecified, so if no specific degree is given, we just pick em all matching the keyword
+        {
+            foreach (var p in entity.Projects)
+            {
+            
+                ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+                list.Add(new ProjectDetailsDto(
+                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+            }
+        }
+        else
+        {
+            foreach (var p in entity.Projects)
+            {
+                if (p.Degree == degree)
+                {
+                    ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+                    list.Add(new ProjectDetailsDto(
+                        p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description ,p.Degree, p.ImageUrl ,p.FileUrl, p.Ects, p.LastUpdated,keywords));
+                }
+            } 
+        }
+        return list.AsReadOnly();
     
-
-
-
+    }
+    
+    //TODO bør den her være async?
+    public async Task<int> ReadNumberOfProjectsGivenKeyword(string keyword)
+        => _context.Keywords
+            .Where(k => k.Word == keyword)
+            .Select(k => k.Projects)
+            .FirstOrDefault()!
+            .Count();
+    
     /* public async Task<Status> UpdateAsync(int id, KeywordUpdateDto keyword)
     {
         var conflict = await _context.Keywords
@@ -161,6 +211,16 @@ public class KeywordRepository : IKeywordRepository
                     p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
         }
 
+
+
+        if (timesSeen < entity.Projects.Count())
+        {
+            var p = entity.Projects.ElementAt(timesSeen);
+            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+
+            return new ProjectDetailsDto(
+                    p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
+        }
 
         //Returns random project, when there are no more projects with the given keyword
         //Does not promise, not to show an already shown project

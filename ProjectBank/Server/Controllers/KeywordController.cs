@@ -30,8 +30,8 @@ public class KeywordController : ControllerBase
     [AllowAnonymous]
     [HttpGet("getby/{id}")]
     [ProducesResponseType(404)]
-    [ProducesResponseType(typeof(KeywordDto), 200)]
-    public async Task<KeywordDto>? Get(int id)
+    [ProducesResponseType(typeof(KeywordDetailsDto), 200)]
+    public async Task<KeywordDetailsDto>? Get(int id)
        => await _repository.ReadAsync(id);
 
     [AllowAnonymous]
@@ -47,6 +47,20 @@ public class KeywordController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword)
         => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
+    
+    [AllowAnonymous]
+    [HttpGet("count/{keyword}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(int), 200)]
+    public async Task<int> GetCount([FromRoute]string keyword)
+        => await _repository.ReadNumberOfProjectsGivenKeyword(keyword); 
+
+    [HttpGet("withType/{keyword}/{degree}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
+        => await _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
+
 /*
     [AllowAnonymous]
     [HttpGet("singleProject/{keyword}/{seenProjectIDs}")]
