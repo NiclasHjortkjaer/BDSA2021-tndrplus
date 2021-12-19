@@ -153,13 +153,13 @@
                     NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success creating project!", Detail = "Now in database", Duration = 4000};
                     _notificationService.Notify(success);
                     await Task.Delay(2000);
-                    _busy = false;
                     _navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{created!.Id}");
                 }
                 else
                 {
                     NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Project not saved", Duration = 4000};
                     _notificationService.Notify(error);
+                    
                 }
             }
             catch (AccessTokenNotAvailableException exception)
@@ -167,6 +167,7 @@
                 exception.Redirect();
             }
         }
+        _busy = false;
     }
 
     void OnChange(string value, string name)
