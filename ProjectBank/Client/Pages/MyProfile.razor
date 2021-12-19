@@ -2,9 +2,10 @@
 @page "/account/myprofile"
 
 <!---- USINGS ATTRIBUTES AND INJECTIONS  ---->
-@inject NavigationManager _uriHelper;
-@inject AuthenticationStateProvider _authenticationStateProvider;
+@inject NavigationManager _uriHelper
+@inject AuthenticationStateProvider _authenticationStateProvider
 @inject HttpClient _http
+@inject NavigationManager _navigationManager
 
 @attribute [Authorize]
 
@@ -50,9 +51,10 @@
         @foreach (var project in _userProjects)
         {
             <tr style="color: white">
-                <td>@project?.Title </td>
+                <td><x onclick="@(() => _navigationManager.NavigateTo($"/projects/{project?.Id}"))" style="cursor: pointer;">@project?.Title</x></td>
                 <td>
-                    <RadzenButton style="width: 150px;height:30px;margin-left:80%" IsBusy=@_busyProfile Click="@(e => DeleteProject(project!.Id))" Text="Delete"/>
+                    <RadzenButton style="width: 150px;height:30px;margin-left:80%;" IsBusy=@_busyProfile Click="@(e => UpdateProject(project!.Id))" Text="Update"/>
+                    <RadzenButton style="width: 150px;height:30px;margin-left:80%;" IsBusy=@_busyProfile Click="@(e => DeleteProject(project!.Id))" Text="Delete"/>
                 </td>
             </tr>
         }
@@ -101,6 +103,11 @@ else
         var response = await _http.DeleteAsync($"/api/Project/{id}");
         Console.WriteLine(response.StatusCode);
         _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
+    }
+
+    private void UpdateProject(int id)
+    {
+        _navigationManager.NavigateTo($"/editproject/{id}");
     }
 
     private void UploadPicture()

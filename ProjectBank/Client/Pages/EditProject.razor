@@ -1,13 +1,14 @@
-@page "/createproject"
-@inject HttpClient _http
+@page "/editproject/{Id}"
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NotificationService _notificationService
 @inject NavigationManager _navigationManager
-@inject AuthenticationStateProvider _authenticationStateProvider;
-@inject NotificationService _notificationService;
 
-<PageTitle>ProjectBank - CreateProject</PageTitle>
-<RadzenNotification/>
-<h2>Create a new project idea:</h2>
-
+@if (_oldProject == null){
+<h3>Loading ...</h3>
+} else if (_oldProject.AuthorToken != _token){
+<h3>You do not have permission to edit this project.</h3>
+} else {
 <RadzenFieldset class="mb-4">
     <div class="row">
         <div class="align-items-center d-flex col-md-3">
@@ -30,7 +31,7 @@
             <RadzenLabel Text="Degree:"/>
         </div>
         <div class="col-md-9">
-            <RadzenDropDown AllowClear="true" Item="enums" T="enums" Class="w-100" @bind-Value="_project.Degree" Data="_enums"/>
+            <RadzenDropDown AllowClear="true" Item="enums" T="enums" Class="w-100" @bind-Value="_project.Degree" Data="_degrees"/>
         </div>
     </div>
     <div class="row">
@@ -50,37 +51,60 @@
             <RadzenListBox AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@_multipleValues Multiple="true" Data=@_keywords
                            Style="height:200px;color:black;" Class="w-100"/>
         </div>
-        <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@_busy Click=@CreatesProject Text="Save"/>
+        <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@_busy Click=@UpdateProject Text="Save"/>
     </div>
 </RadzenFieldset>
+}
 
-
-@code {
-    private string? _name;
-    private string? _token;
-    bool _busy;
-    private ProjectCreateDto _project = new();
-    private IEnumerable<string> _multipleValues = new[] {"AI"};
+@code{
+    [Parameter]
+    public string Id { get; set; }
+    private string _token;
+    private ProjectDetailsDto _oldProject;
+    private ProjectUpdateDto _project = new();
     private List<string> _keywords = new();
-    Enum[] _enums = {Degree.Bachelor, Degree.Master, Degree.PHD};
+    Enum[] _degrees = {Degree.Bachelor, Degree.Master, Degree.PHD};
     float[] _etcs = {7.5f, 15f};
-
+    private IEnumerable<string> _multipleValues;
+    bool _busy;
+    
     protected override async Task OnInitializedAsync()
     {
-        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            _name = user.Identity?.Name;
+            var name = user.Identity?.Name;
             _token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
 
             try
             {
-                var _dtoKeywords = await _http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
-                if (_dtoKeywords != null)
+                _oldProject = await Http.GetFromJsonAsync<ProjectDetailsDto>("api/Project/"+Id.ToString());
+                _multipleValues = _oldProject.Keywords;
+                _project.AuthorToken = _token;
+                _project.AuthorName = name;
+                _project.Title = _oldProject.Title;
+                _project.Description = _oldProject.Description;
+                _project.Degree = _oldProject.Degree;
+                _project.ImageUrl = _oldProject.ImageUrl;
+                _project.FileUrl = _oldProject.FileUrl;
+                _project.LastUpdated = _oldProject.LastUpdated;
+                _project.Ects = _oldProject.Ects;
+                _project.Id = Int32.Parse(Id);
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
+        
+            try
+            {
+                var _dtoKeywords = await Http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
+                if (_dtoKeywords != null){
                     foreach (var keyword in _dtoKeywords)
                     {
                         _keywords.Add(keyword.Word);
                     }
+                }
             }
             catch (AccessTokenNotAvailableException exception)
             {
@@ -89,12 +113,11 @@
         }
     }
 
-    private async Task CreatesProject()
+    private async Task UpdateProject()
     {
         _busy = true;
 
-        _project.AuthorName = _name;
-        _project.AuthorToken = _token;
+        //Update project
         _project.LastUpdated = DateTime.UtcNow;
         ISet<string> keySet = new HashSet<string>();
         foreach (var keyword in _multipleValues)
@@ -138,15 +161,14 @@
 
             try
             {
-                var response = await _http.PostAsJsonAsync("api/Project", _project);
-                var created = await response.Content.ReadFromJsonAsync<ProjectDetailsDto>();
+                var response = await Http.PutAsJsonAsync($"api/Project/{Id}", _project);
 
                 if (response.IsSuccessStatusCode)
                 {
                     NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success creating project!", Detail = "Now in database", Duration = 4000};
                     _notificationService.Notify(success);
                     await Task.Delay(2000);
-                    _navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{created!.Id}");
+                    _navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{Id}", true);
                 }
                 else
                 {
@@ -160,9 +182,9 @@
                 exception.Redirect();
             }
         }
+        //END
         _busy = false;
     }
-
     void OnChange(string value, string name)
     {
     }
