@@ -26,4 +26,10 @@ public class SearchQueryController : ControllerBase {
     public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string input) 
         => await _management.ReadSearchQueryAsync(input);
         
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
+    [ProducesResponseType(404)]
+    [HttpGet("{searchString}/{degreeInt}")]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string input, int degreeInt) 
+        => await _management.ReadSearchQueryAsync(input, (Degree) degreeInt);
 }

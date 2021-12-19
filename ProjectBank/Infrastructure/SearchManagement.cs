@@ -11,16 +11,28 @@ public class SearchManagement : ISearchManagement
         _keyword_repo = keyword_repo;
     }
 
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadSearchQueryAsync(string input)
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadSearchQueryAsync(string searchString)
     {
-        var projectsGivenTitle = await _project_repo.ReadTitleAsync(input);
-        var projectsGivenAuthor = await _project_repo.ReadAuthorAsync(input);
-        var projectsGivenKeyword = await _keyword_repo.ReadAllProjectsWithKeywordStringAsync(input);
+        var projectsGivenTitle = await _project_repo.ReadTitleAsync(searchString);
+        var projectsGivenAuthor = await _project_repo.ReadAuthorAsync(searchString);
+        var projectsGivenKeyword = await _keyword_repo.ReadAllProjectsWithKeywordStringAsync(searchString);
     
         var ProjectComparer = new ProjectComparer();
 
         var projects = projectsGivenTitle.Union(projectsGivenAuthor, ProjectComparer).Union(projectsGivenKeyword, ProjectComparer);
         return projects.ToList();
 
+    }
+
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadSearchQueryAsync(string searchString, Degree degree)
+    {
+        var projectsGivenTitle = await _project_repo.ReadTitleGivenDegreeAsync(searchString, degree);
+        var projectsGivenAuthor = await _project_repo.ReadAuthorGivenDegreeAsync(searchString, degree);
+        var projectsGivenKeyword = await _keyword_repo.ReadAllProjectsWithKeywordAndDegreeAsync(searchString, degree);
+    
+        var ProjectComparer = new ProjectComparer();
+
+        var projects = projectsGivenTitle.Union(projectsGivenAuthor, ProjectComparer).Union(projectsGivenKeyword, ProjectComparer);
+        return projects.ToList();
     }
 }

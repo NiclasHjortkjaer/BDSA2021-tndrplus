@@ -24,13 +24,15 @@
             {
                 <div class="dropdown_menu_filter">
                     <div class="drop_filter_content">
-                        <span style="text-decoration: underline">Degress:</span> <br/>
-                        <input type="checkbox" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/><span> Bachelor</span> <br/>
-                        <input type="checkbox" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/><span> Master</span> <br/>
-                        <input type="checkbox" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/><span> PHD</span> <br/>
-                        <div class="center_btn" style="text-align: center">
-                            <span class="clear_filter" @onclick="(() =>  OnCheck('C'))">Reset filter</span>
-                        </div>
+                        <form method="post" action="/Tests/Post" onsubmit="return ValidateForm();">
+                            <fieldset>
+                            <legend>Degress:</legend>
+                            <input type="radio" name="degrees" value="3" checked>All<br>
+                            <input type="radio" name="degrees" value="0">Bachelor<br>
+                            <input type="radio" name="degrees" value="1">Master<br>
+                            <input type="radio" name="degrees" value="2">PHD<br>
+                            </fieldset>
+                        </form>
                     </div>
                 </div>
             }
@@ -103,19 +105,28 @@
 
     private string _searchText = "";
 
+    public int SelectedDegreeInt { get; set; } = 3; //(int) Degree.Unspecified;
     ProjectDetailsDto[]? _projects;
 
     async Task LoadProjects()
     {
         await OnChange();
-        try
+        if (SelectedDegreeInt == 4) //(int) Degree.Unspecified)
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+            try
+            {
+                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
         }
-        catch (AccessTokenNotAvailableException exception)
+        else
         {
-            exception.Redirect();
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{SelectedDegreeInt}");
         }
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -124,27 +135,9 @@
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-    //await LoadProjects();
-            await OnChange();
-            if (_bachelorChecked || _masterChecked || _phdChecked)
-            {
-                
-            }
-            else
-            {
-                try
-                {
-                    _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
-                }
-                catch (AccessTokenNotAvailableException exception)
-                {
-                    exception.Redirect();
-                }
-                await InvokeAsync(StateHasChanged);
-            }
+            await LoadProjects();
         }
     }
-
 
     private IEnumerable<string> _likedProjects = null!;
     private string? _aToken;
@@ -196,35 +189,6 @@
         else
         {
             _isDropedDown = true;
-        }
-    }
-
-    private bool _bachelorChecked = true;
-    private bool _masterChecked = true;
-    private bool _phdChecked = true;
-
-    private void OnCheck(char s)
-    {
-        if (s == 'B')
-        {
-            _bachelorChecked = !_bachelorChecked;
-        }
-
-        if (s == 'M')
-        {
-            _masterChecked = !_masterChecked;
-        }
-
-        if (s == 'P')
-        {
-            _phdChecked = !_phdChecked;
-        }
-
-        if (s == 'C')
-        {
-            _bachelorChecked = true;
-            _masterChecked = true;
-            _phdChecked = true;
         }
     }
 }

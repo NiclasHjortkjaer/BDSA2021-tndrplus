@@ -90,6 +90,31 @@ public class ProjectRepository : IProjectRepository
         }
     }
 
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadTitleGivenDegreeAsync(string searchString, Degree degree)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) {
+            return new List<ProjectDetailsDto>();
+        } else {
+            var projects = from p in _context.Projects
+                where p.Title.ToLower().Contains(searchString.ToLower()) && p.Degree == degree
+                select new ProjectDetailsDto(
+                    p.Id,
+                    p.Author == null ? null : p.Author.AzureAdToken,
+                    p.Author == null ? null : p.Author.Name,
+                    p.Title,
+                    p.Description,
+                    p.Degree,
+                    p.ImageUrl,
+                    p.FileUrl,
+                    p.Ects,
+                    p.LastUpdated,
+                    p.Keywords.Select(k => k.Word).ToHashSet()
+                );
+            
+            return await projects.ToListAsync();
+        }
+    }
+
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAuthorAsync(string input) {
         if (string.IsNullOrWhiteSpace(input)) {
             return new List<ProjectDetailsDto>();
@@ -97,6 +122,32 @@ public class ProjectRepository : IProjectRepository
             
             var projects = from p in _context.Projects
                 where (p.Author!.Name.ToLower()).Contains(input.ToLower())
+                select new ProjectDetailsDto(
+                    p.Id,
+                    p.Author == null ? null : p.Author.AzureAdToken,
+                    p.Author == null ? null : p.Author.Name,
+                    p.Title,
+                    p.Description,
+                    p.Degree,
+                    p.ImageUrl,
+                    p.FileUrl,
+                    p.Ects,
+                    p.LastUpdated,
+                    p.Keywords.Select(k => k.Word).ToHashSet()
+                );
+            
+            return await projects.ToListAsync();
+        }
+    }
+
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAuthorGivenDegreeAsync(string searchString, Degree degree)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) {
+            return new List<ProjectDetailsDto>();
+        } else {
+            
+            var projects = from p in _context.Projects
+                where (p.Author!.Name.ToLower()).Contains(searchString.ToLower()) && p.Degree == degree
                 select new ProjectDetailsDto(
                     p.Id,
                     p.Author == null ? null : p.Author.AzureAdToken,
