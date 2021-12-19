@@ -83,11 +83,11 @@
     
     private void redirectToSwipePage(string keyword)
     {
-        navigationManager.NavigateTo("swipe/"+keyword+"/"+ (int)model.Selected);
+        navigationManager.NavigateTo($"swipe/{keyword}/{(int) model.Selected}");
     }
     private void redirectToSwipeAllPage()
     {
-        navigationManager.NavigateTo("swipe/all");
+        navigationManager.NavigateTo($"swipe/all/{(int) model.Selected}");
     }
 
 

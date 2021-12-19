@@ -125,11 +125,11 @@ public class KeywordControllerTests
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
                 new DateTime(50), new HashSet<string>() {"AI"});
 
-        repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 0)).ReturnsAsync(expected);
+        repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 0, Degree.Bachelor)).ReturnsAsync(expected);
         var controller = new KeywordController(logger.Object, repository.Object);
 
         // Act
-        var response = await controller.Get("AI", 0);
+        var response = await controller.GetBrowseAll("AI", 0, Degree.Bachelor);
 
         // Assert
         Assert.Equal(expected, response);

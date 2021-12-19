@@ -62,20 +62,17 @@ Degree: @_currentProject.Degree</textarea>
 @code
 {
     [Parameter]
-     public string? keyword { get; set; }
+    public string? keyword { get; set; }
     
     [Parameter]
-    public int? degreeInt { get; set; }
-    
-    
+    public int? degreeInt { get; set; } = 3;
     
     private readonly IKeywordFinder keywordFinder = new KeywordFinder();
     private const int _i = 10;
-    private int _indexCounter = 1;
+    private int _indexCounter;
     private List<int> _likedProjectIds; //This is only used to mimic the database collection of saved projects, st. we dont have to do unnecessary API calls. 
     private Stack<int> _seenProjectIds = new Stack<int>();
     private int _countOfProjects;
-
     private Degree _degree = Degree.Unspecified;
     private ProjectDetailsDto _currentProject;
     private ClickType _lastClick;
@@ -92,40 +89,25 @@ Degree: @_currentProject.Degree</textarea>
     
     protected override async Task OnInitializedAsync()
     {
-        if (degreeInt == 1)
-        {
-            _degree = Degree.Bachelor;
-        }else if (degreeInt == 2)
-        {
-            _degree = Degree.Master;
-        }else if (degreeInt == 3)
-        {
-            _degree = Degree.PHD;
-        }
-        else
-        {
-            _degree = Degree.Unspecified;
-        }
-        
+        _degree = (Degree) degreeInt;
+
         try
-            {
-                
-            
+        {      
             if (keyword == "all"){
-                await keywordFinder.Setup(Http);
-                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/1");
+                await keywordFinder.Setup(Http, _degree);
+                
+                var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
+                _currentProject = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
             } else
             {                
-                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{0}/{_degree}");//_indexCounter
-                //_countOfProjects = await Http.GetFromJsonAsync<int>($"/api/Keyword/count/{keyword}"); //skal ogs laves om.. fucking hell
-                var projects = await Http.GetFromJsonAsync <List<ProjectDto>>($"/api/Keyword/withType/{keyword}/{_degree}");
-                _countOfProjects = projects.Count;
+                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
+                _countOfProjects = await Http.GetFromJsonAsync<int>($"/api/Keyword/count/{keyword}");
             }
 
             _seenProjectIds.Push(_currentProject.Id);
+            _indexCounter++;
 
-
-                _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+            _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
 
@@ -137,6 +119,9 @@ Degree: @_currentProject.Degree</textarea>
         } catch (AccessTokenNotAvailableException e)
         {
             e.Redirect();
+        } catch (System.Text.Json.JsonException)
+        {
+
         }
     }
 
@@ -164,30 +149,16 @@ Degree: @_currentProject.Degree</textarea>
                 {
                     ShowNotification("You had already liked project: " + _currentProject.Title, Notification.Info); 
                 }
-                
-                if (_indexCounter < _countOfProjects)
-                {
-                    _indexCounter++;
-                } else
-                {
-                    ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword", Notification.Error);
-                }
+
                 _lastClick = ClickType.Like;
-
-                if (keyword == "all") 
+                
+                if (keyword == "all")
                 {
-                    var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
-                    var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
-                    
-                    if (project != null){
-                        _currentProject = project;
-                    }
+                    await FindNextProjectAll();
                 } else
                 {
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
+                    await FindNextProject();
                 }
-
-                _seenProjectIds.Push(_currentProject.Id);
                 
                 break;
 
@@ -229,31 +200,15 @@ Degree: @_currentProject.Degree</textarea>
                     await removeLikedProject();
                 }
 
-                if (_indexCounter < _countOfProjects)
-                {
-                    _indexCounter++;
-                } else
-                {
-                    ShowNotification("No more projects to show in this category. You are now browsing all projects", Notification.Error);
-                }
-                
                 _lastClick = ClickType.Dislike;
 
-                if (keyword == "all") 
+                if (keyword == "all")
                 {
-                    await UpdateRatios(false);
-                    var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
-                    var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
-                    
-                    if (project != null){
-                        _currentProject = project;
-                    }
+                    await FindNextProjectAll();
                 } else
                 {
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
+                    await FindNextProject();
                 }
-
-                _seenProjectIds.Push(_currentProject.Id);
                 
                 break;
         }
@@ -261,6 +216,32 @@ Degree: @_currentProject.Degree</textarea>
         _keywordString = GetKeyWords();
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task FindNextProjectAll()
+    {
+        var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
+        var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
+        
+        if (project != null){
+            _currentProject = project;
+        }
+
+        _seenProjectIds.Push(_currentProject.Id);
+    }
+
+    private async Task FindNextProject()
+    {
+        if (_indexCounter < _countOfProjects - 1)
+        {
+            _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
+            _seenProjectIds.Push(_currentProject.Id);
+            _indexCounter++;
+            
+        } else
+        {
+            ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword", Notification.Error);
+        }
     }
 
     private async Task UpdateRatios(bool userLikedProject)
@@ -277,7 +258,6 @@ Degree: @_currentProject.Degree</textarea>
 
     }
     
-
     private void ShowNotification(string message, Notification type)
     {
         var notiMsg = new NotificationMessage();

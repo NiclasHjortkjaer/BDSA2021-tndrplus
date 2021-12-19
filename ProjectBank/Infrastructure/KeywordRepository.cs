@@ -49,25 +49,6 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
                 .Select(k => k.Word)
                 .ToListAsync())
                 .AsReadOnly();
-
-    public async Task<IReadOnlyCollection<ProjectDto>> ReadAllProjectsWithKeywordAsync(KeywordDto keyword)
-    {
-        var entity = await _context.Keywords
-            .Include("Projects.Author")
-            .Include("Projects.Keywords")
-            .FirstOrDefaultAsync(e => e.Word == keyword.Word);
-        if (entity == null)
-        {
-            return new List<ProjectDto>().AsReadOnly();
-        }
-        var list = new List<ProjectDto>();
-        foreach (var p in entity.Projects)
-        {
-            list.Add( new ProjectDto(p.Id, p.Author!.AzureAdToken, p.Author.Name, p.Title, p.Description));
-        }
-        return list.AsReadOnly();
-    }
-
     
     public async Task<IReadOnlyCollection<ProjectDetailsDto>> ReadAllProjectsWithKeywordStringAsync(string input)
     {
@@ -145,6 +126,19 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
             .FirstOrDefault()!
             .Count();
 
+    public async Task<int> ReadNumberOfProjectsGivenKeywordAndDegree(string keyword, Degree degree)
+    {
+        var projects = _context.Keywords
+            .Where(k => k.Word == keyword)
+            .Select(k => k.Projects)
+            .FirstOrDefault()!;
+        
+        return projects
+            .Where(p => p.Degree == degree)
+            .Count();
+    }
+        
+
     public async Task<Status> DeleteAsync(int keywordId)
     {
         var keyword = 
@@ -166,9 +160,9 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         return Status.Deleted;
     }
 
-    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenRandAsync(string keyword, int timesSeen) //find bedre navn carl 
+    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenRandAsync(string keyword, int timesSeen, Degree degree) //find bedre navn carl 
     {
-        var project = await ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen);
+        var project = await ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
         if (project != null)
         {
             return project;
@@ -177,24 +171,24 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         //Returns random project, when there are no more projects with the given keyword
         //Does not promise, not to show an already shown project
         Random rand = new Random();
-                  var randomIndex = rand.Next(1, _context.Projects.Count());
-                  var projects = from p in _context.Projects
-                      where p.Id == randomIndex
-                      select new ProjectDetailsDto(
-                          p.Id,
-                          p.Author == null ? null : p.Author.AzureAdToken,
-                          p.Author == null ? null : p.Author.Name,
-                          p.Title,
-                          p.Description,
-                          p.Degree,
-                          p.ImageUrl,
-                          p.FileUrl,
-                          p.Ects,
-                          p.LastUpdated,
-                          p.Keywords.Select(k => k.Word).ToHashSet()
-                      );
-          
-                  return projects.FirstOrDefault()!;
+        var randomIndex = rand.Next(1, _context.Projects.Count());
+        var projects = from p in _context.Projects
+            where p.Id == randomIndex
+            select new ProjectDetailsDto(
+                p.Id,
+                p.Author == null ? null : p.Author.AzureAdToken,
+                p.Author == null ? null : p.Author.Name,
+                p.Title,
+                p.Description,
+                p.Degree,
+                p.ImageUrl,
+                p.FileUrl,
+                p.Ects,
+                p.LastUpdated,
+                p.Keywords.Select(k => k.Word).ToHashSet()
+            );
+
+        return projects.FirstOrDefault()!;
     }
     
     public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenAsync(string keyword, int timesSeen, Degree degree = Degree.Unspecified) 
@@ -222,16 +216,16 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         if (keyProjects.Count > 0)
         {
             if (timesSeen < keyProjects.Count())
-                    {
-                        var p = keyProjects.ElementAt(timesSeen);
-                        ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
-            
-                        return new ProjectDetailsDto(
-                            p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
-                    }
+                {
+                    var p = keyProjects.ElementAt(timesSeen);
+                    ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+        
+                    return new ProjectDetailsDto(
+                        p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
+                }
         }
 
-        return null!;
+        return null;
     }
     
 }

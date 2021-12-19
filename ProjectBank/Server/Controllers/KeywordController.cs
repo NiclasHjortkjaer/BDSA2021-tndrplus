@@ -42,11 +42,11 @@ public class KeywordController : ControllerBase
        => await _repository.ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
     
     [AllowAnonymous]
-    [HttpGet("{keyword}/{timesSeen}")]
+    [HttpGet("{keyword}/{timesSeen}/{_degree}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
-    public async Task<ProjectDetailsDto>? Get(string keyword, int timesSeen)
-        => await _repository.ReadProjectGivenKeywordAndTimesSeenRandAsync(keyword, timesSeen);
+    public async Task<ProjectDetailsDto>? GetBrowseAll(string keyword, int timesSeen, Degree _degree)
+        => await _repository.ReadProjectGivenKeywordAndTimesSeenRandAsync(keyword, timesSeen, _degree);
 
     [AllowAnonymous]
     [HttpGet("{keyword}")]
@@ -61,6 +61,13 @@ public class KeywordController : ControllerBase
     [ProducesResponseType(typeof(int), 200)]
     public async Task<int> GetCount([FromRoute]string keyword)
         => await _repository.ReadNumberOfProjectsGivenKeyword(keyword); 
+
+    [AllowAnonymous]
+    [HttpGet("count/{keyword}/{degreeInt}")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(typeof(int), 200)]
+    public async Task<int> GetCount([FromRoute]string keyword, [FromRoute] int degreeInt)
+        => await _repository.ReadNumberOfProjectsGivenKeywordAndDegree(keyword, (Degree) degreeInt); 
 
     [HttpGet("withType/{keyword}/{degree}")]
     [ProducesResponseType(404)]

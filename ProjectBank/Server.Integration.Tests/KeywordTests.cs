@@ -45,7 +45,7 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
     }
 
     [Fact]
-    public async Task get_projects_with_keyword_and_degree_returns_projects()
+    public async Task Get_aiProject_given_AI_and_Bachelor()
     {
         var keyword = "AI";
         var degree = Degree.Bachelor;
@@ -65,6 +65,31 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
         
         Assert.Empty(projects);
     }
+
+    [Fact]
+    public async Task Get_aiProject_given_AI_0_and_Bachelor()
+    {
+        var keyword = "Machine Learning";
+        var timesSeen = 0;
+        var degree = Degree.Bachelor;
+        var project = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{timesSeen}/{degree}");
+        
+        Assert.NotNull(project);
+        Assert.Equal("Artificial Intelligence 101", project.Title);
+        Assert.Equal("Elon Musk", project.AuthorName);
+        Assert.NotEmpty(project.Keywords);
+    }
+    
+    /*[Fact]
+    public async Task Get_empty_list_given_AI_0_and_Master()
+    {
+        var keyword = "AI";
+        var timesSeen = 0;
+        var degree = Degree.Master;
+        var project = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{timesSeen}/{degree}");
+        
+        Assert.Null(project);
+    }*/
 
     [Fact]
     public async Task GetKeywordStrings_returns_all_strings()
@@ -103,9 +128,9 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
         );
     }
     [Fact]
-    public async Task GetProjectGivenKeywordAndTimesSeenRand_returns_randomProject_given_AI_and_25()
+    public async Task GetProjectGivenKeywordAndTimesSeenRand_returns_randomProject_given_AI_and_25_Bachelor()
     {
-        var actual = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/AI/25");
+        var actual = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/AI/25/{Degree.Bachelor}");
         Assert.NotNull(actual);
     }
 
