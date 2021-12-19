@@ -221,36 +221,6 @@ public class KeywordRepositoryTests : IDisposable
         Assert.Equal(0, actual);
     }
 
-    /* [Fact]
-    public async Task UpdateAsync_given_invalid_Keyword_returns_notFound()
-    {
-        var keyword = new KeywordUpdateDto(111, "ChangedWord");
-        
-        var status = await _repo.UpdateAsync(111, keyword);
-        Assert.Equal(Status.NotFound, status);
-    }
-
-    [Fact]
-    public async Task UpdateAsync_given_valid_Id_Updates_Keyword()
-    {
-        var keyword = new KeywordUpdateDto(1, "UpdatedWord");
-        
-        var status = await _repo.UpdateAsync(1, keyword);
-        Assert.Equal(Status.Updated, status);
-        
-        var actual = await _repo.ReadAsync(1);
-
-        Assert.Equal(keyword.Word, actual.Word);
-    }
-
-    [Fact]
-    public async Task UpdateAsync_given_existing_word_returns_conflict()
-    {
-        var keyword = new KeywordUpdateDto(3, "AI");
-        var status = await _repo.UpdateAsync(3, keyword);
-        Assert.Equal(Status.Conflict, status);
-    } */
-
     [Fact]
     public async Task DeleteAsync_returnes_notfound_given_invalid_Id()
     {

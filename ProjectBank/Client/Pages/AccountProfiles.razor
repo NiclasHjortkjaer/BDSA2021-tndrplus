@@ -20,13 +20,16 @@ else
                      <div><img class="card-img-top" src=@User.PictureUrl alt="Project image" style="align-content: center; justify-content: center; padding: 3em"></div>
                  }
                 <div>
+
                     <b style="color:black;">Favorite projects (@User?.SavedProjects.Count):</b>
+
                     <div style="color:black;">
                         @if (User != null)
                         {
                             foreach (var project in User.SavedProjects)
                             {
                                 <div><x @onclick="() => navigateToProject(project)">@project</x></div>
+
                             }
                         }
                     </div>

@@ -25,19 +25,21 @@
             {
                 <div class="dropdown_menu_filter">
                     <div class="drop_filter_content">
-                        <span style="text-decoration: underline">Degrees:</span> <br/>
-                        <input type="radio" id="bCheck" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/>
-                            <label for="bCheck" style="cursor: pointer">Bachelor</label> <br/>
-                        
-                        <input type="radio" id="mCheck" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/>
-                            <label for="mCheck" style="cursor: pointer"> Master</label> <br/>
-                        
-                        <input type="radio" id="pCheck" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/>
-                            <label for="pCheck" style="cursor: pointer"> PHD</label> <br/>
-                        
-                        <div class="center_btn" style="text-align: center">
-                            <span class="clear_filter" @onclick="(() =>  OnCheck('C'))">Reset filter</span>
-                        </div>
+
+                        <EditForm EditContext="this.editContext">
+                            <h3>@model.Value</h3>
+                            <h5>Option Select</h5>
+                            <div>
+                                <InputRadioGroup @bind-Value="model.Selected">
+                                    @foreach (var option in model.Options)
+                                        {
+                                        <div>
+                                            <InputRadio Value="option.Value" /> @option.Value
+                                        </div>
+                                        }
+                                </InputRadioGroup>
+                            </div>
+                        </EditForm>
                     </div>
                 </div>
             }
@@ -106,23 +108,42 @@
     </button>
 }
 
+
 @code {
 
     private string _searchText = "";
-
     ProjectDetailsDto[]? _projects;
+
+    private EditContext editContext;
+    private DegreeModel model;
+
+    protected override Task OnInitializedAsync()
+    {
+        model = new DegreeModel() { Value = "Degrees" };
+        editContext = new EditContext(model);
+        return Task.CompletedTask;
+    }
 
     async Task LoadProjects()
     {
         await OnChange();
-        try
+
+        if (model.Selected == Degree.Unspecified)
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+            try
+            {
+                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
         }
-        catch (AccessTokenNotAvailableException exception)
+        else
         {
-            exception.Redirect();
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{(int) model.Selected}");
         }
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -131,29 +152,9 @@
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-    //await LoadProjects();
-            await OnChange();
-            if (_bachelorChecked && _masterChecked && _phdChecked)
-            {
-                try
-                {
-                   _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
-                }
-                   catch (AccessTokenNotAvailableException exception)
-                {
-                   exception.Redirect();
-                                    
-                }
-                   await InvokeAsync(StateHasChanged);
-            }
-            //need to look for filter checks
-            else
-            {
-                
-            }
+            await LoadProjects();
         }
     }
-
 
     private IEnumerable<string> _likedProjects = null!;
     private string? _aToken;
@@ -206,41 +207,6 @@
         else
         {
             _isDropedDown = true;
-        }
-    }
-
-    private bool _bachelorChecked = true;
-    private bool _masterChecked = true;
-    private bool _phdChecked = true;
-
-    private void OnCheck(char s)
-    {
-        if (s == 'B')
-        {
-            _bachelorChecked = true;
-            _masterChecked = false;
-            _phdChecked = false;
-        }
-
-        if (s == 'M')
-        {
-            _bachelorChecked = false;
-            _masterChecked = true;
-            _phdChecked = false;
-        }
-
-        if (s == 'P')
-        {
-            _bachelorChecked = false;
-            _masterChecked = false;
-            _phdChecked = true;
-        }
-
-        if (s == 'C')
-        {
-            _bachelorChecked = true;
-            _masterChecked = true;
-            _phdChecked = true;
         }
     }
 }

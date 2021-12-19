@@ -3,16 +3,47 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>ProjectBank - Browse</PageTitle>
-<div class="aligner">
-    <div class="browse_all">
+<div class="browse_all">
             <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
     </div>
-    <div class="filter_browse">
-            <button onclick="" style="background: none; border: none;">
-                <img src="filter.png" alt="" style="height: 20px"/>
-            </button>
+<div class="filter_browse">
+    @if (!_isDropedDown)
+    {
+        <button @onclick="dropdown" style="background: none; border: none;">
+            <img src="filter.png" alt="" style="height: 20px"/>
+        </button>
+    }
+    @if(_isDropedDown)
+    {
+        <button @onclick="dropdown" style="background: #ffffff; border: none; border-top-left-radius: 10px; border-top-right-radius: 10px">
+            <img src="filterBlack.png" alt="" style="height: 20px"/>
+        </button>
+    }
+</div>
+@if (_isDropedDown)
+{
+    <div class="align-right">
+        <div class="dropdown_menu_filter_browse">
+            <div class="drop_filter_content_browse">
+                <EditForm EditContext="this.editContext">
+                    <h3>@model.Value</h3>
+                    <h5>Option Select</h5>
+                    <div>
+                        <InputRadioGroup @bind-Value="model.Selected">
+                            @foreach (var option in model.Options)
+                                {
+                                <div>
+                                    <InputRadio Value="option.Value" /> @option.Value
+                                </div>
+                                }
+                        </InputRadioGroup>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
     </div>
-</div>  
+}
+
 @if (keywords == null)
     {
         <div id="app">
@@ -32,12 +63,17 @@
 
 @code{
     private KeywordDto[]? keywords;
-    
+
+    private EditContext editContext;
+    private DegreeModel model;
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
             keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
+            model = new DegreeModel() { Value = "Degrees" };
+            editContext = new EditContext(model);
         }
         catch(AccessTokenNotAvailableException exception)
         {
@@ -45,14 +81,27 @@
         }
     }
     
-    
     private void redirectToSwipePage(string keyword)
     {
         navigationManager.NavigateTo("swipe/"+keyword);
     }
-
     private void redirectToSwipeAllPage()
     {
         navigationManager.NavigateTo("swipe/all");
+    }
+
+
+    private bool _isDropedDown;
+
+    private void dropdown()
+    {
+        if (_isDropedDown)
+        {
+            _isDropedDown = false;
+        }
+        else
+        {
+            _isDropedDown = true;
+        }
     }
 }

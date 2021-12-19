@@ -41,38 +41,6 @@ public class KeywordControllerTests
         Assert.Equal(expected, actual);
     }
 
-    /*[Fact]
-    public async Task Get_given_non_existing_returns_NotFound()
-    {
-        // Arrange
-        var logger = new Mock<ILogger<KeywordController>>();
-        var repository = new Mock<IKeywordRepository>();
-        repository.Setup(m => m.ReadAsync(42)).ReturnsAsync(default(KeywordDto));
-        var controller = new KeywordController(logger.Object, repository.Object);
-
-        // Act
-        var response = await controller.Get(42);
-
-        // Assert
-        Assert.Null(response);
-    }*/
-
-    /*[Fact]
-    public async Task Get_given_existing_returns_keyword()
-    {
-        // Arrange
-        var logger = new Mock<ILogger<KeywordController>>();
-        var repository = new Mock<IKeywordRepository>();
-        var keyword = new KeywordDto(1, "Word");
-        repository.Setup(m => m.ReadAsync(1)).ReturnsAsync(keyword);
-        var controller = new KeywordController(logger.Object, repository.Object);
-
-        // Act
-        var response = await controller.Get(1);
-
-        // Assert
-        Assert.Equal(keyword, response);
-    }*/
     [Fact]
     public async Task Get_on_string_given_existing_returns_keyword()
     {

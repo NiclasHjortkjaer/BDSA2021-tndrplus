@@ -136,6 +136,34 @@ public class ProjectRepositoryTests
     }
 
     [Fact]
+    public async Task ReadTitleGivenDegreeAsync_returns_null_given_Machine_Learning_and_Bachelor()
+    {
+        var projects = await _repo.ReadTitleGivenDegreeAsync("Machine Learning", Degree.Bachelor);
+
+        Assert.Empty(projects);
+    }
+
+    [Fact]
+    public async Task ReadTitleAsync_returns_listWithMlProject_given_Machine_Learning_and_PHD()
+    {
+        var projects = await _repo.ReadTitleGivenDegreeAsync("Machine Learning", Degree.PHD);
+
+        var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+        
+        Assert.Equal(1, projects.Count());
+        Assert.Equal(2, projects.First().Id);
+        Assert.Equal(mlProject.AuthorToken, projects.First().AuthorToken);
+        Assert.Equal(mlProject.AuthorName, projects.First().AuthorName);
+        Assert.Equal(mlProject.Degree, projects.First().Degree);
+        Assert.Equal(mlProject.Title, projects.First().Title);
+        Assert.Equal(mlProject.Description, projects.First().Description);
+        Assert.Equal(mlProject.ImageUrl, projects.First().ImageUrl);
+        Assert.Equal(mlProject.FileUrl, projects.First().FileUrl);
+        Assert.Equal(mlProject.LastUpdated, projects.First().LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.True(projects.First().Keywords.SetEquals(new string[]{}));
+    }
+
+    [Fact]
     public async Task ReadAuthorAsync_returns_aiProject_given_Elon_Musk() {
         var projects = await _repo.ReadAuthorAsync("Elon Musk");
 
@@ -178,6 +206,34 @@ public class ProjectRepositoryTests
         var projects = await _repo.ReadAuthorAsync(" ");
 
         Assert.Equal(0, projects.Count());
+    }
+
+    [Fact]
+    public async Task ReadAuthorGivenDegreeAsync_returns_empty_list_given_Elon_Musk_and_Master()
+    {
+        var projects = await _repo.ReadAuthorGivenDegreeAsync("Elon Musk", Degree.Master);
+
+        Assert.Empty(projects);
+    }
+
+    [Fact]
+    public async Task ReadAuthorGivenDegreeAsync_returns_list_with_aiProject_given_Elon_Musk_and_Bachelor() 
+    {
+        var projects = await _repo.ReadAuthorGivenDegreeAsync("Elon Musk", Degree.Bachelor);
+    
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+
+        Assert.Equal(1, projects.Count());
+        Assert.Equal(1, projects.First().Id);
+        Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
+        Assert.Equal(aiProject.AuthorName, projects.First().AuthorName);
+        Assert.Equal(aiProject.Degree, projects.First().Degree);
+        Assert.Equal(aiProject.Title, projects.First().Title);
+        Assert.Equal(aiProject.Description, projects.First().Description);
+        Assert.Equal(aiProject.ImageUrl, projects.First().ImageUrl);
+        Assert.Equal(aiProject.FileUrl, projects.First().FileUrl);
+        Assert.Equal(aiProject.LastUpdated, projects.First().LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
     }
 
     [Fact]
