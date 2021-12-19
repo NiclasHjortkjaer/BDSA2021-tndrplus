@@ -57,4 +57,25 @@ public class SearchQueryTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotNull(projects);
         Assert.True(projects.Length == 0);
     }
+
+    [Fact]
+    public async Task Get_aiProject_given_AI_and_Bachelor()
+    {
+        var keyword = "AI";
+        var degree = (int) Degree.Bachelor;
+        var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/SearchQuery/{keyword}/{degree}");
+        Assert.NotNull(projects);
+        Assert.True(projects.Length == 1);
+        Assert.Contains(projects, p => p.Title == "Artificial Intelligence 101");
+        Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
+    }
+
+    [Fact]
+    public async Task Get_empty_list_given_AI_and_Master()
+    {
+        var keyword = "AI";
+        var degree = (int) Degree.Master;
+        var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/SearchQuery/{keyword}/{degree}");
+        Assert.Empty(projects);
+    }
 }

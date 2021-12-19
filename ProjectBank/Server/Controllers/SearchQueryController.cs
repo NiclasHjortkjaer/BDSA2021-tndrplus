@@ -29,7 +29,7 @@ public class SearchQueryController : ControllerBase {
     [AllowAnonymous]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
     [ProducesResponseType(404)]
-    [HttpGet("{searchString}/{degreeInt}")]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string input, int degreeInt) 
+    [HttpGet("{input}/{degreeInt}")]
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get([FromRoute] string input, [FromRoute] int degreeInt) 
         => await _management.ReadSearchQueryAsync(input, (Degree) degreeInt);
 }

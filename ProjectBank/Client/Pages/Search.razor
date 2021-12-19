@@ -26,29 +26,20 @@
                 <div class="dropdown_menu_filter">
                     <div class="drop_filter_content">
 
-                        <form method="post" action="/Tests/Post" onsubmit="return ValidateForm();">
-                            <fieldset>
-                            <legend>Degress:</legend>
-                            <input type="radio" name="degrees" value="3" checked>All<br>
-                            <input type="radio" name="degrees" value="0">Bachelor<br>
-                            <input type="radio" name="degrees" value="1">Master<br>
-                            <input type="radio" name="degrees" value="2">PHD<br>
-                            </fieldset>
-                        </form>
-
-                        <span style="text-decoration: underline">Degrees:</span> <br/>
-                        <input type="radio" id="bCheck" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/>
-                            <label for="bCheck" style="cursor: pointer">Bachelor</label> <br/>
-                        
-                        <input type="radio" id="mCheck" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/>
-                            <label for="mCheck" style="cursor: pointer"> Master</label> <br/>
-                        
-                        <input type="radio" id="pCheck" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/>
-                            <label for="pCheck" style="cursor: pointer"> PHD</label> <br/>
-                        
-                        <div class="center_btn" style="text-align: center">
-                            <span class="clear_filter" @onclick="(() =>  OnCheck('C'))">Reset filter</span>
-                        </div>
+                        <EditForm EditContext="this.editContext">
+                            <h3>@model.Value</h3>
+                            <h5>Option Select</h5>
+                            <div>
+                                <InputRadioGroup @bind-Value="model.Selected">
+                                    @foreach (var option in model.Options)
+                                        {
+                                        <div>
+                                            <InputRadio Value="option.Value" /> @option.Value
+                                        </div>
+                                        }
+                                </InputRadioGroup>
+                            </div>
+                        </EditForm>
                     </div>
                 </div>
             }
@@ -117,17 +108,54 @@
     </button>
 }
 
+
 @code {
 
     private string _searchText = "";
-
-    public int SelectedDegreeInt { get; set; } = 3; //(int) Degree.Unspecified;
     ProjectDetailsDto[]? _projects;
+
+    private EditContext editContext;
+    private DegreeModel model;
+
+    protected override Task OnInitializedAsync()
+    {
+        model = new DegreeModel() { Value = "Degrees" };
+        editContext = new EditContext(model);
+        return Task.CompletedTask;
+    }
+
+    public class DegreeOptions
+    {
+        public Degree Value { get; set; }
+        public bool Selected
+        {
+            get => _Selected;
+            set
+            {
+                _Selected = value;
+            }
+        }
+        public bool _Selected;
+    }
+
+    public class DegreeModel
+    {
+        public string Value { get; set; }
+        public Degree Selected { get; set; } = Degree.Unspecified;
+        public List<DegreeOptions> Options { get; set; } = new List<DegreeOptions>()
+        {
+            new DegreeOptions() {Value=Degree.Unspecified, Selected=true},
+            new DegreeOptions() {Value=Degree.Bachelor, Selected=false},
+            new DegreeOptions() {Value=Degree.Master, Selected=false},
+            new DegreeOptions() {Value=Degree.PHD, Selected=false},
+        };
+    }
 
     async Task LoadProjects()
     {
         await OnChange();
-        if (SelectedDegreeInt == 4) //(int) Degree.Unspecified)
+
+        if (model.Selected == Degree.Unspecified) //(int) Degree.Unspecified)
         {
             try
             {
@@ -140,7 +168,7 @@
         }
         else
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{SelectedDegreeInt}");
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{(int) model.Selected}");
         }
 
         await InvokeAsync(StateHasChanged);
