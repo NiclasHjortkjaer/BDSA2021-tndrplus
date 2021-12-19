@@ -309,8 +309,8 @@ public class KeywordRepositoryTests : IDisposable
         Assert.NotNull(actual);
     }
 
-    [Fact]
-    /*public async Task ReadProjectGivenKeywordAndTimesSeenRandAsync_returns_only_Master_projects_given_AI_25_and_Master()
+    /*[Fact]
+    public async Task ReadProjectGivenKeywordAndTimesSeenRandAsync_returns_only_Master_projects_given_AI_25_and_Master()
     {
         var projects = new List<ProjectDetailsDto>(){
             await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
