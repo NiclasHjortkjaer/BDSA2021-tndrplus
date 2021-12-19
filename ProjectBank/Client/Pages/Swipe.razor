@@ -1,4 +1,4 @@
-@page "/swipe/{keyword}"
+@page "/swipe/{keyword}/{degreeInt:int}"
 @inject HttpClient Http
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -62,7 +62,13 @@ Degree: @_currentProject.Degree</textarea>
 @code
 {
     [Parameter]
-    public string? keyword { get; set; }
+     public string? keyword { get; set; }
+    
+    [Parameter]
+    public int? degreeInt { get; set; }
+    
+    
+    
     private readonly IKeywordFinder keywordFinder = new KeywordFinder();
     private const int _i = 10;
     private int _indexCounter = 1;
@@ -70,6 +76,7 @@ Degree: @_currentProject.Degree</textarea>
     private Stack<int> _seenProjectIds = new Stack<int>();
     private int _countOfProjects;
 
+    private Degree _degree = Degree.Unspecified;
     private ProjectDetailsDto _currentProject;
     private ClickType _lastClick;
     private ClaimsPrincipal? _user;
@@ -85,20 +92,40 @@ Degree: @_currentProject.Degree</textarea>
     
     protected override async Task OnInitializedAsync()
     {
-        try
+        if (degreeInt == 1)
         {
+            _degree = Degree.Bachelor;
+        }else if (degreeInt == 2)
+        {
+            _degree = Degree.Master;
+        }else if (degreeInt == 3)
+        {
+            _degree = Degree.PHD;
+        }
+        else
+        {
+            _degree = Degree.Unspecified;
+        }
+        
+        try
+            {
+                
+            
             if (keyword == "all"){
                 await keywordFinder.Setup(Http);
                 _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/1");
             } else
             {                
-                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/{keyword}/{_indexCounter}");
-                _countOfProjects = await Http.GetFromJsonAsync<int>($"/api/Keyword/count/{keyword}");
+                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{0}/{_degree}");//_indexCounter
+                //_countOfProjects = await Http.GetFromJsonAsync<int>($"/api/Keyword/count/{keyword}"); //skal ogs laves om.. fucking hell
+                var projects = await Http.GetFromJsonAsync <List<ProjectDto>>($"/api/Keyword/withType/{keyword}/{_degree}");
+                _countOfProjects = projects.Count;
             }
 
             _seenProjectIds.Push(_currentProject.Id);
-            
-            _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+
+
+                _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
 
@@ -157,7 +184,7 @@ Degree: @_currentProject.Degree</textarea>
                     }
                 } else
                 {
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/{keyword}/{_indexCounter}");
+                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
                 }
 
                 _seenProjectIds.Push(_currentProject.Id);
@@ -223,7 +250,7 @@ Degree: @_currentProject.Degree</textarea>
                     }
                 } else
                 {
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/{keyword}/{_indexCounter}");
+                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
                 }
 
                 _seenProjectIds.Push(_currentProject.Id);

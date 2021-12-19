@@ -219,15 +219,19 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
            keyProjects = entity.Projects.Where(p => p.Degree == degree).ToList();
         }
 
-        if (timesSeen < keyProjects.Count())
+        if (keyProjects.Count > 0)
         {
-            var p = keyProjects.ElementAt(timesSeen);
-            ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
-
-            return new ProjectDetailsDto(
-                p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
+            if (timesSeen < keyProjects.Count())
+                    {
+                        var p = keyProjects.ElementAt(timesSeen);
+                        ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+            
+                        return new ProjectDetailsDto(
+                            p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
+                    }
         }
-        return null;
+
+        return null!;
     }
     
 }
