@@ -26,14 +26,16 @@
         <div class="dropdown_menu_filter_browse">
             <div class="drop_filter_content_browse">
                 <EditForm EditContext="this.editContext">
-                    <h3>@model.Value;</h3>
-                    <h5>Option Select</h5>
+                    <p1 style="text-decoration: underline; font-weight: bold;">
+                        @model.Value:
+                    </p1>
                     <div>
                         <InputRadioGroup @bind-Value="model.Selected">
                             @foreach (var option in model.Options)
                             {
                                 <div>
-                                    <InputRadio Value="option.Value" /> @option.Value
+                                    <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/> 
+                                        <label for="@option.Value" style="cursor: pointer">@option.Value</label>
                                 </div>
                             }
                         </InputRadioGroup>

@@ -25,5 +25,9 @@
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="wwwroot\css\ImageUploaderStyle.css" />
+  </ItemGroup>
 
 </Project>
