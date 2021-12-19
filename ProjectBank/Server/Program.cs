@@ -51,8 +51,7 @@ StorageSharedKeyCredential storageCredentials =
 BlobClient blobClient = new BlobClient(blobContainerUri, storageCredentials);
 
 builder.Services.AddScoped<BlobContainerClient>(_ => new BlobContainerClient(blobContainerUri, storageCredentials));
-builder.Services.AddScoped<IImageRepository, ImageRepository>();
-builder.Services.AddScoped<IPdfRepository, PdfRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
 
 var app = builder.Build();
 

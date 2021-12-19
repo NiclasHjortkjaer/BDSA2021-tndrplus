@@ -28,7 +28,7 @@
 }
   
   .browse_all{
-    position: relative;
+    position: absolute;
     color: #d7d7d7;
     width: fit-content;
     margin: 0;
@@ -49,7 +49,31 @@
   }
   
   .filter_browse{
-    position: relative;
-    float: right;
+    display: flex;
+    justify-items: right;
+    justify-content: right;
+    margin-right: 20px;
+  }
+  
+  .align-right{
+    display: flex;
+    justify-content: right;
+    justify-items: right;
+    margin-right: 20px;
+  }
+  
+  .dropdown_menu_filter_browse{
+    right: 0;
+    background-color: #ffffff;
+    color: #1e2125;
+    height: fit-content;
+    width: 120px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+  }
+  
+  .drop_filter_content_browse{
+    padding-left: 5px;
   }
   
