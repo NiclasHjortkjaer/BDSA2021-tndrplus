@@ -1,9 +1,10 @@
-@page "/search"
+﻿@page "/search"
 @using System.Data.SqlTypes
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
-@inject ProjectStateChanged projectChanged;
+@inject ProjectStateChanged projectChanged
+@inject NavigationManager _navigationManager
 
 <PageTitle>ProjectBank - Search</PageTitle>
 
@@ -24,6 +25,7 @@
             {
                 <div class="dropdown_menu_filter">
                     <div class="drop_filter_content">
+
                         <form method="post" action="/Tests/Post" onsubmit="return ValidateForm();">
                             <fieldset>
                             <legend>Degress:</legend>
@@ -33,6 +35,20 @@
                             <input type="radio" name="degrees" value="2">PHD<br>
                             </fieldset>
                         </form>
+
+                        <span style="text-decoration: underline">Degrees:</span> <br/>
+                        <input type="radio" id="bCheck" checked="@_bachelorChecked" @onclick="(() =>  OnCheck('B'))"/>
+                            <label for="bCheck" style="cursor: pointer">Bachelor</label> <br/>
+                        
+                        <input type="radio" id="mCheck" checked="@_masterChecked"  @onclick="(() =>  OnCheck('M'))"/>
+                            <label for="mCheck" style="cursor: pointer"> Master</label> <br/>
+                        
+                        <input type="radio" id="pCheck" checked="@_phdChecked"  @onclick="(() =>  OnCheck('P'))"/>
+                            <label for="pCheck" style="cursor: pointer"> PHD</label> <br/>
+                        
+                        <div class="center_btn" style="text-align: center">
+                            <span class="clear_filter" @onclick="(() =>  OnCheck('C'))">Reset filter</span>
+                        </div>
                     </div>
                 </div>
             }
@@ -58,8 +74,8 @@
                             <label class="oi oi-star" id="star_@project.Id" for="star_checkbox_@project.Id"></label>
                         }
                     </div>
-                    <div id="project_search_title">Title: @project.Title </div>
-                    <div id="search_supervisor">by: <x onclick="">@project.AuthorName</x></div>
+                    <div id="project_search_title">Title: <x onclick="@(() => _navigationManager.NavigateTo($"/projects/{project.Id}"))" style="cursor: pointer;">@project.Title</x></div>
+                    <div id="search_supervisor">by: <x onclick="@(() => _navigationManager.NavigateTo($"/user/{project.AuthorName}"))" style="cursor: pointer;">@project.AuthorName</x></div>
                     <br>
                     <hr>
                     <br>
@@ -159,6 +175,7 @@
                 }
             }
         }
+        _isDropedDown = false;
     }
 
     

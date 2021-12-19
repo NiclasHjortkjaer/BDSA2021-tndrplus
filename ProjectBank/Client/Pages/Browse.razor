@@ -3,11 +3,16 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>ProjectBank - Browse</PageTitle>
-
-<div class="browse_all">
-    <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
-</div>
-
+<div class="aligner">
+    <div class="browse_all">
+            <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
+    </div>
+    <div class="filter_browse">
+            <button onclick="" style="background: none; border: none;">
+                <img src="filter.png" alt="" style="height: 20px"/>
+            </button>
+    </div>
+</div>  
 @if (keywords == null)
     {
         <div id="app">
