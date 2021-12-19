@@ -101,4 +101,29 @@ public class SearchQueryControllerTests
         // Assert
         Assert.Equal(keyList, response);
     }
+
+    [Fact]
+    public async Task Get_aiProject_given_AI_and_Bachelor()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<SearchQueryController>>();
+        var repository = new Mock<ISearchManagement>();
+
+        var keyList = new List<ProjectDetailsDto>()
+        {
+            new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
+                "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
+                new DateTime(50), new HashSet<string>() {"AI"})
+
+        };
+
+        repository.Setup(m => m.ReadSearchQueryAsync("AI", Degree.Bachelor)).ReturnsAsync(keyList);
+        var controller = new SearchQueryController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Get("AI", (int) Degree.Bachelor);
+
+        // Assert
+        Assert.Equal(keyList, response);
+    }
 }
