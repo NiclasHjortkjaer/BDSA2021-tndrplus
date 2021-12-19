@@ -73,6 +73,7 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
     {
         if (string.IsNullOrWhiteSpace(input)) {
             return new List<ProjectDetailsDto>();
+
         }
         var entity = await _context.Keywords
             //.Include(k => k.Projects.Select(p => p.Author)) Should work this way. However it does not
@@ -198,7 +199,7 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
 
         if (entity == null)
         {
-            return null;
+            return null!;
         }
 
         if (timesSeen < entity.Projects.Count())
@@ -210,6 +211,8 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
                     p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
         }
 
+
+
         if (timesSeen < entity.Projects.Count())
         {
             var p = entity.Projects.ElementAt(timesSeen);
@@ -218,7 +221,6 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
             return new ProjectDetailsDto(
                     p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
         }
-
 
         //Returns random project, when there are no more projects with the given keyword
         //Does not promise, not to show an already shown project
