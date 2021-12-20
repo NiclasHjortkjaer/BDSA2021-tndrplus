@@ -234,13 +234,12 @@ Degree: @_currentProject.Degree</textarea>
 
     private async Task FindNextProject()
     {
-        if (_indexCounter < _countOfProjects - 1)
+        try 
         {
             _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
             _seenProjectIds.Push(_currentProject.Id);
             _indexCounter++;
-            
-        } else
+        } catch (System.Text.Json.JsonException) 
         {
             ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword", Notification.Error);
         }
