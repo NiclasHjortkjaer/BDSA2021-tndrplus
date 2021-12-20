@@ -1,4 +1,4 @@
-﻿namespace ProjectBank.Client;
+﻿namespace ProjectBank.Client.Scripts;
 //
 //this approach is highly inspired by Quanqo from StackOverflow, and Chris Sainty from his own website.
 //Creates a state container to manage communication between components in an observer pattern.

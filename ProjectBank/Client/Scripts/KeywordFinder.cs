@@ -4,7 +4,7 @@ using ProjectBank.Core.DTO;
 using System.Net.Http;
 using System.Net.Http.Json;
 
-namespace ProjectBank.Client;
+namespace ProjectBank.Client.Scripts;
 
 public class KeywordFinder : IKeywordFinder
 {

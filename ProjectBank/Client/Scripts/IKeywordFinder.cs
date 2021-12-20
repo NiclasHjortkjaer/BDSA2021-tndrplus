@@ -1,7 +1,7 @@
 using ProjectBank.Core.Enum;
 using ProjectBank.Core.DTO;
 
-namespace ProjectBank.Client;
+namespace ProjectBank.Client.Scripts;
 
 public interface IKeywordFinder
 {

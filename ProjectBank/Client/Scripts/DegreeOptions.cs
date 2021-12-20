@@ -1,6 +1,6 @@
 using ProjectBank.Core.Enum;
 
-namespace ProjectBank.Client;
+namespace ProjectBank.Client.Scripts;
 
 public class DegreeOptions
 {
