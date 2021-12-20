@@ -6,23 +6,16 @@
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.8);
   padding: 20px;
-  font-size: 30px;
+  font-size: 20pt;
   text-align: center;
   margin-top: 20px;
   margin-right: 20px;
   height: 220px;
   border-radius: 10px;
-  word-break: normal;
+  word-break: break-word;
   transition: all 0.25s ease;
 }
 
-.grid-item:hover{
-    transition-delay: 0.25s;
-    background: linear-gradient(10deg, #fd297b, #ff655b);
-    color: white;
-    box-shadow: 5px 7px #dcd8d8;
-  }
-  
 .aligner{
   display: flex;
 }
@@ -92,9 +85,9 @@
     font-size: 15pt;
   }
 
-@media (max-width: 575.98px){
+@media(max-width: 767.99px){
   .grid-container{
-    display: flex;
+    grid-template-columns: none;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -107,17 +100,84 @@
     font-size: 20pt;
     padding: 0;
   }
+  
+  #Browse_all_text{
+    display: none;
+  }
+
+  .browse_all{
+    display: flex;
+    margin-left: 5%;
+  }
+
+  .browse_all_btn{
+    display: block;
+    color: #1e2125;
+    background-color: white;
+    border-radius: 5px;
+    height: 2em;
+    text-decoration: none;
+    width: 5.5em;
+    font-size: 15pt;
+  }
+
+  .desktop_filter_btn{
+    display: none;
+  }
+
+  .mobile_filter_btn{
+    display: block;
+  }
+
+  .dropdown_menu_filter_browse{
+    background: none;
+    width: auto;
+  }
+
+  .drop_filter_content_browse p1{
+    display: none;
+  }
+
+  .drop_filter_content_browse{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    padding-left: 2.5em;
+  }
+
+  .align-right{
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    margin: 0;
+  }
+
+  .btn_filter{
+    background-color: white;
+    position: relative;
+    width: 7em;
+    height: 2em;
+    margin-right: 2em;
+    margin-top: 1em;
+    border-radius: 5px;
+    font-size: 12pt;
+    text-align: center;
+  }
+  
+  form{
+    display: contents;
+  }
+  
 }
 
-/*Small devices (landscape phones, less than 768px)*/
-@media (max-width: 767.98px){
+/*Small devices (landscape phones, and portrait tablets)*/
+@media (min-width: 768px) and (max-width: 991.99px){
   .grid-container{
-    display: block;
+    display: grid;
     justify-content: center;
     align-items: center;
     align-content: center;
+    grid-template-columns: 50% 50%;
   }
-
   .grid-item{
     height: 5em;
     width: 90%;
@@ -132,18 +192,18 @@
   
   .browse_all{
     display: flex;
-    margin-left: 5%;
+    margin: 0;
+    left: 3em;
   }
   
   .browse_all_btn{
-    display: block;
+    display: flex;
     color: #1e2125;
     background-color: white;
     border-radius: 5px;
     height: 2em;
     text-decoration: none;
-    width: 5.5em;
-    font-size: 15pt;
+    font-size: 18pt;
   }
   
   .desktop_filter_btn{
@@ -152,12 +212,51 @@
   
   .mobile_filter_btn{
     display: block;
+    font-size: 18pt;
   }
   
+  .dropdown_menu_filter_browse{
+    background: none;
+    
+  }
+  
+  .drop_filter_content_browse p1{
+    display: none;
+  }
+  
+  .drop_filter_content_browse{
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    margin-right: 2.5em;
+    margin-top: 1.5em;
+  }
+  
+  .align-right{
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+  }
+
+  .btn_filter{
+    background-color: white;
+    position: relative;
+    width: 6.5em;
+    height: 2em;
+    border: 0;
+    padding: 0;
+    margin-right: 5%;
+    border-radius: 5px;
+    font-size: 17.5pt;
+    text-align: center;
+  }
+  
+  form{
+    display: contents;
+  }
 }
 
-/*Medium devices (tablets, portrait view )*/
-@media (max-width: 991.98px){
+/*Medium devices (tablets, landscape view )*/
+@media (min-width: 992px) and (max-width: 1199.97px){
   .grid-container{
     grid-template-columns: 50% 50%;
   }
@@ -166,9 +265,14 @@
   }
 }
 
-/*Large devices (tablets, landscape view)*/
-@media (max-width: 1199.98px){
-
+@media (min-width: 1200px) {
+  .grid-item:hover {
+    transition-delay: 0.25s;
+    background: linear-gradient(10deg, #fd297b, #ff655b);
+    color: white;
+    box-shadow: 5px 7px #dcd8d8;
+  }
 }
+
 
 

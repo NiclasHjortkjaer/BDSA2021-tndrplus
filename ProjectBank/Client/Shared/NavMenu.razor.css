@@ -7,7 +7,7 @@
 
 .top-row {
     height: 3.5rem;
-    background-color: none;
+    background: none;
 }
 
 .navbar-brand {
@@ -19,6 +19,10 @@
     font-size: 1.1rem;
     vertical-align: text-top;
     top: -2px;
+}
+
+.mobile_logout{
+    display: none;
 }
 
 .nav-item {
@@ -53,7 +57,7 @@
     color: white;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
     .navbar-toggler {
         display: none;
     }
@@ -94,7 +98,7 @@
     color: #fff;
 }
 
-@media (max-width: 575.98px){
+@media(max-width: 767.99px){
     .favoriteList{
         display: none;
     }
@@ -116,16 +120,22 @@
         height: 2rem;
         background: none;
     }
+    
+    .mobile_logout{
+        display: block;
+    }
+    
+    
 }
 
 /*Small devices (landscape phones, less than 768px)*/
-@media (max-width: 767.98px){
+@media (min-width: 768px) and (max-width: 991.99px){
     .favoriteList{
         display: none;
     }
     .navbar-brand{
-        height: 3em;
-        width: 7em;
+        height: 4em;
+        width: 10em;
     }
     #nav_line{
         display: none;
@@ -138,14 +148,14 @@
         padding-bottom: 0.2rem;
     }
     .top-row {
-        height: 2rem;
+        height: 3rem;
         background: none;
     }
 }
 
 /*Medium devices (tablets, less than 992px)*/
-@media (max-width: 991.98px){
-    
+@media (min-width: 992px) and (max-width: 1199.97px){
+   
 }
 
 /*Large devices (tablets, landscape view)*/
@@ -153,3 +163,6 @@
     
 }
 
+@media (min-width: 1200px){
+    
+} 

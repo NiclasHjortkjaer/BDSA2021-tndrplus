@@ -1,107 +1,104 @@
-﻿
-@inject HttpClient _http
+﻿@inject HttpClient _http
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject NavigationManager _navigationManager
 @inject ProjectStateChanged _projectsChanged; //forsøg
 
 <AuthorizeView>
     <Authorized>
+        <div class="top-row ps-3 navbar navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
+                <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
-        <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                </NavLink>
+                <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
 
-            </NavLink>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/browse" Match="NavLinkMatch.All">
-                <span class="oi oi-globe" aria-hidden="true"></span> Browse
-            </NavLink>
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/browse" Match="NavLinkMatch.All">
+                        <span class="oi oi-globe" aria-hidden="true"></span> Browse
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="search">
+                        <span class="oi oi-magnifying-glass" aria-hidden="true"></span> Search
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="account/myprofile">
+                        <span class="oi oi-person" aria-hidden="true"></span> My Profile
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/createproject">
+                        <span class="oi oi-pencil" aria-hidden="true"></span> Create project idea
+                    </NavLink>
+                </div>
+                @if (_role == "supervisor")
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/createproject">
+                            <span class="oi oi-pencil" aria-hidden="true"></span> Not visible for student
+                        </NavLink>
+                    </div>
+                }
+            </nav>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="search">
-                <span class="oi oi-magnifying-glass" aria-hidden="true"></span> Search
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="account/myprofile">
-                <span class="oi oi-person" aria-hidden="true"></span> My Profile
-            </NavLink>
-        </div>
-         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/createproject">
-            <span class="oi oi-pencil" aria-hidden="true"></span> Create project idea
-            </NavLink>
-        </div>
-        @if (_role == "supervisor")
-        {
-             <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/createproject">
-            <span class="oi oi-pencil" aria-hidden="true"></span> Not visible for student
-            </NavLink>
-        </div>
-        }
-    </nav>
-</div>
-<hr id="nav_line">
-<br>
-<div class="favoriteList">
+        <hr id="nav_line">
+        <br>
+        <div class="favoriteList">
     
-    @if (_projectsChanged.projects != null)
-    {
-        @foreach (var favorite in _projectsChanged.projects)
-        {
-            <ul @onclick="() => NavigateToFavorite(favorite)">@favorite</ul>
-        }
-    }
-</div>
-
+            @if (_projectsChanged.projects != null)
+            {
+                @foreach (var favorite in _projectsChanged.projects)
+                {
+                    <ul @onclick="() => NavigateToFavorite(favorite)">@favorite</ul>
+                }
+            }
+        </div>
     </Authorized>
     <NotAuthorized>
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
-        <NavLink class="nav-link" href="/">
-            </NavLink>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/">
-                <span class="oi oi-globe" aria-hidden="true"></span> Browse
-            </NavLink>
+        <div class="top-row ps-3 navbar navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
+                <NavLink class="nav-link" href="/">
+                </NavLink>
+                <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                <span class="oi oi-magnifying-glass" aria-hidden="true"></span> Search
-            </NavLink>
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <nav class="flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/">
+                        <span class="oi oi-globe" aria-hidden="true"></span> Browse
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                        <span class="oi oi-magnifying-glass" aria-hidden="true"></span> Search
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/">
+                        <span class="oi oi-pencil" aria-hidden="true"></span> Settings
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/">
+                        <span class="oi oi-pencil" aria-hidden="true"></span> Create project idea
+                    </NavLink>
+                </div>
+            </nav>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/">
-                <span class="oi oi-pencil" aria-hidden="true"></span> Settings
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/">
-            <span class="oi oi-pencil" aria-hidden="true"></span> Create project idea
-            </NavLink>
-        </div>
-    </nav>
-</div>
-<hr>
-<br>
+        <hr>
+        <br>
     </NotAuthorized>
 </AuthorizeView>
 

@@ -34,17 +34,17 @@
                     <p1 style="text-decoration: underline; font-weight: bold;">
                         @model.Value:
                     </p1>
-                    <div>
+                   
                         <InputRadioGroup @bind-Value="model.Selected">
                             @foreach (var option in model.Options)
                                 {
-                                <div>
-                                    <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/> 
+                                <div class="btn_filter">
+                                    <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none; margin-left: 2px;"/> 
                                         <label for="@option.Value" style="cursor: pointer">@option.Value</label>
                                 </div>
                                 }
                         </InputRadioGroup>
-                    </div>
+                    
                 </EditForm>
             </div>
         </div>
