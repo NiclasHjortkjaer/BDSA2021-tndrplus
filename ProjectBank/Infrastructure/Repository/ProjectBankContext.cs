@@ -1,6 +1,6 @@
 using ProjectBank.Infrastructure.Entity;
 
-namespace ProjectBank.Infrastructure;
+namespace ProjectBank.Infrastructure.Repository;
 
 public class ProjectBankContext : DbContext, IProjectBankContext
 {

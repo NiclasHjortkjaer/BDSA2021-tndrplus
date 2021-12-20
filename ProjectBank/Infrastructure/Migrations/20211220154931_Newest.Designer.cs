@@ -5,21 +5,21 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectBank.Infrastructure;
+using ProjectBank.Infrastructure.Repository;
 
 #nullable disable
 
 namespace ProjectBank.Infrastructure.Migrations
 {
     [DbContext(typeof(ProjectBankContext))]
-    [Migration("20211215124737_1Newest")]
-    partial class _1Newest
+    [Migration("20211220154931_Newest")]
+    partial class Newest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -54,7 +54,7 @@ namespace ProjectBank.Infrastructure.Migrations
                     b.ToTable("KeywordProject");
                 });
 
-            modelBuilder.Entity("ProjectBank.Infrastructure.Account", b =>
+            modelBuilder.Entity("ProjectBank.Infrastructure.Entity.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,7 +82,7 @@ namespace ProjectBank.Infrastructure.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("ProjectBank.Infrastructure.Keyword", b =>
+            modelBuilder.Entity("ProjectBank.Infrastructure.Entity.Keyword", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +103,7 @@ namespace ProjectBank.Infrastructure.Migrations
                     b.ToTable("Keywords");
                 });
 
-            modelBuilder.Entity("ProjectBank.Infrastructure.Project", b =>
+            modelBuilder.Entity("ProjectBank.Infrastructure.Entity.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,13 +150,13 @@ namespace ProjectBank.Infrastructure.Migrations
 
             modelBuilder.Entity("AccountProject", b =>
                 {
-                    b.HasOne("ProjectBank.Infrastructure.Account", null)
+                    b.HasOne("ProjectBank.Infrastructure.Entity.Account", null)
                         .WithMany()
                         .HasForeignKey("AccountsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectBank.Infrastructure.Project", null)
+                    b.HasOne("ProjectBank.Infrastructure.Entity.Project", null)
                         .WithMany()
                         .HasForeignKey("SavedProjectsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -165,29 +165,29 @@ namespace ProjectBank.Infrastructure.Migrations
 
             modelBuilder.Entity("KeywordProject", b =>
                 {
-                    b.HasOne("ProjectBank.Infrastructure.Keyword", null)
+                    b.HasOne("ProjectBank.Infrastructure.Entity.Keyword", null)
                         .WithMany()
                         .HasForeignKey("KeywordsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectBank.Infrastructure.Project", null)
+                    b.HasOne("ProjectBank.Infrastructure.Entity.Project", null)
                         .WithMany()
                         .HasForeignKey("ProjectsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectBank.Infrastructure.Project", b =>
+            modelBuilder.Entity("ProjectBank.Infrastructure.Entity.Project", b =>
                 {
-                    b.HasOne("ProjectBank.Infrastructure.Account", "Author")
+                    b.HasOne("ProjectBank.Infrastructure.Entity.Account", "Author")
                         .WithMany("AuthoredProjects")
                         .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("ProjectBank.Infrastructure.Account", b =>
+            modelBuilder.Entity("ProjectBank.Infrastructure.Entity.Account", b =>
                 {
                     b.Navigation("AuthoredProjects");
                 });
