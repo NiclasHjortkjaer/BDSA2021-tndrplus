@@ -160,7 +160,36 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         return Status.Deleted;
     }
 
-    
+    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenRandAsync(string keyword, int timesSeen, Degree degree) //find bedre navn carl 
+    {
+        var project = await ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
+        if (project != null)
+        {
+            return project;
+        }
+
+        //Returns random project, when there are no more projects with the given keyword
+        //Does not promise, not to show an already shown project
+        Random rand = new Random();
+        var randomIndex = rand.Next(1, _context.Projects.Count());
+        var projects = from p in _context.Projects
+            where p.Id == randomIndex
+            select new ProjectDetailsDto(
+                p.Id,
+                p.Author == null ? null : p.Author.AzureAdToken,
+                p.Author == null ? null : p.Author.Name,
+                p.Title,
+                p.Description,
+                p.Degree,
+                p.ImageUrl,
+                p.FileUrl,
+                p.Ects,
+                p.LastUpdated,
+                p.Keywords.Select(k => k.Word).ToHashSet()
+            );
+
+        return projects.FirstOrDefault()!;
+    }
     
     public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenAsync(string keyword, int timesSeen, Degree degree = Degree.Unspecified) 
     {
