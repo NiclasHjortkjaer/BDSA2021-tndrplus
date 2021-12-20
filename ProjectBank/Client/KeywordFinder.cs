@@ -1,5 +1,6 @@
 using ProjectBank.Client.Pages;
-using ProjectBank.Core;
+using ProjectBank.Core.Enum;
+using ProjectBank.Core.DTO;
 using System.Net.Http;
 using System.Net.Http.Json;
 

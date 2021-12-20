@@ -1,4 +1,5 @@
-using ProjectBank.Core;
+using ProjectBank.Core.Enum;
+using ProjectBank.Core.DTO;
 
 namespace ProjectBank.Client;
 

@@ -1,4 +1,4 @@
-namespace ProjectBank.Infrastructure;
+namespace ProjectBank.Infrastructure.Entity;
 
 public class Keyword
 {

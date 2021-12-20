@@ -1,4 +1,6 @@
-namespace ProjectBank.Core;
+using ProjectBank.Core.Enum;
+
+namespace ProjectBank.Core.RepositoryInterface;
 
 public interface IFileRepository
 {

@@ -1,5 +1,4 @@
-namespace ProjectBank.Core
-{
+namespace ProjectBank.Core.Enum;
     public enum Status
     {
         Created,
@@ -9,4 +8,3 @@ namespace ProjectBank.Core
         BadRequest,
         Conflict
     }
-}

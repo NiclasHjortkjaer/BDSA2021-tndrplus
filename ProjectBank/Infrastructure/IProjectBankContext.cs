@@ -1,3 +1,5 @@
+using ProjectBank.Infrastructure.Entity;
+
 namespace ProjectBank.Infrastructure;
 
 public interface IProjectBankContext : IDisposable

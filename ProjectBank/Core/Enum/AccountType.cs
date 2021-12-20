@@ -1,4 +1,4 @@
-namespace ProjectBank.Core;
+namespace ProjectBank.Core.Enum;
 
 public enum AccountType
 {

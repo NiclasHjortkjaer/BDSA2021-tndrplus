@@ -1,4 +1,4 @@
-namespace ProjectBank.Infrastructure;
+namespace ProjectBank.Infrastructure.Repository;
 //from ondfisk BDSA 2021
 public class FileRepository : IFileRepository
 {

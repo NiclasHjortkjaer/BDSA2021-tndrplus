@@ -1,4 +1,6 @@
-namespace ProjectBank.Core;
+using ProjectBank.Core.Enum;
+
+namespace ProjectBank.Core.DTO;
 
 public record ProjectDto(
     int Id,
