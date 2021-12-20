@@ -11,7 +11,7 @@
 
 <PageTitle>ProjectBank - My Profile</PageTitle>
 
-<h3 style="text-decoration: underline">Profile:</h3>
+<h3 id="profile_h3" style="text-decoration: underline">Profile:</h3>
 @if (_account != null)
 {
     <div class="profile_info">
@@ -35,29 +35,29 @@
         <br/>
     </div>
 }
-<br>
 <hr id="MyProfile_line">
-<br/>
-<h3 style="text-decoration: underline">My project ideas :</h3>
+<h3 id="myproject_h3" style="text-decoration: underline">My project ideas :</h3>
 @if (_userProjects.Any())
 {
     <table class="table table-striped" style="color: white; display: flow">
         <thead>
         <tr>
-            <th>Title</th>
+            <th id="myprojects_table_title">Title:</th>
         </tr>
         </thead>
         <tbody>
         @foreach (var project in _userProjects)
         {
             <tr style="color: white">
-                <td><x onclick="@(() => _navigationManager.NavigateTo($"/projects/{project?.Id}"))" style="cursor: pointer;">@project?.Title</x></td>
+                <td><x id="MyProject_title" onclick="@(() => _navigationManager.NavigateTo($"/projects/{project?.Id}"))" style="cursor: pointer;">@project?.Title</x></td>
                 <td>
                     <div class="my_project_options">
-                        <button id="edit_my_project" style="display: none" @onclick="e => UpdateProject(project!.Id)"></button>
+                        <button id="edit_my_project" style="display: none"
+                                @onclick="e => UpdateProject(project!.Id)"></button>
                         <label for="edit_my_project" class="oi oi-pencil"></label>
-                    <button id="delete_My_project" style="display: none" IsBusy=@_busyProfile @onclick="(e => DeleteProject(project!.Id))"></button>
-                    <label for="delete_My_project" class="oi oi-trash"></label>
+                        <button id="delete_My_project" style="display: none" IsBusy=@_busyProfile
+                                @onclick="(e => DeleteProject(project!.Id))"></button>
+                        <label for="delete_My_project" class="oi oi-trash"></label>
                     </div>
                 </td>
             </tr>

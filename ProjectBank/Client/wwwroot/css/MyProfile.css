@@ -38,3 +38,75 @@
 .my_project_options label{
     margin-right: 1em;
 }
+
+@media(max-width: 767.99px){
+   #profile_h3, #myproject_h3{
+       font-size: 15pt;
+   }
+   
+    .picture_container{
+        height: 5em;
+        width: 5em;
+    }
+    
+    .profile_no_pic, .profile_pic{
+        height: 5em;
+        width: 5em;
+    }
+
+    .profile_contact_info{
+        font-size: 10pt;
+    }
+    
+    #myprojects_table_title, #MyProject_title{
+        font-size: 10pt;
+    }
+    
+    .my_project_options{
+        margin-top: 0.5em;
+    }
+    
+    .my_project_options label{
+        font-size: 10pt;
+    }
+}
+
+/*Small devices (landscape phones, and portrait tablets)*/
+@media (min-width: 768px) and (max-width: 991.99px){
+    #profile_h3, #myproject_h3{
+        font-size: 20pt;
+    }
+
+    .picture_container{
+        height: 7em;
+        width: 7em;
+    }
+
+    .profile_no_pic, .profile_pic{
+        height: 7em;
+        width: 7em;
+    }
+
+    .profile_contact_info{
+        font-size: 15pt;
+    }
+
+    #myprojects_table_title, #MyProject_title{
+        font-size: 15pt;
+    }
+
+    .my_project_options{
+        margin-top: 0.5em;
+    }
+
+    .my_project_options label{
+        font-size: 15pt;
+    }
+}
+
+/*Medium devices (tablets, landscape view )*/
+@media (min-width: 992px) and (max-width: 1199.97px){
+}
+@media (min-width: 1200px) {
+
+}
