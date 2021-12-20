@@ -1,5 +1,5 @@
 # BDSA2021-tndrplus
-This sofware was developed as part of the course: Analysis, Design and Software Architecture (2021)
+This software was developed as part of the course: Analysis, Design and Software Architecture (2021)
 
 Run the program
 Prerequisites:
@@ -21,11 +21,9 @@ dotnet dev-certs https --clean
 dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p localhost
 dotnet dev-certs https --trust
 ```
-2. Create a new folder: ".local" at location 2 folders back from the "docker-compose.yml" file in the projectbank folder and add the sectret files:
-Guide: From within the ProjectBank folder on the local machine
+2. Create a new folder: ".local" in the same folder as the "docker-compose.yml" from the projectbank folder and add the sectret files:
+From within the ProjectBank folder on the local machine:
 ```powershell
-cd ..
-cd ..
 mkdir .local
 cd .local
 ```
