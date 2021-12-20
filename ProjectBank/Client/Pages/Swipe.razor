@@ -6,6 +6,12 @@
 @inject NotificationService notificationService
 @inject NavigationManager _navigationManager
 
+
+//
+// This RadzenNotification tag is necessary for the
+// NotificationService to work. Otherwise the service is still available,
+// however, the notifications will never be shown.
+//
 <RadzenNotification/>
 
 
@@ -14,12 +20,10 @@
 </button>
 <button id="info_btn" 
         onclick="window.alert('Swipe Use-guide: \r\n \r\n ' +
-         'To Like a project; you must either swipe the project right or click the star. \r\n \r\n ' +
-          'To skip a project; you must swipe the project left or click the`X` \r\n \r\n' +
-          'To regret/undo a decision; you can click the button in the middle, displayed with a circled arrow.')">i
+         'To Like a project; you must click the star. \r\n \r\n ' +
+          'To skip a project; you must click the`X` \r\n \r\n' +
+          'To regret/undo your last decision; you can click the button in the middle, displayed with a circled arrow. Further, the rewatch button lets you scroll back through already seen projects.')">i
 </button>
-@*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
-
 
 @if (!_seenProjectIds.Any())
 {
@@ -109,7 +113,7 @@ Degree: @_currentProject.Degree</textarea>
 
             _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
+            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if no saved projects were found for that user.
 
             _keywordString = GetKeyWords();
 
@@ -136,7 +140,7 @@ Degree: @_currentProject.Degree</textarea>
     {
         switch (s)
         {
-            case ClickType.Like: //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
+            case ClickType.Like:
             
                 if (!_likedProjectIds.Contains(_currentProject.Id))
                 {
@@ -212,7 +216,6 @@ Degree: @_currentProject.Degree</textarea>
                 
                 break;
         }
-
         _keywordString = GetKeyWords();
 
         await InvokeAsync(StateHasChanged);
@@ -226,7 +229,6 @@ Degree: @_currentProject.Degree</textarea>
         if (project != null){
             _currentProject = project;
         }
-
         _seenProjectIds.Push(_currentProject.Id);
     }
 
@@ -255,14 +257,11 @@ Degree: @_currentProject.Degree</textarea>
     private string GetKeyWords()
     {
         return _currentProject.Keywords != null ? string.Join(", ", _currentProject.Keywords) : "none";
-
     }
     
     private void ShowNotification(string message, Notification type)
     {
         var notiMsg = new NotificationMessage();
-        
-        //TODO change this to enum instead of int
 
         switch (type)
         {
@@ -277,11 +276,8 @@ Degree: @_currentProject.Degree</textarea>
             case Notification.Info:
                 notiMsg = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "Info", Detail = message, Duration = 4000};
                 break;
-            
         }
-        
-        notificationService.Notify(notiMsg); 
-        
+        notificationService.Notify(notiMsg);
     }
     
     //----- private helper methods -----
@@ -297,7 +293,7 @@ Degree: @_currentProject.Degree</textarea>
     
     private async Task addLikedProject()
     {
-        await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title); //vil måske gerne lave om til den også får et id, nah fuck it
+        await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title);
         _likedProjectIds.Add(_currentProject.Id);
         projectChanged.AddSavedProjects(_currentProject.Title);
                     

@@ -57,7 +57,6 @@ public class AccountRepositoryTests
         Assert.Equal("Create", account.AzureAdToken);
         Assert.True(account.SavedProjects.SetEquals(new[] {"Ez OOP"}));
     }
-    
     [Fact]
     public async Task ReadAllAsyncReturnsAllAccounts()
     {
@@ -201,9 +200,9 @@ public class AccountRepositoryTests
         Assert.Equal(Status.Conflict, status2);
 
     }
-    
+
     [Fact]
-    public async Task RemoveLikedProjectAsync_removes_given_project_from_title_and_azureToken() //ikke meningen man må slette fra listen på den måde i følge ef core, hvad gør vi så..
+    public async Task RemoveLikedProjectAsync_removes_given_project_from_title_and_azureToken()
     {
         var account3 = await _context.Accounts.FindAsync(3);
         var projectToRemove = await _context.Projects.FindAsync(1);    
@@ -216,9 +215,7 @@ public class AccountRepositoryTests
         
         Assert.False(account3.SavedProjects.Contains(projectToRemove));
     }
-    
-    
-    
+
     // Disposable methods.-----------------------------
     protected virtual void Dispose(bool disposing)
     {

@@ -160,7 +160,7 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         return Status.Deleted;
     }
 
-    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenRandAsync(string keyword, int timesSeen, Degree degree) //find bedre navn carl 
+    public async Task<ProjectDetailsDto> ReadProjectGivenKeywordAndTimesSeenRandAsync(string keyword, int timesSeen, Degree degree) 
     {
         var project = await ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
         if (project != null)
