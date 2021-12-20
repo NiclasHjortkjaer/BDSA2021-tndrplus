@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace ProjectBank.Infrastructure;
+namespace ProjectBank.Infrastructure.Entity;
 
 public class ProjectComparer : IEqualityComparer<ProjectDetailsDto>
 {
