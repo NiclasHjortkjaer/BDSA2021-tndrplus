@@ -39,8 +39,8 @@ services:
 
 secrets:
   db_password:
-    file: ../../.local/db_password.txt
+    file: ./.local/db_password.txt
   connection_string:
-    file: ../../.local/connection_string.txt
+    file: ./.local/connection_string.txt
   storage_key:
-    file: ../../.local/storage_key.txt
+    file: ./.local/storage_key.txt
