@@ -14,9 +14,9 @@
 </button>
 <button id="info_btn" 
         onclick="window.alert('Swipe Use-guide: \r\n \r\n ' +
-         'To Like a project; you must either swipe the project right or click the star. \r\n \r\n ' +
-          'To skip a project; you must swipe the project left or click the`X` \r\n \r\n' +
-          'To regret/undo a decision; you can click the button in the middle, displayed with a circled arrow.')">i
+         'To Like a project; you must click the star. \r\n \r\n ' +
+          'To skip a project; you must click the`X` \r\n \r\n' +
+          'To regret/undo your last decision; you can click the button in the middle, displayed with a circled arrow. Further, the rewatch button lets you scroll back through already seen projects.')">i
 </button>
 @*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
 
@@ -212,7 +212,6 @@ Degree: @_currentProject.Degree</textarea>
                 
                 break;
         }
-
         _keywordString = GetKeyWords();
 
         await InvokeAsync(StateHasChanged);
@@ -255,14 +254,11 @@ Degree: @_currentProject.Degree</textarea>
     private string GetKeyWords()
     {
         return _currentProject.Keywords != null ? string.Join(", ", _currentProject.Keywords) : "none";
-
     }
     
     private void ShowNotification(string message, Notification type)
     {
         var notiMsg = new NotificationMessage();
-        
-        //TODO change this to enum instead of int
 
         switch (type)
         {
@@ -277,11 +273,8 @@ Degree: @_currentProject.Degree</textarea>
             case Notification.Info:
                 notiMsg = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "Info", Detail = message, Duration = 4000};
                 break;
-            
         }
-        
-        notificationService.Notify(notiMsg); 
-        
+        notificationService.Notify(notiMsg);
     }
     
     //----- private helper methods -----
