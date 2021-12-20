@@ -7,7 +7,7 @@
 @inject NavigationManager _navigationManager
 
 <PageTitle>ProjectBank - Search</PageTitle>
-
+<div class="search_filter_grid">
 <div class="search_container">
     <div class="searchBar_wrapper">
         @if (!_isDropedDown)
@@ -20,31 +20,34 @@
         }
         <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
         <button class="btn_search" @onclick="LoadProjects"><span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
-        </div>
-    @if(_isDropedDown)
-            {
-                <div class="dropdown_menu_filter">
-                    <div class="drop_filter_content">
+    </div>
+<div class="filter_wrapper">
+    @if (_isDropedDown)
+    {
+        <div class="dropdown_menu_filter">
+            <div class="drop_filter_content">
 
-                        <EditForm EditContext="this.editContext">
-                            <p1 style="text-decoration: underline; font-weight: bold;">
-                                @model.Value:
-                            </p1>
-                            <div>
-                                <InputRadioGroup @bind-Value="model.Selected">
-                                    @foreach (var option in model.Options)
-                                        {
-                                            <div>
-                                                <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/> 
-                                                <label for="@option.Value" style="cursor: pointer">@option.Value</label>
-                                            </div>
-                                        }
-                                </InputRadioGroup>
-                            </div>
-                        </EditForm>
+                <EditForm EditContext="this.editContext">
+                    <p1 style="text-decoration: underline; font-weight: bold;">
+                        @model.Value:
+                    </p1>
+                    <div>
+                        <InputRadioGroup @bind-Value="model.Selected">
+                            @foreach (var option in model.Options)
+                            {
+                                <div class="radio1">
+                                    <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/>
+                                    <label for="@option.Value" style="cursor: pointer">@option.Value</label>
+                                </div>
+                            }
+                        </InputRadioGroup>
                     </div>
-                </div>
-            }
+                </EditForm>
+            </div>
+        </div>
+    }
+</div>
+</div>
 </div>
 
 @if (_projects != null)
