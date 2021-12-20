@@ -1,10 +1,13 @@
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
+.navbar-toggler{
+    background: none;
+    outline: none;
+    border: none;
+    
 }
 
 .top-row {
     height: 3.5rem;
-    background-color: none;
+    background: none;
 }
 
 .navbar-brand {
@@ -16,6 +19,10 @@
     font-size: 1.1rem;
     vertical-align: text-top;
     top: -2px;
+}
+
+.mobile_logout{
+    display: none;
 }
 
 .nav-item {
@@ -50,7 +57,7 @@
     color: white;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 992px) {
     .navbar-toggler {
         display: none;
     }
@@ -63,8 +70,8 @@
 
 .favoriteList{
     background:none;
-    width: 250px;
-    height: 350px;
+    width: 15em;
+    height: 22em;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -91,4 +98,71 @@
     color: #fff;
 }
 
+@media(max-width: 767.99px){
+    .favoriteList{
+        display: none;
+    }
+    
+    .navbar-brand{
+        height: 33%;
+        width: 33%;
+    }
 
+    #nav_line{
+        display: none;
+    }
+
+    .nav-item:last-of-type {
+        padding-bottom: 0.2rem;
+    }
+
+    .top-row {
+        height: 2rem;
+        background: none;
+    }
+    
+    .mobile_logout{
+        display: block;
+    }
+    
+    
+}
+
+/*Small devices (landscape phones, less than 768px)*/
+@media (min-width: 768px) and (max-width: 991.99px){
+    .favoriteList{
+        display: none;
+    }
+    .navbar-brand{
+        height: 4em;
+        width: 10em;
+    }
+    #nav_line{
+        display: none;
+    }
+    .nav-item:first-of-type{
+        padding-top: 1.5rem;    
+    }
+    
+    .nav-item:last-of-type {
+        padding-bottom: 0.2rem;
+    }
+    .top-row {
+        height: 3rem;
+        background: none;
+    }
+}
+
+/*Medium devices (tablets, less than 992px)*/
+@media (min-width: 992px) and (max-width: 1199.97px){
+   
+}
+
+/*Large devices (tablets, landscape view)*/
+@media (max-width: 1199.98px){
+    
+}
+
+@media (min-width: 1200px){
+    
+} 

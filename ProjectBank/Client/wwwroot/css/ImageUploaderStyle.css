@@ -5,8 +5,8 @@
 
 .overlay{
     display: block;
-    height: 150px;
-    width: 150px;
+    height: inherit;
+    width: inherit;
     border-radius: 10px;
     font-size: 0;
     transition: all 0.25s ease;
@@ -14,9 +14,7 @@
 
 .overlay:hover{
     cursor: pointer;
-    height: 150px;
-    width: 150px;
     background: rgb(000, 000, 000, 80%);
     text-align: center;
-    font-size: 20px;
+    font-size: inherit;
 }

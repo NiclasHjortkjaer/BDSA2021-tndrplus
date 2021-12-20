@@ -3,22 +3,27 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>ProjectBank - Browse</PageTitle>
+
 <div class="browse_all">
-            <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
-    </div>
+    <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())"> Browse all </button><p1 id="Browse_all_text" >or look for a specific keyword to browse:</p1>
+</div>
+
 <div class="filter_browse">
+    <button class="mobile_filter_btn" @onclick="dropdown">Filter</button>
+    <div class="desktop_filter_btn">
     @if (!_isDropedDown)
     {
         <button @onclick="dropdown" style="background: none; border: none;">
             <img src="filter.png" alt="" style="height: 20px"/>
         </button>
     }
-    @if(_isDropedDown)
+    @if (_isDropedDown)
     {
         <button @onclick="dropdown" style="background: #ffffff; border: none; border-top-left-radius: 10px; border-top-right-radius: 10px">
             <img src="filterBlack.png" alt="" style="height: 20px"/>
         </button>
     }
+    </div>
 </div>
 @if (_isDropedDown)
 {
@@ -29,17 +34,17 @@
                     <p1 style="text-decoration: underline; font-weight: bold;">
                         @model.Value:
                     </p1>
-                    <div>
+                   
                         <InputRadioGroup @bind-Value="model.Selected">
                             @foreach (var option in model.Options)
-                            {
-                                <div>
-                                    <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/> 
+                                {
+                                <div class="btn_filter">
+                                    <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none; margin-left: 2px;"/> 
                                         <label for="@option.Value" style="cursor: pointer">@option.Value</label>
                                 </div>
                             }
                         </InputRadioGroup>
-                    </div>
+                    
                 </EditForm>
             </div>
         </div>
