@@ -31,8 +31,6 @@ public class KeywordFinder : IKeywordFinder
         }
     }     
 
-    //Test den her metode
-    //Skal den være async?
     public string FindWeightedRandomKeyword()
     {
         Random random = new Random();
