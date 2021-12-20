@@ -18,7 +18,7 @@
         {
             <button class="filter_btn" @onclick="dropdown" style="border-bottom-left-radius: 0">Filter <span class="oi oi-chevron-top"></span></button>
         }
-        <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" placeholder="Search... Project Title, Supervisor, or #Keyword">
+        <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" maxlength="100" placeholder="Search... Project Title, Supervisor, or #Keyword">
         <button class="btn_search" @onclick="LoadProjects"><span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
         </div>
     @if(_isDropedDown)

@@ -61,9 +61,13 @@ else
                             }
                    <h4 style="color:black;">______________________________</h4> 
                         </div>
+                        @if (_project.AuthorName == _name){
+                        <RadzenButton style="width: 250px" Icon="accessibility" BusyText="Saving ..." Text="Share project idea" Click=@ShowCloseableFromOverlayDialogRequest/>
+                        } else {
+                        <RadzenButton style="width: 160px" Icon="favorite" BusyText="Saving ..." Text="Apply" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))" />   
+                        <RadzenButton style="width: 250px" Icon="accessibility" BusyText="Saving ..." Text="Contact Author" Click=@ShowCloseableFromOverlayDialogContact/>
+                        }
                         
-                        <RadzenButton style="width: 160px" Icon="favorite" BusyText="Saving ..." Text="Apply" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))" />
-                        <RadzenButton style="width: 250px" Icon="accessibility" BusyText="Saving ..." Text="Contact Author" Click=@ShowCloseableFromOverlayDialog  />
 
                     </div>
                 </div>
@@ -82,6 +86,7 @@ else
     private List<string> _likedProjects = null!;
     private string? _aToken; 
     private TimeSpan _lastUpdated;
+    private string? _name;
 
     protected override void OnInitialized()
     {
@@ -113,6 +118,7 @@ else
             var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             if (_user != null){
                 var _claims = _user.Claims;
+                _name = _user.Identity?.Name;
                 _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
                 var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
                 if (account != null)
@@ -138,7 +144,7 @@ else
             }
     }
    
-    async Task ShowCloseableFromOverlayDialog()
+    async Task ShowCloseableFromOverlayDialogContact()
     {
         var _email =_project.AuthorName.ToString()+"@gmail.com";
         _email =_email.Replace(" ", String.Empty);
@@ -151,10 +157,28 @@ else
         <div> 
             Email: @_email</div>
         <div>
-            <RadzenTextArea Placeholder="Write message" Style="height:75px;width:100px"/>
+            <RadzenTextArea Placeholder="Write message" Style="height:75px;width:300px"/>
           <div>
-            <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))"/>
+            <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "", Duration = 4000 }))"/>
             <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
+          </div>
+        </div>
+        </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
+    }
+
+    async Task ShowCloseableFromOverlayDialogRequest()
+    {
+        await DialogService.OpenAsync("", ds =>
+        @<div style="color:black;">
+            <div>
+            <h2 style="color:black;">Request supervision</h2> </div>
+        <div>
+            Enter email: </div>
+        <div>
+            <RadzenTextArea Placeholder="Enter email" Style="height:37px;width:400px"/>
+          <div>
+            <RadzenButton style="width: 100px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Request send", Detail = "", Duration = 4000 }))"/>
+            <RadzenButton style="width: 100px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
           </div>
         </div>
         </div>, new DialogOptions() { CloseDialogOnOverlayClick = true });
