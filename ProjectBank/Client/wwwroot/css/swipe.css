@@ -1,3 +1,13 @@
+.landscape_view_mobile{
+    text-align: center;
+    margin-top: 10%;
+    display: none;
+}
+
+
+
+
+
 #GoBack_btn{
     background: none;
     position: absolute;
@@ -132,4 +142,348 @@
 
 #info_btn:hover{
     background-color: #ffffff;
+}
+
+@media(max-width: 767.99px) and (min-height: 700px){
+    .project_builder{
+        background: #ffffff;
+        height: 30em;
+        width: 20em;
+        border-radius: 10px;
+        top: 3em;
+    }
+
+    .like_and_dislike_btn_div{
+        text-align: center;
+        padding-top: 5em;
+    }
+    .project_builder .project_content .project_description , 
+    .project_keywords
+    {
+        width: 23em;
+    }
+
+    .project_builder .project_content #supervisor{
+        width: 10em;
+    }
+    .project_builder .project_content #supervisor x{
+        text-decoration: underline;
+    } 
+
+    .project_builder .project_content #project_title{
+        width: 20em;
+        font-size: 12pt;
+    }
+    
+    .project_builder .project_content .project_keywords{
+        height: 7em;
+    }
+    
+    #info_btn{
+        display: none;
+    }
+
+    #GoBack_btn{
+        font-size: 20pt;
+    }
+}
+
+@media(max-width: 767.99px) and (max-height: 599.99px) {
+    .project_builder{
+        background: #ffffff;
+        height: 20em;
+        width: 17em;
+        border-radius: 10px;
+        top: 3em;
+    }
+
+    .like_and_dislike_btn_div{
+        text-align: center;
+        padding-top: 5em;
+        font-size: 9pt;
+    }
+    
+    #like_btn{
+        margin-left: 1em;
+    }
+    
+    #dislike_btn{
+        margin-right: 1em;
+    }
+    
+    .project_builder .project_content .project_description
+    {
+        width: 20em;
+        height: 15em;
+        font-size: 8pt;
+    }
+
+    .project_builder .project_content #supervisor{
+        width: 10em;
+        font-size: 8pt;
+    }
+    .project_builder .project_content #supervisor x{
+        text-decoration: underline;
+    }
+
+    .project_builder .project_content #project_title{
+        width: 20em;
+        font-size: 12pt;
+    }
+
+    .project_builder .project_content .project_keywords{
+        height: 7em;
+        width: 20em;
+        font-size: 8pt;
+    }
+
+    #info_btn{
+        display: none;
+    }
+
+    #GoBack_btn{
+        font-size: 20pt;
+    }
+}
+
+@media(max-width: 767.99px) and (min-height: 600px){
+    .project_builder{
+        background: #ffffff;
+        height: 25em;
+        width: 17em;
+        border-radius: 10px;
+        top: 3em;
+    }
+    
+    .like_and_dislike_btn_div{
+        text-align: center;
+        padding-top: 5em;
+    }
+    
+    
+    .project_builder .project_content .project_description
+    {
+        width: 20em;
+        height: 15em;
+        font-size: 8pt;
+    }
+
+    .project_builder .project_content #supervisor{
+        width: 10em;
+        font-size: 8pt;
+    }
+    .project_builder .project_content #supervisor x{
+        text-decoration: underline;
+       
+    }
+
+    .project_builder .project_content #project_title{
+        width: 20em;
+        font-size: 12pt;
+    }
+
+    .project_builder .project_content .project_keywords{
+        height: 7em;
+        width: 20em;
+        font-size: 8pt;
+    }
+
+    #info_btn{
+        display: none;
+    }
+
+    #GoBack_btn{
+        font-size: 20pt;
+    }
+}
+
+@media(max-width: 767.99px) and (min-height: 800px){
+    .project_builder{
+        background: #ffffff;
+        height: 30em;
+        width: 20em;
+        border-radius: 10px;
+        top: 3em;
+    }
+    
+    .like_and_dislike_btn_div{
+        text-align: center;
+        padding-top: 5em;
+        height: 10em;
+    }
+    
+    
+    .project_builder .project_content .project_description
+    {
+        width: 24em;
+        height: 22em;
+        font-size: 9pt;
+    }
+
+    .project_builder .project_content #supervisor{
+        width: 15em;
+        font-size: 9pt;
+    }
+    .project_builder .project_content #supervisor x{
+        text-decoration: underline;
+    }
+
+    .project_builder .project_content #project_title{
+        width: 15em;
+        font-size: 12pt;
+    }
+
+    .project_builder .project_content .project_keywords{
+        height: 7em;
+        width: 24em;
+        font-size: 9pt;
+    }
+
+    #info_btn{
+        display: none;
+    }
+
+    #GoBack_btn{
+        font-size: 20pt;
+    }
+    
+    .like_and_dislike_btn_div button{
+        height: 2.5em;
+        width: 2.5em;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.99px) and (max-height: 999.99px){
+    .project_builder{
+        display: none;
+    }
+    .like_and_dislike_btn_div{
+        display: none;
+    }
+    
+    .landscape_view_mobile{
+        display: block;
+    }
+    
+    #info_btn{
+        display: none;
+    }
+    
+}
+
+/*Small devices (landscape phones, and portrait tablets)*/
+@media (min-width: 768px) and (max-width: 991.99px) and (min-height: 1000px){
+    .project_builder{
+        background: #ffffff;
+        height: 40em;
+        width: 30em;
+        border-radius: 10px;
+        top: 5em;
+    }
+
+    .like_and_dislike_btn_div{
+        text-align: center;
+        padding-top: 7em;
+        height: 10em;
+    }
+
+
+    .project_builder .project_content .project_description
+    {
+        width: 28em;
+        height: 22em;
+        font-size: 12pt;
+    }
+
+    .project_builder .project_content #supervisor{
+        width: 15em;
+        font-size: 14pt;
+    }
+    .project_builder .project_content #supervisor x{
+        text-decoration: underline;
+    }
+
+    .project_builder .project_content #project_title{
+        width: 17em;
+        font-size: 20pt;
+    }
+
+    .project_builder .project_content .project_keywords{
+        height: 7em;
+        width: 28em;
+        font-size: 12pt;
+    }
+
+    #info_btn{
+        display: none;
+    }
+
+    #GoBack_btn{
+        font-size: 20pt;
+    }
+
+    .like_and_dislike_btn_div button{
+        height: 3em;
+        width: 3em;
+    }
+}
+
+/*Medium devices (tablets, landscape view )*/
+@media (min-width: 992px) and (max-width: 1199.97px){
+    .project_builder{
+        background: #ffffff;
+        height: 32em;
+        width: 25em;
+        border-radius: 10px;
+        top: 1em;
+    }
+
+    .like_and_dislike_btn_div{
+        text-align: center;
+        padding-top: 3em;
+        height: 10em;
+    }
+
+
+    .project_builder .project_content .project_description
+    {
+        width: 28em;
+        height: 17em;
+        font-size: 10pt;
+    }
+
+    .project_builder .project_content #supervisor{
+        width: 15em;
+        font-size: 11pt;
+    }
+    .project_builder .project_content #supervisor x{
+        text-decoration: underline;
+    }
+
+    .project_builder .project_content #project_title{
+        width: 15em;
+        font-size: 15pt;
+    }
+
+    .project_builder .project_content .project_keywords{
+        height: 7em;
+        width: 24em;
+        font-size: 9pt;
+    }
+
+    #info_btn{
+        display: none;
+    }
+
+    #GoBack_btn{
+        font-size: 20pt;
+    }
+
+    .like_and_dislike_btn_div button{
+        height: 2.5em;
+        width: 2.5em;
+    }
+}
+@media (min-width: 1200px) {
+
 }
