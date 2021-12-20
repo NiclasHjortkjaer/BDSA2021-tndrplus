@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 
-namespace ProjectBank.Client;
+namespace ProjectBank.Client.Scripts;
 
 public class CustomAccountFactory : AccountClaimsPrincipalFactory<CustomAccount>
 {

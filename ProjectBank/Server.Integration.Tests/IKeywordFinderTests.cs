@@ -1,4 +1,4 @@
-using ProjectBank.Client;
+using ProjectBank.Client.Scripts;
 
 namespace Server.Integration.Tests;
 
@@ -23,6 +23,7 @@ public class IKeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
         await finder.Setup(_client, Degree.Unspecified);
         var keyword = finder.FindWeightedRandomKeyword();
 
+        Assert.NotNull(keyword);
         Assert.True(keyword == "AI" || keyword == "Machine Learning" || keyword == "Design");
     }
 

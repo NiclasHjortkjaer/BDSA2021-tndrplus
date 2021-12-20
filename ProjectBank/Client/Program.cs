@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ProjectBank.Client;
+using ProjectBank.Client.Scripts;
 using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProjectBank.Infrastructure.Migrations
 {
-    public partial class _1Newest : Migration
+    public partial class Newest : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

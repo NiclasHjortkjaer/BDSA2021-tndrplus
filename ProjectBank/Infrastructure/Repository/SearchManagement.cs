@@ -1,3 +1,5 @@
+using ProjectBank.Infrastructure.Entity;
+
 namespace ProjectBank.Infrastructure.Repository;
 
 public class SearchManagement : ISearchManagement

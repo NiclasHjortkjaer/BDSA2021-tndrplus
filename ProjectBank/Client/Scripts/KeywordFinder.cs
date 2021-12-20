@@ -4,7 +4,7 @@ using ProjectBank.Core.DTO;
 using System.Net.Http;
 using System.Net.Http.Json;
 
-namespace ProjectBank.Client;
+namespace ProjectBank.Client.Scripts;
 
 public class KeywordFinder : IKeywordFinder
 {
@@ -31,8 +31,6 @@ public class KeywordFinder : IKeywordFinder
         }
     }     
 
-    //Test den her metode
-    //Skal den være async?
     public string FindWeightedRandomKeyword()
     {
         Random random = new Random();
