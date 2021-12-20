@@ -29,3 +29,12 @@
     margin-bottom: 20px;
 }
 
+.my_project_options{
+    display: flex;
+    justify-content: right;
+    justify-items: right;
+}
+
+.my_project_options label{
+    margin-right: 1em;
+}
