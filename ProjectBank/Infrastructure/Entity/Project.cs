@@ -1,6 +1,4 @@
-using System.Collections;
-
-namespace ProjectBank.Infrastructure;
+namespace ProjectBank.Infrastructure.Entity;
 
 public class Project
 {

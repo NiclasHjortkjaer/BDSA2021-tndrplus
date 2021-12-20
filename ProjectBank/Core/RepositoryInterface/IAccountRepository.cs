@@ -1,4 +1,7 @@
-namespace ProjectBank.Core;
+using ProjectBank.Core.DTO;
+using ProjectBank.Core.Enum;
+
+namespace ProjectBank.Core.RepositoryInterface;
 
 public interface IAccountRepository
 {

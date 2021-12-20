@@ -105,12 +105,11 @@
 @code {
     private IEnumerable<string> favorites = null!;
 
-    private List<string>? trialList;
+   
     private string _role;
     
     protected override async Task OnInitializedAsync()
     {
-        trialList = new List<string>();
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         if (user.Identity?.IsAuthenticated == true)
         {
@@ -122,7 +121,6 @@
             {
                 _projectsChanged.setList(account.SavedProjects);
             }
-            trialList.Add("sup");
             _projectsChanged.OnChange +=(()=>ChangeState());
 
         }
@@ -148,24 +146,6 @@
         if (project != null)
         {
             _navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
-        }
-    }
-
-    public async Task UpdateAccounts()
-    {
-        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity?.IsAuthenticated == true)
-        {
-            var _user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
-            var _claims = _user.Claims;
-            var _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            var account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{_aToken}");
-            if (account != null)
-            {
-                favorites = account.SavedProjects;
-            }
-            await InvokeAsync(StateHasChanged);
         }
     }
 }

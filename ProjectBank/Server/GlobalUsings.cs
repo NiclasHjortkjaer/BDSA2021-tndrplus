@@ -8,6 +8,10 @@ global using Microsoft.OpenApi.Models;
 global using Azure.Storage.Blobs;
 
 global using ProjectBank.Infrastructure;
+global using ProjectBank.Infrastructure.Repository;
+global using ProjectBank.Infrastructure.Entity;
 global using ProjectBank.Server.Extensions;
-global using ProjectBank.Core;
-global using static ProjectBank.Core.Status;
+global using ProjectBank.Core.RepositoryInterface;
+global using ProjectBank.Core.Enum;
+global using ProjectBank.Core.DTO;
+global using static ProjectBank.Core.Enum.Status;

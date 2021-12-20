@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using ProjectBank.Infrastructure.Entity;
 
 namespace ProjectBank.Infrastructure;
 

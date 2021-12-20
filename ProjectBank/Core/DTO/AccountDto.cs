@@ -1,4 +1,4 @@
-namespace ProjectBank.Core;
+namespace ProjectBank.Core.DTO;
 
 public record AccountDto(
     int Id,

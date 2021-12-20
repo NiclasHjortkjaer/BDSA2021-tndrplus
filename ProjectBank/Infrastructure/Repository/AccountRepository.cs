@@ -1,4 +1,6 @@
-namespace ProjectBank.Infrastructure;
+using ProjectBank.Infrastructure.Entity;
+
+namespace ProjectBank.Infrastructure.Repository;
 public class AccountRepository : IAccountRepository
 {
     private readonly IProjectBankContext _context;

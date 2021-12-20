@@ -98,7 +98,6 @@ public class AccountControllerTests
         // Arrange
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
-        //var expected = new ContentResult() {Content = Status.Updated.ToString()};
 
         repository.Setup(m => m.AddLikedProjectAsync("ya", "AI")).ReturnsAsync(Status.Created);
         var controller = new AccountController(logger.Object, repository.Object);

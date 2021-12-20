@@ -102,25 +102,6 @@ public class KeywordRepositoryTests : IDisposable
             word => Assert.Equal("Design", word)
         );
     }
-
-    [Fact]
-    public async Task ReadAllProjectsWithKeywordAsync_returns_all_allprojects_with_keyword()
-    {
-        var projectsAi = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(4, "AI"));
-        Assert.Collection(projectsAi,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
-                "A dummies guide to AI. Make your own AI friend today"), project),
-            project => Assert.Equal(
-                new ProjectDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you"), project)
-        );
-        var projectsMl = await _repo.ReadAllProjectsWithKeywordAsync(new KeywordDto(5, "Machine Learning"));
-        Assert.Collection(projectsMl,
-            project => Assert.Equal(new ProjectDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
-                "A dummies guide to AI. Make your own AI friend today"), project),
-            project => Assert.Equal(
-                new ProjectDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you"), project)
-        );
-    }
     
     [Fact]
     public async Task ReadAllProjectsWithKeywordStringAsync_returns_all_allprojects_with_keyword()
@@ -220,6 +201,22 @@ public class KeywordRepositoryTests : IDisposable
 
         Assert.Equal(0, actual);
     }
+    
+    [Fact]
+    public async Task ReadNumberOfProjectsGivenKeywordAndDegree_returns_1_given_Machine_Learning_and_PHD()
+    {
+        var actual = await _repo.ReadNumberOfProjectsGivenKeywordAndDegree("Machine Learning", Degree.PHD);
+
+        Assert.Equal(1, actual);
+    }
+
+    [Fact]
+    public async Task ReadNumberOfProjectsGivenKeywordAndDegree_returns_0_given_Machine_Learning_and_Master()
+    {
+        var actual = await _repo.ReadNumberOfProjectsGivenKeywordAndDegree("Machine Learning", Degree.Master);
+
+        Assert.Equal(0, actual);
+    }
 
     [Fact]
     public async Task DeleteAsync_returnes_notfound_given_invalid_Id()
@@ -275,14 +272,68 @@ public class KeywordRepositoryTests : IDisposable
                             word => Assert.Equal("Machine Learning", word)
                             );
     }
+    [Fact]
+    public async Task ReadProjectGivenKeywordAndTimesSeenAsync_returns_mlProject_given_correct_degree() 
+    {
+        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.PHD);
+
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+
+        Assert.Equal(2, actual.Id);
+        Assert.Equal(mlProject.AuthorToken, actual.AuthorToken);
+        Assert.Equal(mlProject.AuthorName, actual.AuthorName);
+        Assert.Equal(mlProject.Degree, actual.Degree);
+        Assert.Equal(mlProject.Title, actual.Title);
+        Assert.Equal(mlProject.Description, actual.Description);
+        Assert.Equal(mlProject.ImageUrl, actual.ImageUrl);
+        Assert.Equal(mlProject.FileUrl, actual.FileUrl);
+        Assert.Equal(mlProject.LastUpdated, actual.LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.Collection(actual.Keywords,
+            word => Assert.Equal("AI", word),
+            word => Assert.Equal("Machine Learning", word)
+        );
+    }
+    [Fact]
+    public async Task ReadProjectGivenKeywordAndTimesSeenAsync_returns_null_given_wrong_degree() 
+    {
+        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.Master);
+
+        Assert.Null(actual);
+    }
 
     [Fact]
-    public async Task ReadProjectGivenKeywordAndTimesSeenAsync_returns_random_project_given_AI_and_25() 
+    public async Task ReadProjectGivenKeywordAndTimesSeenRandAsync_returns_random_project_given_AI_and_25() 
     {
-        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 25);
+        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Unspecified);
         
         Assert.NotNull(actual);
     }
+
+    /*[Fact]
+    public async Task ReadProjectGivenKeywordAndTimesSeenRandAsync_returns_only_Master_projects_given_AI_25_and_Master()
+    {
+        var projects = new List<ProjectDetailsDto>(){
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master),
+            await _repo.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 25, Degree.Master)
+        };
+
+        Assert.Collection(projects,
+            project => Assert.Equal(Degree.Master, project.Degree),
+            project => Assert.Equal(Degree.Master, project.Degree),
+            project => Assert.Equal(Degree.Master, project.Degree),
+            project => Assert.Equal(Degree.Master, project.Degree),
+            project => Assert.Equal(Degree.Master, project.Degree),
+            project => Assert.Equal(Degree.Master, project.Degree),
+            project => Assert.Equal(Degree.Master, project.Degree),
+            project => Assert.Equal(Degree.Master, project.Degree)
+        );
+    }*/
 
     //Disposable methods-------------------------------------
     protected virtual void Dispose(bool disposing)

@@ -6,6 +6,12 @@
 @inject NotificationService notificationService
 @inject NavigationManager _navigationManager
 
+
+//
+// This RadzenNotification tag is necessary for the
+// NotificationService to work. Otherwise the service is still available,
+// however, the notifications will never be shown.
+//
 <RadzenNotification/>
 
 
@@ -14,12 +20,10 @@
 </button>
 <button id="info_btn" 
         onclick="window.alert('Swipe Use-guide: \r\n \r\n ' +
-         'To Like a project; you must either swipe the project right or click the star. \r\n \r\n ' +
-          'To skip a project; you must swipe the project left or click the`X` \r\n \r\n' +
-          'To regret/undo a decision; you can click the button in the middle, displayed with a circled arrow.')">i
+         'To Like a project; you must click the star. \r\n \r\n ' +
+          'To skip a project; you must click the`X` \r\n \r\n' +
+          'To regret/undo your last decision; you can click the button in the middle, displayed with a circled arrow. Further, the rewatch button lets you scroll back through already seen projects.')">i
 </button>
-@*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
-
 <div class="landscape_view_mobile">
     <span class="oi oi-loop-square"></span><br>
     <p1> Please turn your phone vertical</p1>
@@ -67,13 +71,17 @@ Degree: @_currentProject.Degree</textarea>
 {
     [Parameter]
     public string? keyword { get; set; }
+    
+    [Parameter]
+    public int? degreeInt { get; set; } = 3;
+    
     private readonly IKeywordFinder keywordFinder = new KeywordFinder();
     private const int _i = 10;
-    private int _indexCounter = 1;
+    private int _indexCounter;
     private List<int> _likedProjectIds; //This is only used to mimic the database collection of saved projects, st. we dont have to do unnecessary API calls. 
     private Stack<int> _seenProjectIds = new Stack<int>();
     private int _countOfProjects;
-
+    private Degree _degree = Degree.Unspecified;
     private ProjectDetailsDto _currentProject;
     private ClickType _lastClick;
     private ClaimsPrincipal? _user;
@@ -89,22 +97,27 @@ Degree: @_currentProject.Degree</textarea>
     
     protected override async Task OnInitializedAsync()
     {
+        _degree = (Degree) degreeInt;
+
         try
-        {
+        {      
             if (keyword == "all"){
-                await keywordFinder.Setup(Http);
-                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/1");
+                await keywordFinder.Setup(Http, _degree);
+                
+                var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
+                _currentProject = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
             } else
             {                
-                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/{keyword}/{_indexCounter}");
+                _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
                 _countOfProjects = await Http.GetFromJsonAsync<int>($"/api/Keyword/count/{keyword}");
             }
 
             _seenProjectIds.Push(_currentProject.Id);
-            
+            _indexCounter++;
+
             _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
+            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if no saved projects were found for that user.
 
             _keywordString = GetKeyWords();
 
@@ -114,6 +127,9 @@ Degree: @_currentProject.Degree</textarea>
         } catch (AccessTokenNotAvailableException e)
         {
             e.Redirect();
+        } catch (System.Text.Json.JsonException)
+        {
+
         }
     }
 
@@ -128,64 +144,48 @@ Degree: @_currentProject.Degree</textarea>
     {
         switch (s)
         {
-            case ClickType.Like: //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
+            case ClickType.Like:
             
                 if (!_likedProjectIds.Contains(_currentProject.Id))
                 {
-                    await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title); //vil måske gerne lave om til den også får et id
-                    _likedProjectIds.Add(_currentProject.Id);
-                    projectChanged.AddSavedProjects(_currentProject.Title);
-                    
-                    ShowNotification("Project added: "+_currentProject.Title, Notification.Success);
-                    
+                    await addLikedProject();
                     if (keyword == "all") 
                     {
                         await UpdateRatios(true);
                     }
-                    
                 } else
                 {
                     ShowNotification("You had already liked project: " + _currentProject.Title, Notification.Info); 
                 }
 
-                
-                if (_indexCounter < _countOfProjects)
-                {
-                    _indexCounter++;
-                } else
-                {
-                    ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword", Notification.Error);
-                }
-
                 _lastClick = ClickType.Like;
-
-                if (keyword == "all") 
+                
+                if (keyword == "all")
                 {
-                    var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
-                    var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
-                    
-                    if (project != null){
-                        _currentProject = project;
-                    }
+                    await FindNextProjectAll();
                 } else
                 {
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/{keyword}/{_indexCounter}");
+                    await FindNextProject();
                 }
-
-                _seenProjectIds.Push(_currentProject.Id);
                 
                 break;
 
             case ClickType.Rewatch:
-                            
+            
                 if (_seenProjectIds.Count() > 1)
                 {
                     var index = _seenProjectIds.Peek();
                     if (_currentProject.Id == index){
                         _seenProjectIds.Pop();
-                        index = _seenProjectIds.Peek();
                     }
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Pop()}");
+                    if (_seenProjectIds.Count > 2)
+                    {
+                        _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Pop()}");
+                    }
+                    else
+                    {
+                        _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Peek()}");
+                    }
                 } else
                 {
                     _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{_seenProjectIds.Peek()}");
@@ -194,10 +194,7 @@ Degree: @_currentProject.Degree</textarea>
 
                 if (_lastClick == ClickType.Like && _likedProjectIds.Contains(_currentProject.Id))
                 {
-                    await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
-                    _likedProjectIds.Remove(_currentProject.Id);
-                    projectChanged.RemoveSavedProjects(_currentProject.Title);
-                    ShowNotification("Project removed: "+_currentProject.Title, Notification.Success);
+                    await removeLikedProject();
                 }
                 
                 _lastClick = ClickType.Rewatch;
@@ -208,49 +205,48 @@ Degree: @_currentProject.Degree</textarea>
             
                 if (_likedProjectIds.Contains(_currentProject.Id))
                 {
-                    await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
-                    _likedProjectIds.Remove(_currentProject.Id);
-                    projectChanged.RemoveSavedProjects(_currentProject.Title);
-                    ShowNotification("Project removed: " + _currentProject.Title, Notification.Success);
-                }
-
-                if (_indexCounter < _countOfProjects)
-                {
-                    _indexCounter++;
-                } else
-                {
-                    ShowNotification("No more projects to show in this category. You are now browsing all projects", Notification.Error);
-                }
-                _indexCounter++;
-
-                if (keyword == "all")
-                {
-                    await UpdateRatios(false);
+                    await removeLikedProject();
                 }
 
                 _lastClick = ClickType.Dislike;
 
-                if (keyword == "all") 
+                if (keyword == "all")
                 {
-                    var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
-                    var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
-                    
-                    if (project != null){
-                        _currentProject = project;
-                    }
+                    await FindNextProjectAll();
                 } else
                 {
-                    _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/{keyword}/{_indexCounter}");
+                    await FindNextProject();
                 }
-
-                _seenProjectIds.Push(_currentProject.Id);
                 
                 break;
         }
-
         _keywordString = GetKeyWords();
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task FindNextProjectAll()
+    {
+        var nextKeyword = keywordFinder.FindWeightedRandomKeyword();
+        var project = await keywordFinder.ReadProjectGivenKeywordAsync(nextKeyword);
+        
+        if (project != null){
+            _currentProject = project;
+        }
+        _seenProjectIds.Push(_currentProject.Id);
+    }
+
+    private async Task FindNextProject()
+    {
+        try 
+        {
+            _currentProject = await Http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Keyword/typeOption/{keyword}/{_indexCounter}/{_degree}");
+            _seenProjectIds.Push(_currentProject.Id);
+            _indexCounter++;
+        } catch (System.Text.Json.JsonException) 
+        {
+            ShowNotification("No more projects to show. Rewatch to see projects again, or pick a new keyword", Notification.Error);
+        }
     }
 
     private async Task UpdateRatios(bool userLikedProject)
@@ -264,15 +260,11 @@ Degree: @_currentProject.Degree</textarea>
     private string GetKeyWords()
     {
         return _currentProject.Keywords != null ? string.Join(", ", _currentProject.Keywords) : "none";
-
     }
     
-
     private void ShowNotification(string message, Notification type)
     {
         var notiMsg = new NotificationMessage();
-        
-        //TODO change this to enum instead of int
 
         switch (type)
         {
@@ -287,10 +279,28 @@ Degree: @_currentProject.Degree</textarea>
             case Notification.Info:
                 notiMsg = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "Info", Detail = message, Duration = 4000};
                 break;
-            
         }
-        
-        notificationService.Notify(notiMsg); 
-        
+        notificationService.Notify(notiMsg);
     }
+    
+    //----- private helper methods -----
+
+    private async Task removeLikedProject()
+    {
+        await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", _currentProject.Title);
+        _likedProjectIds.Remove(_currentProject.Id);
+        projectChanged.RemoveSavedProjects(_currentProject.Title);
+        
+        ShowNotification("Project removed: " + _currentProject.Title, Notification.Success);
+    }
+    
+    private async Task addLikedProject()
+    {
+        await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title);
+        _likedProjectIds.Add(_currentProject.Id);
+        projectChanged.AddSavedProjects(_currentProject.Title);
+                    
+        ShowNotification("Project added: "+_currentProject.Title, Notification.Success);
+    }
+
 }   

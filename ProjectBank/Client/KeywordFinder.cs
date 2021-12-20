@@ -1,5 +1,6 @@
 using ProjectBank.Client.Pages;
-using ProjectBank.Core;
+using ProjectBank.Core.Enum;
+using ProjectBank.Core.DTO;
 using System.Net.Http;
 using System.Net.Http.Json;
 
@@ -9,15 +10,17 @@ public class KeywordFinder : IKeywordFinder
 {
     private const int DefaultRatio = 10;
     private HttpClient _http;
+    private Degree _degree;
     public IDictionary<string, int> Ratios { get; } = new Dictionary<string, int>();
     public int Ratio_Total { get; set; }
     
     //The int is a counter for how many times a keyword has been seen
     private Dictionary<string, int> _keywords = new Dictionary<string, int>();
 
-    public async Task Setup(HttpClient Http)
+    public async Task Setup(HttpClient Http, Degree degree)
     {
         _http = Http;
+        _degree = degree;
         var keywords = await _http.GetFromJsonAsync<string[]>("/api/Keyword/getStrings");
         if (keywords != null){
             foreach (var keyword in keywords)
@@ -26,7 +29,7 @@ public class KeywordFinder : IKeywordFinder
                 AddKeywordToRatios(keyword);
             }
         }
-    }      
+    }     
 
     //Test den her metode
     //Skal den være async?
@@ -92,7 +95,7 @@ public class KeywordFinder : IKeywordFinder
 
         _keywords[keyword]++;
         
-        return await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/keyword/{keyword}/{timesSeen}");
+        return await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/keyword/{keyword}/{timesSeen}/{_degree}");
         
     }
 }
