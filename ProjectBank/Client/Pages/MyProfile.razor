@@ -52,7 +52,12 @@
             <tr style="color: white">
                 <td>@project?.Title </td>
                 <td>
-                    <RadzenButton style="width: 150px;height:30px;margin-left:80%" IsBusy=@_busyProfile Click="@(e => DeleteProject(project!.Id))" Text="Delete"/>
+                    <div class="my_project_options">
+                        <button id="edit_my_project" style="display: none" @onclick=""></button>
+                        <label for="edit_my_project" class="oi oi-pencil"></label>
+                    <button id="delete_My_project" style="display: none" IsBusy=@_busyProfile @onclick="(e => DeleteProject(project!.Id))"></button>
+                    <label for="delete_My_project" class="oi oi-trash"></label>
+                    </div>
                 </td>
             </tr>
         }
