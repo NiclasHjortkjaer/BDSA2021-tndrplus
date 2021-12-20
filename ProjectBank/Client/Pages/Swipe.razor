@@ -109,7 +109,7 @@ Degree: @_currentProject.Degree</textarea>
 
             _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
             _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if found no saved projects for that user.
+            _likedProjectIds = await Http.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{_aToken}"); //will return an empty list, if no saved projects were found for that user.
 
             _keywordString = GetKeyWords();
 
@@ -136,7 +136,7 @@ Degree: @_currentProject.Degree</textarea>
     {
         switch (s)
         {
-            case ClickType.Like: //vi skal lave check på status endpoint kald sender tilbage, så vi kan gøre noget alt efter det. så vi ik bare fortsætter midnless
+            case ClickType.Like:
             
                 if (!_likedProjectIds.Contains(_currentProject.Id))
                 {
