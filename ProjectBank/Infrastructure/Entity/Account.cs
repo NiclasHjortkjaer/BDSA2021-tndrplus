@@ -1,4 +1,4 @@
-namespace ProjectBank.Infrastructure;
+namespace ProjectBank.Infrastructure.Entity;
 public class Account
 {
     public Account(string azureAdToken, string name)

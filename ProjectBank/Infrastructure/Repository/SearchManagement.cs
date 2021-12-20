@@ -1,4 +1,4 @@
-namespace ProjectBank.Infrastructure;
+namespace ProjectBank.Infrastructure.Repository;
 
 public class SearchManagement : ISearchManagement
 {

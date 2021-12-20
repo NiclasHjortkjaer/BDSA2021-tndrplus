@@ -14,4 +14,8 @@ global using System.Security.Claims;
 global using System.Text.Encodings.Web;
 global using Xunit;
 global using ProjectBank.Infrastructure;
+global using ProjectBank.Infrastructure.Entity;
+
 global using ProjectBank.Core;
+global using ProjectBank.Core.DTO;
+global using ProjectBank.Core.Enum;
