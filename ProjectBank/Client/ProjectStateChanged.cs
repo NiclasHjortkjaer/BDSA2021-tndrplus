@@ -6,6 +6,8 @@
 //When the swipe page is updated, the updated state is given to this class, which invokes the onChange event.
 //the NavMenu then checks the updated data of this class and re-renders accordingly, in a dynamic sense.
 //
+//The class is added as a singleton service, to be available through components that inject it,
+//whe the host has been build.
 //
 //links below:
 //https://chrissainty.com/3-ways-to-communicate-between-components-in-blazor/
@@ -44,6 +46,5 @@ public class ProjectStateChanged
             }
         }
     }
-    
     private void NotifyStateChanged() => OnChange?.Invoke();
 }

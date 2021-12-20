@@ -6,6 +6,12 @@
 @inject NotificationService notificationService
 @inject NavigationManager _navigationManager
 
+
+//
+// This RadzenNotification tag is necessary for the
+// NotificationService to work. Otherwise the service is still available,
+// however, the notifications will never be shown.
+//
 <RadzenNotification/>
 
 
@@ -18,8 +24,6 @@
           'To skip a project; you must click the`X` \r\n \r\n' +
           'To regret/undo your last decision; you can click the button in the middle, displayed with a circled arrow. Further, the rewatch button lets you scroll back through already seen projects.')">i
 </button>
-@*<input id="slider" type="range" min="1" max="100" value="50" onchange=""/>*@
-
 
 @if (!_seenProjectIds.Any())
 {
@@ -225,7 +229,6 @@ Degree: @_currentProject.Degree</textarea>
         if (project != null){
             _currentProject = project;
         }
-
         _seenProjectIds.Push(_currentProject.Id);
     }
 
@@ -290,7 +293,7 @@ Degree: @_currentProject.Degree</textarea>
     
     private async Task addLikedProject()
     {
-        await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title); //vil måske gerne lave om til den også får et id, nah fuck it
+        await Http.PostAsJsonAsync($"api/Account/{_aToken}", _currentProject.Title);
         _likedProjectIds.Add(_currentProject.Id);
         projectChanged.AddSavedProjects(_currentProject.Title);
                     
