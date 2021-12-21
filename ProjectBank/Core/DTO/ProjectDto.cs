@@ -26,10 +26,10 @@ public record ProjectDetailsDto(
 
 public record ProjectCreateDto
 {
-    public string? AuthorToken { get; set; } = null!;
+    public string? AuthorToken { get; set; }
     
     [StringLength(50)]
-    public string? AuthorName { get; set; } = null!;
+    public string? AuthorName { get; set; }
 
     [StringLength(100)]
     public string Title { get; set; } = null!;

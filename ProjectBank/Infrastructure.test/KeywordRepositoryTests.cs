@@ -31,7 +31,7 @@ public class KeywordRepositoryTests : IDisposable
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
+            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.Phd, LastUpdated = DateTime.UtcNow
         };
         
         context.Projects.AddRange(aiProject, mlProject);
@@ -73,21 +73,24 @@ public class KeywordRepositoryTests : IDisposable
         var keywords = await _repo.ReadAllAsync();
         Assert.Collection(keywords,
             keyword => {
+                if (keyword == null) throw new ArgumentNullException(nameof(keyword));
                 Assert.Equal(1, keyword.Id);
                 Assert.Equal("AI", keyword.Word);
                 Assert.True(keyword.Projects.Contains("Artificial Intelligence 101"));
                 Assert.True(keyword.Projects.Contains("Machine Learning for dummies"));
             },
             keyword => {
+                if (keyword == null) throw new ArgumentNullException(nameof(keyword));
                 Assert.Equal(2, keyword.Id);
                 Assert.Equal("Machine Learning", keyword.Word);
                 Assert.True(keyword.Projects.Contains("Artificial Intelligence 101"));
                 Assert.True(keyword.Projects.Contains("Machine Learning for dummies"));
             },
             keyword => {
+                if (keyword == null) throw new ArgumentNullException(nameof(keyword));
                 Assert.Equal(3, keyword.Id);
                 Assert.Equal("Design", keyword.Word);
-                Assert.Equal(0, keyword.Projects.Count());
+                Assert.Empty(keyword.Projects);
             }
         );
     }
@@ -112,8 +115,8 @@ public class KeywordRepositoryTests : IDisposable
         
         Assert.Equal(keySet,projects.First().Keywords);
         Assert.Equal(new DateTime(50),projects.First().LastUpdated);
-        Assert.Equal(null,projects.First().ImageUrl);
-        Assert.Equal(null,projects.First().FileUrl);
+        Assert.Null(projects.First().ImageUrl);
+        Assert.Null(projects.First().FileUrl);
         Assert.Equal(Degree.Bachelor,projects.First().Degree);
         Assert.Equal(1,projects.First().Id);
         Assert.Equal("UnknownToken",projects.First().AuthorToken);
@@ -142,8 +145,8 @@ public class KeywordRepositoryTests : IDisposable
         var projects = await _repo.ReadAllProjectsWithKeywordAndDegreeAsync("AI");
         var projects2 = await _repo.ReadAllProjectsWithKeywordStringAsync("AI");
 
-        Assert.Equal(projects.Count, 2);
-        Assert.Equal(projects2.Count, 2);
+        Assert.Equal(2, projects.Count);
+        Assert.Equal(2, projects2.Count);
         Assert.Equal(projects2.First().Id,projects.First().Id);
 
     }
@@ -178,7 +181,7 @@ public class KeywordRepositoryTests : IDisposable
         var actual = await _repo.ReadAsync(1);
         var expected = new KeywordDetailsDto(1, "AI", new HashSet<string>(){"Artificial Intelligence 101", "Machine Learning for dummies"});
         
-        Assert.Equal(expected.Id, actual.Id);
+        Assert.Equal(expected.Id, actual!.Id);
         Assert.Equal(expected.Word, actual.Word);
         Assert.Collection(actual.Projects,
                         project => Assert.Equal("Artificial Intelligence 101", project),
@@ -224,7 +227,7 @@ public class KeywordRepositoryTests : IDisposable
     {
         var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 1);
 
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
 
         Assert.Equal(2, actual.Id);
         Assert.Equal(mlProject.AuthorToken, actual.AuthorToken);
@@ -243,9 +246,9 @@ public class KeywordRepositoryTests : IDisposable
     [Fact]
     public async Task ReadProjectGivenKeywordAndTimesSeenAsync_returns_mlProject_given_correct_degree() 
     {
-        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.PHD);
+        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.Phd);
 
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
 
         Assert.Equal(2, actual.Id);
         Assert.Equal(mlProject.AuthorToken, actual.AuthorToken);

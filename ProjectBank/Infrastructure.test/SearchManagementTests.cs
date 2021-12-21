@@ -1,6 +1,6 @@
 namespace ProjectBank.Infrastructure.test;
 
-public class SearchManagementTests
+public class SearchManagementTests : IDisposable
 {
     private readonly ISearchManagement _management;
     private readonly IProjectBankContext _context;
@@ -31,7 +31,7 @@ public class SearchManagementTests
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
+            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.Phd, LastUpdated = DateTime.UtcNow
         };
         
         context.Projects.AddRange(aiProject, mlProject);
@@ -49,9 +49,9 @@ public class SearchManagementTests
     {
         var projects = await _management.ReadSearchQueryAsync("Machine Learning for dummies");
 
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         
-        Assert.Equal(1, projects.Count());
+        Assert.Single(projects);
         Assert.Equal(2, projects.First().Id);
         Assert.Equal(mlProject.AuthorToken, projects.First().AuthorToken);
         Assert.Equal(mlProject.AuthorName, projects.First().AuthorName);
@@ -61,7 +61,7 @@ public class SearchManagementTests
         Assert.Equal(mlProject.ImageUrl, projects.First().ImageUrl);
         Assert.Equal(mlProject.FileUrl, projects.First().FileUrl);
         Assert.Equal(mlProject.LastUpdated, projects.First().LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
+        Assert.True(projects.First().Keywords.SetEquals(new[]{"AI", "Machine Learning"}));
     }
 
     [Fact]
@@ -69,24 +69,26 @@ public class SearchManagementTests
     {
         var projects = await _management.ReadSearchQueryAsync("");
 
-        Assert.Equal(0, projects.Count());
+        Assert.Empty(projects);
     }
 
     [Fact]
     public async Task ReadSearchQueryAsync_returns_aiProject_and_mlProject_given_Elon_Musk() {
         var projects = await _management.ReadSearchQueryAsync("Elon Musk");
 
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
 
         Assert.Collection(projects,
                 project => {
+                    if (project == null) throw new ArgumentNullException(nameof(project));
                     Assert.Equal(1, project.Id);
                     Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
                     Assert.Equal(aiProject.AuthorName, projects.First().AuthorName);
                     Assert.Equal(aiProject.Title, projects.First().Title);
                 },
                 project => {
+                    if (project == null) throw new ArgumentNullException(nameof(project));
                     Assert.Equal(2, project.Id);
                     Assert.Equal(mlProject.AuthorToken, projects.ElementAt(1).AuthorToken);
                     Assert.Equal(mlProject.AuthorName, projects.ElementAt(1).AuthorName);
@@ -99,7 +101,7 @@ public class SearchManagementTests
     public async Task ReadSearchQueryAsync_returns_empty_list_given_empty_string() {
         var projects = await _management.ReadSearchQueryAsync(" ");
 
-        Assert.Equal(0, projects.Count());
+        Assert.Empty(projects);
     }
 
     [Fact]
@@ -107,17 +109,19 @@ public class SearchManagementTests
     {
         var projects = await _management.ReadSearchQueryAsync("AI");
        
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
 
         Assert.Collection(projects,
                 project => {
+                    if (project == null) throw new ArgumentNullException(nameof(project));
                     Assert.Equal(1, project.Id);
                     Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
                     Assert.Equal(aiProject.AuthorName, projects.First().AuthorName);
                     Assert.Equal(aiProject.Title, projects.First().Title);
                 },
                 project => {
+                    if (project == null) throw new ArgumentNullException(nameof(project));
                     Assert.Equal(2, project.Id);
                     Assert.Equal(mlProject.AuthorToken, projects.ElementAt(1).AuthorToken);
                     Assert.Equal(mlProject.AuthorName, projects.ElementAt(1).AuthorName);
@@ -147,9 +151,9 @@ public class SearchManagementTests
     {
         var projects = await _management.ReadSearchQueryAsync("Machine Learning", Degree.Bachelor);
 
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, new DateTime(50), new HashSet<string>(){"AI", "Machine Learning"});
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, new DateTime(50), new HashSet<string> {"AI", "Machine Learning"});
 
-        Assert.Equal(1, projects.Count());
+        Assert.Single(projects);
         Assert.Equal(1, projects.First().Id);
         Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
         Assert.Equal(aiProject.AuthorName, projects.First().AuthorName);
@@ -159,7 +163,7 @@ public class SearchManagementTests
         Assert.Equal(aiProject.ImageUrl, projects.First().ImageUrl);
         Assert.Equal(aiProject.FileUrl, projects.First().FileUrl);
         Assert.Equal(aiProject.LastUpdated, projects.First().LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
+        Assert.True(projects.First().Keywords.SetEquals(new[]{"AI", "Machine Learning"}));
     }
 
     [Fact]

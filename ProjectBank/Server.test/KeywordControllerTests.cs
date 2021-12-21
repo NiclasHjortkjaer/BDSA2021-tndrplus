@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace ProjectBank.Server.test;
 
 public class KeywordControllerTests
@@ -13,7 +11,7 @@ public class KeywordControllerTests
         var created = new KeywordDto(1, "Word");
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
         var result = await controller.Post(toCreate) as CreatedAtActionResult;
@@ -32,7 +30,7 @@ public class KeywordControllerTests
         var expected = Array.Empty<KeywordDetailsDto>();
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.ReadAllAsync()).ReturnsAsync(expected);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
         var actual = await controller.Get();
@@ -59,7 +57,7 @@ public class KeywordControllerTests
         };
 
         repository.Setup(m => m.ReadAllProjectsWithKeywordStringAsync("AI")).ReturnsAsync(keyList);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
         var response = await controller.Get("AI");
@@ -85,7 +83,7 @@ public class KeywordControllerTests
         };
 
         repository.Setup(m => m.ReadAllProjectsWithKeywordAndDegreeAsync("AI", Degree.Bachelor)).ReturnsAsync(keyList);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
 
         // Act
@@ -103,7 +101,7 @@ public class KeywordControllerTests
         var repository = new Mock<IKeywordRepository>();
         var expected = Array.Empty<string>();
         repository.Setup(m => m.ReadAllWordsAsync()).ReturnsAsync(expected);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
         var actual = await controller.GetKeywordStrings();
@@ -126,10 +124,10 @@ public class KeywordControllerTests
                 new DateTime(50), new HashSet<string>() {"AI"});
 
         repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenRandAsync("AI", 0, Degree.Bachelor)).ReturnsAsync(expected);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
-        var response = await controller.GetBrowseAll("AI", 0, Degree.Bachelor);
+        var response = await controller.GetBrowseAll("AI", 0, Degree.Bachelor)!;
 
         // Assert
         Assert.Equal(expected, response);
@@ -149,10 +147,10 @@ public class KeywordControllerTests
             new DateTime(50), new HashSet<string>() {"AI"});
 
         repository.Setup(m => m.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.Master)).ReturnsAsync(expected);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
-        var response = await controller.Get("AI", 0, Degree.Master);
+        var response = await controller.Get("AI", 0, Degree.Master)!;
 
         // Assert
         Assert.Equal(expected, response);
@@ -165,7 +163,7 @@ public class KeywordControllerTests
         var logger = new Mock<ILogger<KeywordController>>();
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.DeleteAsync(42)).ReturnsAsync(Status.NotFound);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
         var response = await controller.Delete(42);
@@ -181,7 +179,7 @@ public class KeywordControllerTests
         var logger = new Mock<ILogger<KeywordController>>();
         var repository = new Mock<IKeywordRepository>();
         repository.Setup(m => m.DeleteAsync(1)).ReturnsAsync(Status.Deleted);
-        var controller = new KeywordController(logger.Object, repository.Object);
+        var controller = new KeywordController(repository.Object);
 
         // Act
         var response = await controller.Delete(1);

@@ -11,6 +11,6 @@ public class DegreeModel
         new DegreeOptions() {Value=Degree.Unspecified, Selected=true},
         new DegreeOptions() {Value=Degree.Bachelor, Selected=false},
         new DegreeOptions() {Value=Degree.Master, Selected=false},
-        new DegreeOptions() {Value=Degree.PHD, Selected=false},
+        new DegreeOptions() {Value=Degree.Phd, Selected=false},
     };
 }

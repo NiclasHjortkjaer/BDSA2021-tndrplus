@@ -24,7 +24,7 @@ public class AccountRepository : IAccountRepository
         
         var newAccount = new Account(account.AzureAAdToken, account.Name)
         {
-            SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync()
+            SavedProjects = (await GetSavedProjectsAsync(account.SavedProjects).ToListAsync())!
         };
         _context.Accounts.Add(newAccount);
         await _context.SaveChangesAsync();
@@ -94,7 +94,7 @@ public class AccountRepository : IAccountRepository
         }
         
         entitiy.AzureAdToken = account.AzureAAdToken;
-        entitiy.SavedProjects = await GetSavedProjectsAsync(account.SavedProjects).ToListAsync();
+        entitiy.SavedProjects = (await GetSavedProjectsAsync(account.SavedProjects).ToListAsync())!;
         entitiy.PictureUrl = account.PictureUrl;
         
         await _context.SaveChangesAsync();
@@ -131,7 +131,7 @@ public class AccountRepository : IAccountRepository
 
         projectTitles.Add(projectTitle);
         
-        account.SavedProjects = await GetSavedProjectsAsync(projectTitles).ToListAsync();
+        account.SavedProjects = (await GetSavedProjectsAsync(projectTitles).ToListAsync())!;
         
         await _context.SaveChangesAsync();
         return Status.Updated;
@@ -155,7 +155,7 @@ public class AccountRepository : IAccountRepository
             
         projectTitles.Remove(projectTitle);
 
-        account.SavedProjects = await GetSavedProjectsAsync(projectTitles).ToListAsync();
+        account.SavedProjects = (await GetSavedProjectsAsync(projectTitles).ToListAsync())!;
         
         //---
         var projectToRemove = await _context.Projects.Include(p => p.Accounts).FirstOrDefaultAsync(p => p.Title == projectTitle);
@@ -178,7 +178,7 @@ public class AccountRepository : IAccountRepository
     
     
     //-----------------------Private helper methods---------------------------//
-    private async IAsyncEnumerable<Project> GetSavedProjectsAsync(IEnumerable<string> projects)
+    private async IAsyncEnumerable<Project?> GetSavedProjectsAsync(IEnumerable<string> projects)
     {
         var existing = await _context.Projects
             .Where(p => projects.Contains(p.Title))

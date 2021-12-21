@@ -5,12 +5,10 @@ namespace ProjectBank.Server.Controllers;
 [Route("api/[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class ProjectController : ControllerBase {
-    private readonly ILogger<ProjectController> _logger;
     private readonly IProjectRepository _repository;
 
-    public ProjectController(ILogger<ProjectController> logger, IProjectRepository repository)
+    public ProjectController(IProjectRepository repository)
     {
-        _logger = logger;
         _repository = repository;
     }  
 
@@ -30,7 +28,7 @@ public class ProjectController : ControllerBase {
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
     [ProducesResponseType(404)]
     [HttpGet("{input}")]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string input) {
+    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get(string input) {
         var projectsByTitle = await _repository.ReadTitleAsync(input);
         var projectsByAuthor = await _repository.ReadAuthorAsync(input);
 
@@ -43,7 +41,7 @@ public class ProjectController : ControllerBase {
     public async Task<IActionResult> Post(ProjectCreateDto project)
     {
         var created = await _repository.CreateAsync(project);
-        var response = CreatedAtAction(nameof(Get), new {created.Id}, created);
+        CreatedAtAction(nameof(Get), new {created.Id}, created);
 
         return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }

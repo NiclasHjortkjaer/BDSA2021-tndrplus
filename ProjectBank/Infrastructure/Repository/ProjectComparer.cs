@@ -1,12 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
-
-namespace ProjectBank.Infrastructure.Entity;
+namespace ProjectBank.Infrastructure.Repository;
 
 public class ProjectComparer : IEqualityComparer<ProjectDetailsDto>
 {
     public bool Equals(ProjectDetailsDto? x, ProjectDetailsDto? y)
-        => x.Id == y.Id;
+        => y != null && x != null && x.Id == y.Id;
     
-    public int GetHashCode([DisallowNull] ProjectDetailsDto obj)
+    public int GetHashCode(ProjectDetailsDto obj)
         => obj.Id.GetHashCode();
 }
