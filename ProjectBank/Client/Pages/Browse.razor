@@ -30,6 +30,12 @@
     <div class="align-right">
         <div class="dropdown_menu_filter_browse">
             <div class="drop_filter_content_browse">
+                @*
+                    The Editform as well as the InputRadioGroup and the DegreeModel.cs and DegreeOptions.cs are inspired by the code
+                    from the microsoft docs.
+                    https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-3.1#radio-buttons
+                
+                *@
                 <EditForm EditContext="this._editContext">
                     <p1 style="text-decoration: underline; font-weight: bold;">
                         @_model.Value:
