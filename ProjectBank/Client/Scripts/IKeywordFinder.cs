@@ -6,7 +6,7 @@ namespace ProjectBank.Client.Scripts;
 public interface IKeywordFinder
 {
     IDictionary<string, int> Ratios { get; }
-    Task Setup(HttpClient Http, Degree degree);
+    Task Setup(HttpClient http, Degree degree);
     string FindWeightedRandomKeyword();
     Status UpdateRatioAsync(string keywordName, bool userLikedProject);
     Task<ProjectDetailsDto?> ReadProjectGivenKeywordAsync(string keyword);

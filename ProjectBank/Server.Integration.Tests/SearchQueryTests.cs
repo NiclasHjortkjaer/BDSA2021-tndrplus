@@ -62,7 +62,7 @@ public class SearchQueryTests : IClassFixture<CustomWebApplicationFactory>
     public async Task Get_aiProject_given_AI_and_Bachelor()
     {
         var keyword = "AI";
-        var degree = (int) Degree.Bachelor;
+        var degree = Degree.Bachelor;
         var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/SearchQuery/{keyword}/{degree}");
         Assert.NotNull(projects);
         Assert.True(projects.Length == 1);
@@ -74,7 +74,7 @@ public class SearchQueryTests : IClassFixture<CustomWebApplicationFactory>
     public async Task Get_empty_list_given_AI_and_Master()
     {
         var keyword = "AI";
-        var degree = (int) Degree.Master;
+        var degree = Degree.Master;
         var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]>($"/api/SearchQuery/{keyword}/{degree}");
         Assert.Empty(projects);
     }

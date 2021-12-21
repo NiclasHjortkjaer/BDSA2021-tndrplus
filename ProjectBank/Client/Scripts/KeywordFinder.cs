@@ -17,9 +17,9 @@ public class KeywordFinder : IKeywordFinder
     //The int is a counter for how many times a keyword has been seen
     private Dictionary<string, int> _keywords = new Dictionary<string, int>();
 
-    public async Task Setup(HttpClient Http, Degree degree)
+    public async Task Setup(HttpClient http, Degree degree)
     {
-        _http = Http;
+        _http = http;
         _degree = degree;
         var keywords = await _http.GetFromJsonAsync<string[]>("/api/Keyword/getStrings");
         if (keywords != null){
@@ -33,14 +33,12 @@ public class KeywordFinder : IKeywordFinder
 
     public string FindWeightedRandomKeyword()
     {
-        Random random = new Random();
-        int x = random.Next(0, Ratio_Total);
+        var random = new Random();
+        var x = random.Next(0, Ratio_Total);
         
-        for (int i = 0; x > 0 && i < Ratios.Count; i++)
+        for (var i = 0; x > 0 && i < Ratios.Count; i++)
         {
-            var element = Ratios.ElementAt(i);
-            var key = element.Key;
-            var value = element.Value;
+            var (key, value) = Ratios.ElementAt(i);
 
             if ((x -= value) <= 0)
             {
@@ -75,10 +73,9 @@ public class KeywordFinder : IKeywordFinder
 
     private void AddKeywordToRatios(string keyword)
     {
-        if(!Ratios.ContainsKey(keyword)){
-            Ratios.Add(keyword, DefaultRatio);
-            Ratio_Total += DefaultRatio;
-        }
+        if (Ratios.ContainsKey(keyword)) return;
+        Ratios.Add(keyword, DefaultRatio);
+        Ratio_Total += DefaultRatio;
     }
 
     public async Task<ProjectDetailsDto?> ReadProjectGivenKeywordAsync(string keyword)

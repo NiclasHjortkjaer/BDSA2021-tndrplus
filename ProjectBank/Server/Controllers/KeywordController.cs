@@ -1,5 +1,3 @@
-using ProjectBank.Server.Extensions;
-
 namespace ProjectBank.Server.Controllers;
 
 [Authorize]
@@ -19,61 +17,47 @@ public class KeywordController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IReadOnlyCollection<KeywordDetailsDto>> Get()
-        => await _repository.ReadAllAsync();
+    public Task<IReadOnlyCollection<KeywordDetailsDto>> Get()
+        => _repository.ReadAllAsync();
 
     [AllowAnonymous]
     [HttpGet("getStrings")]
-    public async Task<IReadOnlyCollection<string>> GetKeywordStrings()
-        => await _repository.ReadAllWordsAsync();
+    public Task<IReadOnlyCollection<string>> GetKeywordStrings()
+        => _repository.ReadAllWordsAsync();
 
     [AllowAnonymous]
     [HttpGet("getby/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(KeywordDetailsDto), 200)]
-    public async Task<KeywordDetailsDto>? Get(int id)
-       => await _repository.ReadAsync(id);
+    public Task<KeywordDetailsDto>? Get(int id)
+       => _repository.ReadAsync(id);
 
     [AllowAnonymous]
     [HttpGet("typeOption/{keyword}/{timesSeen}/{degree}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
-    public async Task<ProjectDetailsDto>? Get(string keyword, int timesSeen, [FromRoute] Degree degree)
-       => await _repository.ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
+    public Task<ProjectDetailsDto>? Get(string keyword, int timesSeen, [FromRoute] Degree degree)
+       => _repository.ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
     
     [AllowAnonymous]
-    [HttpGet("{keyword}/{timesSeen}/{_degree}")]
+    [HttpGet("{keyword}/{timesSeen}/{degree}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
-    public async Task<ProjectDetailsDto>? GetBrowseAll(string keyword, int timesSeen, Degree _degree)
-        => await _repository.ReadProjectGivenKeywordAndTimesSeenRandAsync(keyword, timesSeen, _degree);
+    public Task<ProjectDetailsDto>? GetBrowseAll(string keyword, int timesSeen, Degree degree)
+        => _repository.ReadProjectGivenKeywordAndTimesSeenRandAsync(keyword, timesSeen, degree);
 
     [AllowAnonymous]
     [HttpGet("{keyword}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword)
-        => await _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
-    
-    [AllowAnonymous]
-    [HttpGet("count/{keyword}")]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(typeof(int), 200)]
-    public async Task<int> GetCount([FromRoute]string keyword)
-        => await _repository.ReadNumberOfProjectsGivenKeyword(keyword); 
-
-    [AllowAnonymous]
-    [HttpGet("count/{keyword}/{degreeInt}")]
-    [ProducesResponseType(404)]
-    [ProducesResponseType(typeof(int), 200)]
-    public async Task<int> GetCount([FromRoute]string keyword, [FromRoute] int degreeInt)
-        => await _repository.ReadNumberOfProjectsGivenKeywordAndDegree(keyword, (Degree) degreeInt); 
+    public Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword)
+        => _repository.ReadAllProjectsWithKeywordStringAsync(keyword); 
 
     [HttpGet("withType/{keyword}/{degree}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
-        => await _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
+    public Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
+        => _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
 
     [Authorize]
     [HttpPost]
@@ -81,12 +65,11 @@ public class KeywordController : ControllerBase
     public async Task<IActionResult> Post(KeywordCreateDto keyword)
     {
         var created = await _repository.CreateAsync(keyword);
-
         return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }
 
     [Authorize]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Delete(int id)

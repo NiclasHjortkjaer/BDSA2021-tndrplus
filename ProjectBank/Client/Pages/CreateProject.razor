@@ -84,9 +84,9 @@
 
             try
             {
-                var _dtoKeywords = await _http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
-                if (_dtoKeywords != null)
-                    foreach (var keyword in _dtoKeywords)
+                var dtoKeywords = await _http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
+                if (dtoKeywords != null)
+                    foreach (var keyword in dtoKeywords)
                     {
                         _keywords.Add(keyword.Word);
                     }
@@ -114,34 +114,34 @@
 
         if (_project.AuthorName == null || _project.AuthorToken == null)
         {
-            NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000};
+            var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000};
             _notificationService.Notify(error);
         }
         else if (_project.Title.Length < 1)
         {
-            NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000};
+            var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000};
             _notificationService.Notify(error);
         }
         else if (_project.Keywords.Count == 0)
         {
-            NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "You must choose at least 1 keyword", Detail = "Fix please", Duration = 4000};
+            var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "You must choose at least 1 keyword", Detail = "Fix please", Duration = 4000};
             _notificationService.Notify(error);
         }
         else
         {
-            if (_project.Description != null && _project.Description.Length < 1)
+            if (_project.Description is {Length: < 1 })
             {
-                NotificationMessage info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have no description", Detail = "", Duration = 4000};
+                var info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have no description", Detail = "", Duration = 4000};
                 _notificationService.Notify(info);
             }
             if (_project.Degree == null)
             {
-                NotificationMessage info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have chosen no degree", Detail = "", Duration = 4000};
+                var info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have chosen no degree", Detail = "", Duration = 4000};
                 _notificationService.Notify(info);
             }
             if (_project.Ects == null)
             {
-                NotificationMessage info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have chosen no ETCs", Detail = "", Duration = 4000};
+                var info = new NotificationMessage {Severity = NotificationSeverity.Info, Summary = "You have chosen no ETCs", Detail = "", Duration = 4000};
                 _notificationService.Notify(info);
             }
 
@@ -152,14 +152,14 @@
 
                 if (response.IsSuccessStatusCode)
                 {
-                    NotificationMessage success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success creating project!", Detail = "Now in database", Duration = 4000};
+                    var success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success creating project!", Detail = "Now in database", Duration = 4000};
                     _notificationService.Notify(success);
                     await Task.Delay(2000);
                     _navigationManager.NavigateTo($"/createproject/AdditionalProjectSetup/{created!.Id}");
                 }
                 else
                 {
-                    NotificationMessage error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Project not saved", Duration = 4000};
+                    var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Project not saved", Duration = 4000};
                     _notificationService.Notify(error);
                     
                 }

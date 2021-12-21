@@ -146,7 +146,7 @@
         }
         else
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{(int) model.Selected}");
+            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{model.Selected}");
         }
 
         await InvokeAsync(StateHasChanged);
@@ -155,7 +155,7 @@
     //TODO opdater det her, så dataet på hjemmesiden bliver loaded på første klik
     async Task Enter(KeyboardEventArgs e)
     {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        if (e.Code is "Enter" or "NumpadEnter")
         {
             await LoadProjects();
         }
@@ -164,7 +164,7 @@
     private IEnumerable<string> _likedProjects = null!;
     private string? _aToken;
 
-    protected async Task OnChange()
+    private async Task OnChange()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
@@ -205,13 +205,6 @@
 
     private void dropdown()
     {
-        if (_isDropedDown)
-        {
-            _isDropedDown = false;
-        }
-        else
-        {
-            _isDropedDown = true;
-        }
+        _isDropedDown = !_isDropedDown;
     }
 }

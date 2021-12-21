@@ -1,7 +1,7 @@
 @page "/"
-@inject NavigationManager navigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider;
-@inject HttpClient Http
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider _authenticationStateProvider;
+@inject HttpClient _http
 
 <AuthorizeView>
     <NotAuthorized>
@@ -12,35 +12,35 @@
     <Authorized>
         <h1>Hello and Welcome, @context.User.Identity?.Name!</h1>
         <h3>You are now signed in as and can use the ProjectBank. </h3>
-        @if (newUser){
+        @if (_newUser){
             <h4>We can see this is your first time using the ProjectBank! A profile has been setup based on your Microsoft credentials!</h4>
         }
     </Authorized>
 </AuthorizeView>
 
 @code{
-    private string? name;
-    private string? currentRole;
-    private string? token;
-    private bool newUser = false;
+    private string? _name;
+    private string? _currentRole;
+    private string? _token;
+    private bool _newUser;
 
     protected override async Task OnInitializedAsync(){
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        if (user.Identity != null && user.Identity.IsAuthenticated)
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        if (user.Identity is {IsAuthenticated: true })
         {   
-            name = user.Identity?.Name;
-            currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
-            token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
+            _name = user.Identity?.Name;
+            _currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
+            _token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
             try { 
-                var accountCheck = await Http.GetFromJsonAsync<AccountDetailsDto>("api/Account/"+token);
+                var accountCheck = await _http.GetFromJsonAsync<AccountDetailsDto>("api/Account/"+_token);
             } catch {
-                if (token != null && name != null){
-                    AccountCreateDto account = new AccountCreateDto{
-                        AzureAAdToken = token,
-                        Name = name
+                if (_token != null && _name != null){
+                    var account = new AccountCreateDto{
+                        AzureAAdToken = _token,
+                        Name = _name
                     };
-                    var response = await Http.PostAsJsonAsync("api/Account",account);
-                    newUser = true;
+                    var response = await _http.PostAsJsonAsync("api/Account",account);
+                    _newUser = true;
                 }
             }
         }

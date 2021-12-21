@@ -8,10 +8,8 @@ public class DegreeOptions
     public bool Selected
     {
         get => _Selected;
-        set
-        {
-            _Selected = value;
-        }
+        set => _Selected = value;
     }
-    public bool _Selected;
+
+    private bool _Selected;
 }

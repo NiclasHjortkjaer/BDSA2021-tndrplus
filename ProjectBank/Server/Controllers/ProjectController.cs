@@ -1,5 +1,3 @@
-using ProjectBank.Server.Extensions;
-
 namespace ProjectBank.Server.Controllers;
 
 [Authorize]
@@ -18,15 +16,15 @@ public class ProjectController : ControllerBase {
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IReadOnlyCollection<ProjectDto>> Get()
-        => await _repository.ReadAllAsync();
+    public Task<IReadOnlyCollection<ProjectDto>> Get()
+        => _repository.ReadAllAsync();
 
     [AllowAnonymous]
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
     [ProducesResponseType(404)]
-    public async Task<ProjectDetailsDto>? Get(int id)
-        => await _repository.ReadAsync(id);
+    public Task<ProjectDetailsDto>? Get(int id)
+        => _repository.ReadAsync(id);
 
     [AllowAnonymous]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
@@ -51,7 +49,7 @@ public class ProjectController : ControllerBase {
     }
 
     [Authorize]
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Put(int id, [FromBody] ProjectUpdateDto project)

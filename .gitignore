@@ -17,6 +17,10 @@
 .history
 .ionide
 
+##
+.local
+projectbank/.local
+
 # Support for Project snippet scope
 !.vscode/*.code-snippets
 
