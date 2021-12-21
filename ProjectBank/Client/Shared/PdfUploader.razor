@@ -1,5 +1,6 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject NotificationService _notificationService;
 
 <div class="form-group input-group">
     @*<RadzenUpload Multiple="true" id="Image" Accept="image/*" OnChange="@OnFileSelection" Url="upload/multiple" Style="margin-bottom: 15px;">Image</RadzenUpload>
@@ -27,6 +28,9 @@
     [Parameter]
     public int projectId { get; set; }
 
+    [Parameter]
+    public EventCallback OnUpdate { get; set; }
+
     private ProjectDetailsDto toBeUpdated;
 
     public ProjectUpdateDto project;
@@ -39,7 +43,7 @@
     private bool busy;
 
     private bool sizeExceeded;
-    protected override async Task OnInitializedAsync()
+    protected async Task LoadProject()
     {
         toBeUpdated = await Http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{projectId}");
         if (toBeUpdated != null)
@@ -71,10 +75,17 @@
                 project.FileUrl = response.Headers.Location?.ToString();
                 var updated = await Http.PutAsJsonAsync($"api/Project/{project.Id}", project);
                 Console.WriteLine(updated.StatusCode);
-                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+
+                var success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Successfully added PDF!", Detail = "", Duration = 4000};
+                _notificationService.Notify(success);
+
+                //Removes the file from the file uploader
+                fileUrl = "";
+
+                //Calls the parent component
+                await OnUpdate.InvokeAsync();
             }
         }
-        await Task.Delay(2000);
         busy = false;
     }
 
@@ -88,16 +99,10 @@
         busy = false;
     }
 
-    private void Cancel()
-    {
-        var uri = $"{NavigationManager.BaseUri}characters";
-
-        NavigationManager.NavigateTo(uri);
-        
-    }
-
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
+        await LoadProject();
+        
         sizeExceeded = false;
         pdfFile = e.GetMultipleFiles().FirstOrDefault();
 

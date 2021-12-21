@@ -1,6 +1,7 @@
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
 @inject DialogService _dialogService
+@inject NotificationService _notificationService;
 
 <div class="form-group input-group">
     <InputFile id="Image" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg" class="form-control"/>
@@ -40,7 +41,7 @@
     private bool _sizeExceeded = false;
     private bool _busy = false;
 
-    protected override async Task OnInitializedAsync()
+    protected async Task LoadProject()
     {
         try
         {
@@ -81,6 +82,9 @@
                 var updated = await _http.PutAsJsonAsync($"api/Project/{_project.Id}", _project);
                 Console.WriteLine(updated.StatusCode);
 
+                var success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Successfully added Image!", Detail = "", Duration = 4000};
+                _notificationService.Notify(success);
+
                 //Removes the image from the image uploader
                 _imageUrl = "";
 
@@ -102,6 +106,7 @@
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
+        await LoadProject();
         _sizeExceeded = false;
         _imageFile = e.GetMultipleFiles().FirstOrDefault();
 
