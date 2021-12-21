@@ -1,0 +1,110 @@
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
+@inject DialogService _dialogService
+@inject NotificationService _notificationService;
+
+@if (_imageUrl != "")
+{
+    <div class="profile_no_pic" style="background-image: url('@_imageUrl')">
+        <InputFile class="img_profile_overlay" id="Image" style="display: none" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg"></InputFile>
+        <label for="Image" class="overlay"><span>Change</span></label>
+    </div>
+} else if (_account?.PictureUrl != null)
+{
+    <div class="profile_no_pic" style="background-image: url('@_account.PictureUrl')">
+        <InputFile class="img_profile_overlay" id="Image" style="display: none" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg"></InputFile>
+        <label for="Image" class="overlay"><span>Change</span></label>
+    </div>
+} else
+{
+    <div class="profile_no_pic" style="background-image: url('./Unknown_profile_pic.png')">
+        <InputFile class="img_profile_overlay" id="Image" style="display: none" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg"></InputFile>
+        <label for="Image" class="overlay"><span>Upload</span></label>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+    private AccountDetailsDto? _toBeUpdatedAccount;
+    private AccountUpdateDto? _account;
+    private string _imageName = Guid.NewGuid().ToString();
+    private string _imageUrl = string.Empty;
+    private IBrowserFile? _imageFile;
+    private bool _sizeExceeded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _toBeUpdatedAccount = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/getBy/{Id}");
+
+            if (_toBeUpdatedAccount != null)
+            {
+                _account = new AccountUpdateDto()
+                {
+                    Id = _toBeUpdatedAccount.Id, PictureUrl = _toBeUpdatedAccount.PictureUrl, Name = _toBeUpdatedAccount.Name,
+                    SavedProjects = _toBeUpdatedAccount.SavedProjects, AzureAAdToken = _toBeUpdatedAccount.AzureAdToken
+                };
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e); //Should not throw
+        }
+    }
+
+    private async Task UploadImage()
+    {
+        if (_imageFile != null)
+        {
+            var bytes = new byte[_imageFile.Size];
+            await _imageFile.OpenReadStream(1024000).ReadAsync(bytes);
+            var byteContent = new ByteArrayContent(bytes);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue(_imageFile.ContentType);
+            var content = new MultipartFormDataContent();
+            content.Add(byteContent, "file", _imageFile.Name);
+            var response = await _http.PostAsync($"api/Image/{_imageName}", content);
+
+            if (response.IsSuccessStatusCode && _account != null)
+            {
+                _account.PictureUrl = response.Headers.Location?.ToString();
+                var updated = await _http.PutAsJsonAsync($"api/Account/{_account.Id}", _account);
+                Console.WriteLine(updated.StatusCode);
+
+                await InvokeAsync(StateHasChanged);
+
+                var success = new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success selecting new profile picture!", Detail = "Now saved", Duration = 4000};
+                _notificationService.Notify(success);
+            }
+        }
+    }
+
+    private async Task OnFileSelection(InputFileChangeEventArgs e)
+    {
+        _sizeExceeded = false;
+        _imageFile = e.GetMultipleFiles().FirstOrDefault();
+
+        if (_imageFile != null)
+        {
+            try
+            {
+                var bytes = new byte[_imageFile.Size];
+                await _imageFile.OpenReadStream(1024000).ReadAsync(bytes);
+                var contentType = _imageFile.ContentType;
+                _imageUrl = $"data:{contentType};base64,{Convert.ToBase64String(bytes)}";
+
+                await UploadImage();
+            }
+            catch (IOException exception)
+            {
+                _sizeExceeded = true;
+                Console.WriteLine(exception);
+                var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Image file is too large", Duration = 4000};
+                _notificationService.Notify(error);
+            }
+
+        }
+    }
+}    

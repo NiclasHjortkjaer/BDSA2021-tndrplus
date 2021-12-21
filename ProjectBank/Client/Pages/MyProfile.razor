@@ -19,14 +19,7 @@
 {
     <div class="profile_info">
         <div class="picture_container">
-            @if (_account?.PictureUrl != null)
-            {
-                <ImageUploader Id="_account!.Id" IsProject="false" HasProfilePicture="true"></ImageUploader>
-            }
-            else
-            {
-                <ImageUploader Id="_account!.Id" IsProject="false" HasProfilePicture="false"></ImageUploader>
-            }
+            <ProfilePicture Id="_account!.Id"></ProfilePicture>
         </div>
         <div class="profile_contact_info">
             <span class="profile_name">Name: @_account?.Name</span>

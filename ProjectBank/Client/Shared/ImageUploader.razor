@@ -2,78 +2,38 @@
 @inject NavigationManager _navigationManager
 @inject DialogService _dialogService
 
-@if (IsProject && !HasProfilePicture)
-{
-    <div class="form-group input-group">
-        <InputFile id="Image" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg" class="form-control"/>
-    </div>
-}
-else if (!IsProject && HasProfilePicture)
-{
-    <div class="profile_no_pic" style="background-image: url('@_account?.PictureUrl')">
-        <InputFile class="img_profile_overlay" id="Image" style="display: none" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg"></InputFile>
-        <label for="Image" class="overlay"><span>Change</span></label>
-    </div>
-}
+<div class="form-group input-group">
+    <InputFile id="Image" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg" class="form-control"/>
+</div>
 
-else
-{
-    <div class="profile_no_pic" style="background-image: url('./Unknown_profile_pic.png')">
-        <InputFile class="img_profile_overlay" id="Image" style="display: none" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg"></InputFile>
-        <label for="Image" class="overlay"><span>Upload</span></label>
-    </div>
-}
 
-@if (IsProject)
-{
-    <div class="form-group">
-        @if (!string.IsNullOrWhiteSpace(_imageUrl))
-        {
-            <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@_imageUrl" alt="Project Image" class="img-thumbnail"></div>
-            <div style="padding: 0.5em; display: grid; grid-template-columns: 50% 50%; text-align: center">
-                <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)" 
-                              BusyText="Saving ..." IsBusy=@_busy Click=@UploadImage Text="Upload"/>
-                <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)" 
-                              IsBusy=@_busy Click=@ClearImage Text="Clear"/>
-            </div>
-
-        }
-        @if (_sizeExceeded)
-        {
-            <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
-        }
-    </div>
-}
-else @*make a preview of profile picture.*@
-{
+<div class="form-group">
     @if (!string.IsNullOrWhiteSpace(_imageUrl))
     {
-        @if (_sizeExceeded)
-            {
-                <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
-            }
-        else
-        {
-           UploadImage();
-        }
+        <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@_imageUrl" alt="Project Image" class="img-thumbnail"></div>
+        <div style="padding: 0.5em; display: grid; grid-template-columns: 50% 50%; text-align: center">
+            <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)" 
+                            BusyText="Saving ..." IsBusy=@_busy Click=@UploadImage Text="Upload"/>
+            <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)" 
+                            IsBusy=@_busy Click=@ClearImage Text="Clear"/>
+        </div>
+
     }
-}
+    @if (_sizeExceeded)
+    {
+        <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
+    }
+</div>
+
 @code {
 
     [Parameter]
     public int Id { get; set; }
-
-    [Parameter]
-    public bool IsProject { get; set; }
-    [Parameter]
-    public EventCallback OnUpdate { get; set; }
     
     [Parameter]
-    public bool HasProfilePicture { get; set; }
+    public EventCallback OnUpdate { get; set; }
     private ProjectDetailsDto? _toBeUpdated;
-    private AccountDetailsDto? _toBeUpdatedAccount;
     private ProjectUpdateDto? _project;
-    private AccountUpdateDto? _account;
     private string _imageName = Guid.NewGuid().ToString();
     private string _imageUrl = string.Empty;
     private IBrowserFile? _imageFile;
@@ -84,31 +44,15 @@ else @*make a preview of profile picture.*@
     {
         try
         {
-            if (IsProject) //if project
+            _toBeUpdated = await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{Id}");
+            if (_toBeUpdated != null)
             {
-                _toBeUpdated = await _http.GetFromJsonAsync<ProjectDetailsDto>($"api/Project/{Id}");
-                if (_toBeUpdated != null)
+                _project = new ProjectUpdateDto()
                 {
-                    _project = new ProjectUpdateDto()
-                    {
-                        Id = _toBeUpdated.Id, Degree = _toBeUpdated.Degree, Title = _toBeUpdated.Title,
-                        Description = _toBeUpdated.Description, Ects = _toBeUpdated.Ects, Keywords = _toBeUpdated.Keywords, AuthorName = _toBeUpdated.AuthorName,
-                        AuthorToken = _toBeUpdated.AuthorToken, FileUrl = _toBeUpdated.FileUrl, ImageUrl = _toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
-                    };
-                }
-            }
-            else //if account
-            {
-                _toBeUpdatedAccount = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/getBy/{Id}");
-
-                if (_toBeUpdatedAccount != null)
-                {
-                    _account = new AccountUpdateDto()
-                    {
-                        Id = _toBeUpdatedAccount.Id, PictureUrl = _toBeUpdatedAccount.PictureUrl, Name = _toBeUpdatedAccount.Name,
-                        SavedProjects = _toBeUpdatedAccount.SavedProjects, AzureAAdToken = _toBeUpdatedAccount.AzureAdToken
-                    };
-                }
+                    Id = _toBeUpdated.Id, Degree = _toBeUpdated.Degree, Title = _toBeUpdated.Title,
+                    Description = _toBeUpdated.Description, Ects = _toBeUpdated.Ects, Keywords = _toBeUpdated.Keywords, AuthorName = _toBeUpdated.AuthorName,
+                    AuthorToken = _toBeUpdated.AuthorToken, FileUrl = _toBeUpdated.FileUrl, ImageUrl = _toBeUpdated.ImageUrl, LastUpdated = DateTime.UtcNow
+                };
             }
         }
         catch (Exception e)
@@ -131,33 +75,18 @@ else @*make a preview of profile picture.*@
             content.Add(byteContent, "file", _imageFile.Name);
             var response = await _http.PostAsync($"api/Image/{_imageName}", content);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && _project != null)
             {
-                if (_project != null)
-                {
-                    {
-                        _project.ImageUrl = response.Headers.Location?.ToString();
-                        var updated = await _http.PutAsJsonAsync($"api/Project/{_project.Id}", _project);
-                        Console.WriteLine(updated.StatusCode);
+                _project.ImageUrl = response.Headers.Location?.ToString();
+                var updated = await _http.PutAsJsonAsync($"api/Project/{_project.Id}", _project);
+                Console.WriteLine(updated.StatusCode);
 
-                        //Removes the image from the image uploader
-                        _imageUrl = "";
+                //Removes the image from the image uploader
+                _imageUrl = "";
 
-                        //Calls the parent component
-                        await OnUpdate.InvokeAsync();
-                    }
-                }
-                else if (_account != null)
-                {
-                    {
-                        _account.PictureUrl = response.Headers.Location?.ToString();
-                        var updated = await _http.PutAsJsonAsync($"api/Account/{_account.Id}", _account);
-                        Console.WriteLine(updated.StatusCode);
-                    }
-                }
-                await InvokeAsync(StateHasChanged);
+                //Calls the parent component
+                await OnUpdate.InvokeAsync();
             }
-            await Task.Delay(2000);
             _busy = false;
         }
     }
@@ -169,14 +98,6 @@ else @*make a preview of profile picture.*@
         _imageFile = null;
         await Task.Delay(2000);
         _busy = false;
-    }
-
-    private void Cancel()
-    {
-        var uri = $"{_navigationManager.BaseUri}";
-
-        _navigationManager.NavigateTo(uri);
-
     }
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
