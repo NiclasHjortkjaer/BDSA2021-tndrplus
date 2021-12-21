@@ -172,6 +172,7 @@ public class ProjectRepository : IProjectRepository
     {
         var entity = await _context.Projects
             .Include(p => p.Keywords)
+            .Include(p => p.Accounts)
             .FirstOrDefaultAsync(p => p.Id == id);
         if (entity == null)
         {
