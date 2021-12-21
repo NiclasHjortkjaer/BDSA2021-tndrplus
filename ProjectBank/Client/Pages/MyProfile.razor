@@ -52,12 +52,12 @@
                 <td><x id="MyProject_title" onclick="@(() => _navigationManager.NavigateTo($"/projects/{project?.Id}"))" style="cursor: pointer;">@project?.Title</x></td>
                 <td>
                     <div class="my_project_options">
-                        <button id="edit_my_project" style="display: none"
+                        <button id="edit_my_project" style="display: none;"
                                 @onclick="e => UpdateProject(project!.Id)"></button>
-                        <label for="edit_my_project" class="oi oi-pencil"></label>
-                        <button id="delete_My_project" style="display: none" IsBusy=@_busyProfile
+                        <label for="edit_my_project" class="oi oi-pencil" style="cursor: pointer;"></label>
+                        <button id="delete_My_project" style="display: none;" IsBusy=@_busyProfile
                                 @onclick="(e => DeleteProject(project!.Id))"></button>
-                        <label for="delete_My_project" class="oi oi-trash"></label>
+                        <label for="delete_My_project" class="oi oi-trash" style="cursor: pointer;"></label>
                     </div>
                 </td>
             </tr>
@@ -70,6 +70,50 @@ else
     <h3>You have made no projects yet.</h3>
 }
 
+<div class="mobile_view_favorites">
+    <br/>
+    <hr>
+    <br/>
+<h3 id="myproject_h3" style="text-decoration: underline">Liked projects:</h3>
+    @if (_account?.SavedProjects != null)
+    {
+        <table class="table table-striped" style="color: white; display: flow">
+            <thead>
+            <tr>
+                <th id="myprojects_table_title">Title:</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var project in _account?.SavedProjects)
+            {
+                <tr style="color: white">
+                    <td><x id="MyProject_title">@project</x></td>
+                    <td>
+                        <div class="my_project_options">
+                            <button id="mobile_favorite_btn" onclick="@(() => NavigateToFavorite(project))"> Go to project</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    }
+    else
+    {
+        <h3>No liked projects yet!</h3>
+    }
+    <br>
+    <hr>
+    <br>
+    <div style="display: flex; justify-content: center; justify-items: center; ">
+        <LoginDisplay IsMobile="true"></LoginDisplay>
+    </div>
+    
+    
+    
+</div>
+          
 @code {
     //VARIABLES
     private bool _busyProfile;
@@ -114,8 +158,12 @@ else
         _navigationManager.NavigateTo($"/editproject/{id}");
     }
 
-    private void UploadPicture()
+    private async Task NavigateToFavorite(string favorite)
     {
-        
+        var project = await _http.GetFromJsonAsync<IReadOnlyCollection<ProjectDetailsDto>>("/api/Project/"+favorite);
+        if (project != null)
+        {
+            _navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
+        }
     }
 }

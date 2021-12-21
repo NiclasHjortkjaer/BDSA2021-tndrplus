@@ -39,6 +39,17 @@
     margin-right: 1em;
 }
 
+#mobile_favorite_btn{
+    border: none;
+    border-radius: 5px;
+    font-size: 9pt;
+}
+
+.mobile_view_favorites{
+    display: none;
+}
+
+
 @media(max-width: 767.99px){
    #profile_h3, #myproject_h3{
        font-size: 15pt;
@@ -68,6 +79,10 @@
     
     .my_project_options label{
         font-size: 10pt;
+    }
+
+    .mobile_view_favorites{
+        display: block;
     }
 }
 
@@ -102,6 +117,15 @@
     .my_project_options label{
         font-size: 15pt;
     }
+    
+    .mobile_view_favorites{
+        display: block;
+    }
+    
+    #mobile_favorite_btn{
+        font-size: 14pt;
+    }
+    
 }
 
 /*Medium devices (tablets, landscape view )*/
