@@ -1,5 +1,5 @@
 @page "/user/{AuthName}"
-@inject HttpClient Http
+@inject HttpClient _http
 @inject NavigationManager _navigationManager
 @inject DialogService _dialogService
 @inject NotificationService _notificationService;
@@ -53,7 +53,7 @@ else
     {
           _dialogService.OnOpen += Open;
         _dialogService.OnClose += Close;
-        _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]>("/api/Project/"+AuthName);
+        _projects = await _http.GetFromJsonAsync<ProjectDetailsDto[]>("/api/Project/"+AuthName);
     }
 
     private void Navigate(ProjectDetailsDto p){
@@ -77,8 +77,8 @@ else
 
      async Task ShowCloseableFromOverlayDialog()
     {
-        var _email =AuthName.ToString()+".gmail.com";
-        _email =_email.Replace(" ", String.Empty);
+        var email =AuthName?.ToString()+".gmail.com";
+        email =email.Replace(" ", String.Empty);
         await _dialogService.OpenAsync("", ds =>
         @<div style="color:black;">
             <div>
@@ -86,7 +86,7 @@ else
             <div>
         Name: @AuthName </div> 
         <div> 
-        Email: @_email</div>
+        Email: @email</div>
         <div>
             <RadzenTextArea Placeholder="Write message" Style="height:75px;width:100px"/>
           <div>

@@ -10,7 +10,6 @@ public class PdfController : Controller
     private readonly IReadOnlyCollection<string> _allowedContentTypes = new[]
     {
         "application/pdf",
-        
     };
 
     public PdfController(IFileRepository repository)

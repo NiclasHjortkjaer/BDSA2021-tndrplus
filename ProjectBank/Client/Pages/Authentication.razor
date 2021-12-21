@@ -1,7 +1,6 @@
 ﻿@page "/authentication/{action}"
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@inject NavigationManager navigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject NavigationManager _navigationManager
+@inject AuthenticationStateProvider _authenticationStateProvider;
 <RemoteAuthenticatorView Action="@Action" OnLogInSucceeded="OnLogInSucceeded"/>
 
 @code{
@@ -9,6 +8,6 @@
 
     private void OnLogInSucceeded()
     {
-        navigationManager.NavigateTo("/", true);
+        _navigationManager.NavigateTo("/", true);
     }
 }

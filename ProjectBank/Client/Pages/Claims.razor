@@ -1,14 +1,14 @@
 @page "/account/claims"
 @using System.Security.Claims
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthenticationStateProvider _authenticationStateProvider
 
 <PageTitle>Claims</PageTitle>
 
 <h1>Claims</h1>
 
-<p>@message</p>
+<p>@_message</p>
 
-@if (claims.Count() > 0)
+@if (_claims.Any())
 {
     <table class="table table-striped" style="color: white">
         <thead>
@@ -18,7 +18,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (var claim in claims)
+        @foreach (var claim in _claims)
         {
             <tr style="color: white">
                 <td>@claim.Type</td>
@@ -30,23 +30,23 @@
 }
 
 @code {
-    private string message = string.Empty;
-    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
-    private ClaimsPrincipal? user;
+    private string _message = string.Empty;
+    private IEnumerable<Claim> _claims = Enumerable.Empty<Claim>();
+    private ClaimsPrincipal? _user;
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        _user = authState.User;
 
-        if (user.Identity?.IsAuthenticated == true)
+        if (_user.Identity?.IsAuthenticated == true)
         {
-            message = $"You are logged in as: {user.Identity.Name}.";
-            claims = user.Claims;
+            _message = $"You are logged in as: {_user.Identity.Name}.";
+            _claims = _user.Claims;
         }
         else
         {
-            message = "The user is NOT authenticated.";
+            _message = "The user is NOT authenticated.";
         }
     }
 }

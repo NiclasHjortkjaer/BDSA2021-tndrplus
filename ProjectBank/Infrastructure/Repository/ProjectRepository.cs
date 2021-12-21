@@ -42,7 +42,7 @@ public class ProjectRepository : IProjectRepository
     }
 
 
-    public Task<ProjectDetailsDto> ReadAsync(int projectId)
+    public Task<ProjectDetailsDto?> ReadAsync(int projectId)
     {
         var projects = from p in _context.Projects
             where p.Id == projectId
@@ -205,17 +205,17 @@ public class ProjectRepository : IProjectRepository
     }
     //----------Private helper methods---------------------------//
     //Get Author object from DTO Author string
-    private async Task<Account?> GetAuthorAsync(string? azureAadToken, string? Name) {
-        if (Name != null){
+    private async Task<Account?> GetAuthorAsync(string? azureAadToken, string? name) {
+        if (name != null){
             return string.IsNullOrWhiteSpace(azureAadToken) ? null
                 : await _context.Accounts.FirstOrDefaultAsync(a => a.AzureAdToken == azureAadToken) ??
-                    new Account(azureAadToken, Name);
+                    new Account(azureAadToken, name);
         } else {
             return null;
         }
     }
     
-    //Get collectino of keyword objects from the keywords collection of strings in the DTOs
+    //Get collection of keyword objects from the keywords collection of strings in the DTOs
     private async IAsyncEnumerable<Keyword> GetKeywordsAsync(IEnumerable<string> keywords)
     {
         var existing = await _context.Keywords.Where(k => keywords.Contains(k.Word)).ToDictionaryAsync(k => k.Word);

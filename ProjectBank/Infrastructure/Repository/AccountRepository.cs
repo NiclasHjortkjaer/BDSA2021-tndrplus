@@ -36,7 +36,7 @@ public class AccountRepository : IAccountRepository
             newAccount.SavedProjects.Select(a => a.Title).ToHashSet());
     }
 
-    public Task<AccountDetailsDto> ReadAsync(int accountId)
+    public Task<AccountDetailsDto?> ReadAsync(int accountId)
     {
         var accounts = from a in _context.Accounts
             where a.Id == accountId
@@ -51,7 +51,7 @@ public class AccountRepository : IAccountRepository
         return accounts.FirstOrDefaultAsync();
     }
     
-    public Task<AccountDetailsDto> ReadFromTokenAsync(string azureAdToken)
+    public Task<AccountDetailsDto?> ReadFromTokenAsync(string azureAdToken)
     {
         var accounts = from a in _context.Accounts
             where a.AzureAdToken == azureAdToken
@@ -74,16 +74,8 @@ public class AccountRepository : IAccountRepository
         }
         
         var projects = account.SavedProjects;
-        List<int> idsToReturn = new List<int>();
-        if (projects != null)
-        {
-            foreach (var p in projects)
-            {
-                idsToReturn.Add(p.Id);
-            }
-        }
 
-        return idsToReturn;
+        return projects.Select(p => p.Id).ToList();
     }
     
     public async Task<IReadOnlyCollection<AccountDto>> ReadAllAsync() =>
@@ -131,9 +123,7 @@ public class AccountRepository : IAccountRepository
             return Status.NotFound;
         }
 
-        var projectTitles = new List<string>();
-        
-        projectTitles = account.SavedProjects.Select(p => p.Title).ToList();
+        var projectTitles = account.SavedProjects.Select(p => p.Title).ToList();
         if (projectTitles.Contains(projectTitle))
         {
             return Status.Conflict;
@@ -156,19 +146,15 @@ public class AccountRepository : IAccountRepository
             return Status.NotFound;
         }
 
-        var projectTitles = new List<string>();
-
-        if (account.SavedProjects != null)
-        {
-            projectTitles = account.SavedProjects.Select(p => p.Title).ToList();
-            if (!projectTitles.Contains(projectTitle))
-            {
-                return Status.Conflict;
-            }
-            
-            projectTitles.Remove(projectTitle);
-        }
+        var projectTitles = account.SavedProjects.Select(p => p.Title).ToList();
         
+        if (!projectTitles.Contains(projectTitle))
+        {
+            return Status.Conflict;
+        }
+            
+        projectTitles.Remove(projectTitle);
+
         account.SavedProjects = await GetSavedProjectsAsync(projectTitles).ToListAsync();
         
         //---
@@ -180,7 +166,7 @@ public class AccountRepository : IAccountRepository
         }
         //--- Because we work with a nested collection in a many to many relationship, we have to remove the account entry in the collection of the project we are removing from the account..
         //otherwise ef core cannot track the entry of same key value being removed, which will cause an exception, NotSupportedException---
-        List<Account> accounts = projectToRemove.Accounts.ToList();
+        var accounts = projectToRemove.Accounts.ToList();
 
         accounts.Remove(account);
         projectToRemove.Accounts = accounts;

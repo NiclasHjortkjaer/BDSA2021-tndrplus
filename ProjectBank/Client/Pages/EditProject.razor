@@ -1,6 +1,6 @@
 @page "/editproject/{Id}"
-@inject HttpClient Http
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject HttpClient _http
+@inject AuthenticationStateProvider _authenticationStateProvider
 @inject NotificationService _notificationService
 @inject NavigationManager _navigationManager
 
@@ -59,8 +59,8 @@
 @code{
     [Parameter]
     public string Id { get; set; }
-    private string _token;
-    private ProjectDetailsDto _oldProject;
+    private string? _token;
+    private ProjectDetailsDto? _oldProject;
     private ProjectUpdateDto _project = new();
     private List<string> _keywords = new();
     Enum[] _degrees = {Degree.Bachelor, Degree.Master, Degree.PHD};
@@ -70,7 +70,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
             var name = user.Identity?.Name;
@@ -78,7 +78,7 @@
 
             try
             {
-                _oldProject = await Http.GetFromJsonAsync<ProjectDetailsDto>("api/Project/"+Id.ToString());
+                _oldProject = await _http.GetFromJsonAsync<ProjectDetailsDto>("api/Project/"+Id.ToString());
                 _multipleValues = _oldProject.Keywords;
                 _project.AuthorToken = _token;
                 _project.AuthorName = name;
@@ -98,9 +98,9 @@
         
             try
             {
-                var _dtoKeywords = await Http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
-                if (_dtoKeywords != null){
-                    foreach (var keyword in _dtoKeywords)
+                var dtoKeywords = await _http.GetFromJsonAsync<KeywordDto[]>("/api/Keyword");
+                if (dtoKeywords != null){
+                    foreach (var keyword in dtoKeywords)
                     {
                         _keywords.Add(keyword.Word);
                     }
@@ -161,7 +161,7 @@
 
             try
             {
-                var response = await Http.PutAsJsonAsync($"api/Project/{Id}", _project);
+                var response = await _http.PutAsJsonAsync($"api/Project/{Id}", _project);
 
                 if (response.IsSuccessStatusCode)
                 {
