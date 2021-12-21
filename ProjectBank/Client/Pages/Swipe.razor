@@ -68,7 +68,7 @@ Degree: @_currentProject!.Degree</textarea>
     public string? Keyword { get; set; }
 
     [Parameter]
-    public int? DegreeInt { get; set; } = 3;
+    public int DegreeInt { get; set; } = 3;
     public Degree Degree { get; set; } = Degree.Unspecified;
     private readonly IKeywordFinder _keywordFinder = new KeywordFinder();
     private const int I = 10;

@@ -21,7 +21,7 @@ public class ProjectController : ControllerBase {
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
     [ProducesResponseType(404)]
-    public Task<ProjectDetailsDto>? Get(int id)
+    public Task<ProjectDetailsDto?> Get(int id)
         => _repository.ReadAsync(id);
 
     [AllowAnonymous]

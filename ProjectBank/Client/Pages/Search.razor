@@ -47,7 +47,9 @@
 </div>
 </div>
 </div>
-
+@if (noHits == true){
+    <h3>There was no results</h3>
+}
 @if (_projects != null)
 {
     @foreach (var project in _projects)
@@ -119,6 +121,7 @@
 
     private EditContext? _editContext;
     private DegreeModel? _model;
+    private bool noHits = false;
 
     protected override Task OnInitializedAsync()
     {
@@ -136,6 +139,8 @@
             try
             {
                 _projects = await _http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+                if(_projects?.Length == 0){noHits=true;
+                }else{noHits=false;}
             }
             catch (AccessTokenNotAvailableException exception)
             {
