@@ -1,4 +1,4 @@
-@page "/swipe/{keyword}/{degreeInt:int}"
+@page "/swipe/{keyword}"
 @inject HttpClient Http
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -19,6 +19,10 @@
           'To skip a project; you must click the`X` \r\n \r\n' +
           'To regret/undo your last decision; you can click the button in the middle, displayed with a circled arrow. Further, the rewatch button lets you scroll back through already seen projects.')">i
 </button>
+<div class="landscape_view_mobile">
+    <span class="oi oi-loop-square"></span><br>
+    <p1> Please turn your phone vertical</p1>
+</div>
 
 @if (!_seenProjectIds.Any())
 {
@@ -88,11 +92,7 @@ Degree: @_currentProject.Degree</textarea>
         try
         {   
             Degree = (Degree) degreeInt;
-            Console.WriteLine("------------------");
-            Console.WriteLine("HEEEEY");
-            Console.WriteLine("------------------");
-            Console.WriteLine("OKAAAY");
-            Console.WriteLine("------------------");
+            
             if (Keyword == "all"){
                 await _keywordFinder.Setup(Http, Degree);
                 
