@@ -12,7 +12,7 @@ Prerequisites:
 Windows: 
 ```powershell  
 dotnet dev-certs https --clean
-dotnet dev-certs https --export-path $env:USERPROFILE.aspnet\https\aspnetapp.pfx --password localhost
+dotnet dev-certs https --export-path $env:%USERPROFILE%.aspnet\https\aspnetapp.pfx --password localhost
 dotnet dev-certs https --trust
 ```
 Mac/linux: 
