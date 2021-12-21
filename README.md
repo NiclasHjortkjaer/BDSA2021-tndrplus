@@ -3,7 +3,7 @@
 
 # Run the program
 Prerequisites:
-1. Have docker desktop installed on yopur machine: https://docs.docker.com/get-docker/
+1. Have docker desktop installed on your machine: https://docs.docker.com/get-docker/
 2. Clone the repository
 
 # Option 1: Docker Compose.
@@ -12,7 +12,7 @@ Prerequisites:
 Windows: 
 ```powershell  
 dotnet dev-certs https --clean
-dotnet dev-certs https -ep $env:USERPROFILE.aspnet\https\aspnetapp.pfx -p localhost
+dotnet dev-certs https --export-path $env:USERPROFILE\.aspnet\https\aspnetapp.pfx --password localhost --trust
 dotnet dev-certs https --trust
 ```
 Mac/linux: 
@@ -51,7 +51,7 @@ echo "Server=projectbank-db-1;Database=ProjectBank;User Id=sa;Password=$password
 ```
 
 ```powershell
-echo "Secret key" > storage_key.txt
+echo "<Secret key>" > storage_key.txt
 ```
 
 3. Navigate back to the ProjectBank folder.
