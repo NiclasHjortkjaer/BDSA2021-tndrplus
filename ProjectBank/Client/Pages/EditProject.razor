@@ -9,50 +9,59 @@
 } else if (_oldProject.AuthorToken != _token){
 <h3>You do not have permission to edit this project.</h3>
 } else {
-<RadzenFieldset class="mb-4">
+<h3 id="edit" style="text-decoration: underline; text-align: center">Edit your project idea:</h3>   
+<RadzenFieldset class="mb-4" Style="border: none;">
     <div class="row">
         <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Title:"/>
+            <RadzenLabel Text="Title:" Style="text-decoration: underline"/>
         </div>
-        <div class="col-md-9">
-            <RadzenTextBox MaxLength=100 Disabled=false Placeholder="Choose a title" @bind-Value="_project.Title" Change=@(args => OnChange(args, "TextArea with placeholder")) style="width: 50%;" Name="ProjectName"/>
+        <div class="col-md-9" style="width: 100%">
+            <RadzenTextBox MaxLength=100 Disabled=false Placeholder="Choose a title" @bind-Value="_project.Title" Change=@(args => OnChange(args, "TextArea with placeholder")) style="width: 100%;" Name="ProjectName"/>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Description:"/>
+            <RadzenLabel Text="Description:" Style="text-decoration: underline"/>
         </div>
-        <div class="col-md-9">
-            <RadzenTextArea MaxLength=500 Placeholder="Enter here..." @bind-Value="_project.Description" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="height:200px" Class="w-100"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Degree:"/>
-        </div>
-        <div class="col-md-9">
-            <RadzenDropDown AllowClear="true" Item="enums" T="enums" Class="w-100" @bind-Value="_project.Degree" Data="_degrees"/>
+        <div class="col-md-9" style="width: 100%">
+            <RadzenTextArea MaxLength=500 Placeholder="Enter here..." @bind-Value="_project.Description" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="height:20em; resize: none;" Class="w-100"/>
         </div>
     </div>
+    <br>
+    <div class="grid-container_edit_project">
+        <div class="row">
+            <div class="align-items-center d-flex col-md-3">
+                <RadzenLabel Text="Degree:" Style="text-decoration: underline"/>
+            </div>
+            <div class="col-md-9" style="width: 90%;">
+                <RadzenDropDown AllowClear="true" Item="enums" T="enums" Class="w-100" @bind-Value="_project.Degree" Data="_degrees"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="align-item-center d-flex col-md-3">
+                <RadzenLabel Text="ETCs" Style="text-decoration: underline"/>
+            </div>
+            <div class="col-md-9" style="width: 90%">
+                <RadzenDropDown AllowClear="true" TValue="float?" Class="w-100" @bind-Value="_project.Ects"
+                                Data="_etcs"/>
+            </div>
+        </div>
+    </div>
+    <br>
     <div class="row">
         <div class="align-item-center d-flex col-md-3">
-            <RadzenLabel Text="ETCs"/>
+            <RadzenLabel Text="Keywords:" Style="text-decoration: underline"/>
         </div>
-        <div class="col-md-9">
-            <RadzenDropDown AllowClear="true" TValue="float?" Class="w-100" @bind-Value="_project.Ects"
-                            Data="_etcs"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="align-item-center d-flex col-md-3">
-            <RadzenLabel Text="Keywords:"/>
-        </div>
-        <div class="col-md-9">
+        <div class="col-md-9" style="width: 100%" >
             <RadzenListBox AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@_multipleValues Multiple="true" Data=@_keywords
                            Style="height:200px;color:black;" Class="w-100"/>
         </div>
-        <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@_busy Click=@UpdateProject Text="Save"/>
     </div>
+    <br>
+    <div style="display: flex; justify-content: center; justify-items: center;">
+            <RadzenButton style="width: 8em; background: linear-gradient(10deg, #fd297b, #ff655b);" Icon="save" BusyText="Saving ..." IsBusy=@_busy Click=@UpdateProject Text="Save"/>
+    </div> 
 </RadzenFieldset>
 }
 
