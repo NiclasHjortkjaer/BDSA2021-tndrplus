@@ -37,7 +37,7 @@
             {
                 <div style="justify-content: center; align-content: center; padding:1em;"><a style="color: #0a53be" href="@_project.FileUrl" download="@_project.FileUrl??.pdf">Project PDF</a></div>
             }
-            <PdfUploader projectId="int.Parse(Id ?? String.Empty)" OnUpdate="UpdateComponents"></PdfUploader>
+            <PdfUploader ProjectId="int.Parse(Id ?? String.Empty)" OnUpdate="UpdateComponents"></PdfUploader>
         </div>
     </div>
     <br/>
@@ -50,7 +50,7 @@
     [Parameter]
     public string? Id { get; set; }
     private ProjectDetailsDto? _project;
-    private string imgUrl = "";
+
     protected override async Task OnInitializedAsync()
     {
         _project = await _http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{Id}");

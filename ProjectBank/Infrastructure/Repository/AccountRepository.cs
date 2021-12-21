@@ -86,7 +86,9 @@ public class AccountRepository : IAccountRepository
 
     public async Task<Status> UpdateAsync(int id, AccountUpdateDto account)
     {
-        var entitiy = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+        var entitiy = await _context.Accounts
+            .Include(a => a.SavedProjects)
+            .FirstOrDefaultAsync(a => a.Id == id);
 
         if (entitiy == null)
         {

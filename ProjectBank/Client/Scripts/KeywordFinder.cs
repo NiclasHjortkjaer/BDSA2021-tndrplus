@@ -1,7 +1,5 @@
-using ProjectBank.Client.Pages;
 using ProjectBank.Core.Enum;
 using ProjectBank.Core.DTO;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace ProjectBank.Client.Scripts;
@@ -9,10 +7,10 @@ namespace ProjectBank.Client.Scripts;
 public class KeywordFinder : IKeywordFinder
 {
     private const int DefaultRatio = 10;
-    private HttpClient _http;
+    private HttpClient _http = null!;
     private Degree _degree;
     public IDictionary<string, int> Ratios { get; } = new Dictionary<string, int>();
-    public int Ratio_Total { get; set; }
+    public int RatioTotal { get; set; }
     
     //The int is a counter for how many times a keyword has been seen
     private Dictionary<string, int> _keywords = new Dictionary<string, int>();
@@ -34,7 +32,7 @@ public class KeywordFinder : IKeywordFinder
     public string FindWeightedRandomKeyword()
     {
         var random = new Random();
-        var x = random.Next(0, Ratio_Total);
+        var x = random.Next(0, RatioTotal);
         
         for (var i = 0; x > 0 && i < Ratios.Count; i++)
         {
@@ -46,7 +44,7 @@ public class KeywordFinder : IKeywordFinder
             }
         }
 
-        return null;
+        return null!;
     }
 
     public Status UpdateRatioAsync(string keywordName, bool userLikedProject)
@@ -60,12 +58,12 @@ public class KeywordFinder : IKeywordFinder
         {
             var ratio = Ratios[keywordName];
             Ratios[keywordName] *= 2;
-            Ratio_Total += ratio;
+            RatioTotal += ratio;
         } else 
         {
             var ratio = Ratios[keywordName]/2;
             Ratios[keywordName] /= 2;
-            Ratio_Total -= ratio;
+            RatioTotal -= ratio;
         }
         
         return Status.Updated;
@@ -75,7 +73,7 @@ public class KeywordFinder : IKeywordFinder
     {
         if (Ratios.ContainsKey(keyword)) return;
         Ratios.Add(keyword, DefaultRatio);
-        Ratio_Total += DefaultRatio;
+        RatioTotal += DefaultRatio;
     }
 
     public async Task<ProjectDetailsDto?> ReadProjectGivenKeywordAsync(string keyword)

@@ -77,7 +77,7 @@ else
 
      async Task ShowCloseableFromOverlayDialog()
     {
-        var email =AuthName?.ToString()+"@gmail.com";
+        var email =AuthName+"@gmail.com";
         email =email.Replace(" ", String.Empty);
         await _dialogService.OpenAsync("", ds =>
         @<div style="color:black; width: 80%;">
@@ -92,7 +92,7 @@ else
             <div>
                 <RadzenTextArea Placeholder="Write message" Style="width: 19.5em; height: 10em; resize: none"/>
                 <div style="display: flex; justify-content: center; justify-items: center;">
-                    <RadzenButton style="margin-right: 1em; width: 6em; background: linear-gradient(10deg, #fd297b, #ff655b)" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() {Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000}))"/>
+                    <RadzenButton style="margin-right: 1em; width: 6em; background: linear-gradient(10deg, #fd297b, #ff655b)" BusyText="Saving ..." Text="Send" Click="@(_ => ShowNotification(new NotificationMessage() {Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000}))"/>
                     <RadzenButton style="width: 6em; background: linear-gradient(10deg, #fd297b, #ff655b)" BusyText="Closing..." Text="Close" Click="() => ds.Close(true)"/>
                 </div>
             </div>

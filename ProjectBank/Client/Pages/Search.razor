@@ -1,9 +1,7 @@
 ﻿@page "/search"
-@using System.Data.SqlTypes
-@using System.Security.Claims
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject HttpClient Http
-@inject ProjectStateChanged projectChanged
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject HttpClient _http
+@inject ProjectStateChanged _projectChanged
 @inject NavigationManager _navigationManager
 
 <PageTitle>ProjectBank - Search</PageTitle>
@@ -12,11 +10,11 @@
     <div class="searchBar_wrapper">
         @if (!_isDropedDown)
         {
-            <button class="filter_btn" @onclick="dropdown">Filter <span class="oi oi-chevron-bottom"></span></button>
+            <button class="filter_btn" @onclick="Dropdown">Filter <span class="oi oi-chevron-bottom"></span></button>
         }
         else
         {
-            <button class="filter_btn" @onclick="dropdown" style="border-bottom-left-radius: 0">Filter <span class="oi oi-chevron-top"></span></button>
+            <button class="filter_btn" @onclick="Dropdown" style="border-bottom-left-radius: 0">Filter <span class="oi oi-chevron-top"></span></button>
         }
         <input @bind="_searchText" @onkeyup="Enter" type="text" class="searchBar" runat="server" name="Search_input" maxlength="100" placeholder="Search... Project Title, Supervisor, or #Keyword">
         <button class="btn_search" @onclick="LoadProjects"><span class="oi oi-magnifying-glass" style="color: #212121;" aria-hidden="true"></span></button>
@@ -27,13 +25,13 @@
         <div class="dropdown_menu_filter">
             <div class="drop_filter_content">
 
-                <EditForm EditContext="this.editContext">
+                <EditForm EditContext="this._editContext">
                     <p1 style="text-decoration: underline; font-weight: bold;">
-                        @model.Value:
+                        @_model?.Value:
                     </p1>
                     <div>
-                        <InputRadioGroup @bind-Value="model.Selected">
-                            @foreach (var option in model.Options)
+                        <InputRadioGroup @bind-Value="_model!.Selected">
+                            @foreach (var option in _model.Options)
                             {
                                 <div class="radio1">
                                     <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/>
@@ -119,13 +117,13 @@
     private string _searchText = "";
     ProjectDetailsDto[]? _projects;
 
-    private EditContext editContext;
-    private DegreeModel model;
+    private EditContext? _editContext;
+    private DegreeModel? _model;
 
     protected override Task OnInitializedAsync()
     {
-        model = new DegreeModel() { Value = "Degrees" };
-        editContext = new EditContext(model);
+        _model = new DegreeModel() { Value = "Degrees" };
+        _editContext = new EditContext(_model);
         return Task.CompletedTask;
     }
 
@@ -133,11 +131,11 @@
     {
         await OnChange();
 
-        if (model.Selected == Degree.Unspecified)
+        if (_model != null && _model.Selected == Degree.Unspecified)
         {
             try
             {
-                _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
+                _projects = await _http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}");
             }
             catch (AccessTokenNotAvailableException exception)
             {
@@ -146,13 +144,12 @@
         }
         else
         {
-            _projects = await Http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{model.Selected}");
+            _projects = await _http.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/SearchQuery/{_searchText}/{_model!.Selected}");
         }
 
         await InvokeAsync(StateHasChanged);
     }
-
-    //TODO opdater det her, så dataet på hjemmesiden bliver loaded på første klik
+    
     async Task Enter(KeyboardEventArgs e)
     {
         if (e.Code is "Enter" or "NumpadEnter")
@@ -166,15 +163,14 @@
 
     private async Task OnChange()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         if (user.Identity?.IsAuthenticated == true)
         {
-            var _user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-            if (_user != null){
-                var _claims = _user.Claims;
+            var _user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+            {
                 _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-                var account = await Http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
+                var account = await _http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
                 if (account != null)
                 {
                     _likedProjects = account.SavedProjects;
@@ -189,21 +185,21 @@
     {
         if (_likedProjects.Contains(title))
         {
-            await Http.PutAsJsonAsync($"api/Account/{_aToken}/remove", title);
-            projectChanged.RemoveSavedProjects(title);
+            await _http.PutAsJsonAsync($"api/Account/{_aToken}/remove", title);
+            _projectChanged.RemoveSavedProjects(title);
         }
 
         if (!_likedProjects.Contains(title))
         {
-            await Http.PostAsJsonAsync($"api/Account/{_aToken}", title);
-            projectChanged.AddSavedProjects(title);
+            await _http.PostAsJsonAsync($"api/Account/{_aToken}", title);
+            _projectChanged.AddSavedProjects(title);
         }
         await OnChange();
     }
 
     private bool _isDropedDown;
 
-    private void dropdown()
+    private void Dropdown()
     {
         _isDropedDown = !_isDropedDown;
     }

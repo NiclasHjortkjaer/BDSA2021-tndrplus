@@ -15,7 +15,7 @@
         </div>
         
         <div class="col-md-9" style="width: 100%">
-            <RadzenTextBox id="title_area" MaxLength=100 Disabled=false Placeholder="Choose a title" @bind-Value="_project.Title" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="width: 100%" Name="ProjectName"/>
+            <RadzenTextBox id="title_area" MaxLength=100 Disabled=false Placeholder="Choose a title" @bind-Value="_project.Title" Style="width: 100%" Name="ProjectName"/>
         </div>
     </div>
     <br>
@@ -24,7 +24,7 @@
             <RadzenLabel Text="Description:" Style="text-decoration: underline"/>
         </div>
         <div class="col-md-9" style="width: 100%">
-            <RadzenTextArea MaxLength=500 Placeholder="Enter here..." @bind-Value="_project.Description" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="height:20em; resize: none;" Class="w-100"/>
+            <RadzenTextArea MaxLength=500 Placeholder="Enter here..." @bind-Value="_project.Description" Style="height:20em; resize: none;" Class="w-100"/>
         </div>
     </div>
     <br>
@@ -117,7 +117,7 @@
             var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000};
             _notificationService.Notify(error);
         }
-        else if (_project.Title != null && _project.Title.Length < 1)
+        else if (_project.Title.Length < 1)
         {
             var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000};
             _notificationService.Notify(error);
@@ -170,9 +170,5 @@
             }
         }
         _busy = false;
-    }
-
-    void OnChange(string value, string name)
-    {
     }
 }

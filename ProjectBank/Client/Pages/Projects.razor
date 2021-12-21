@@ -32,7 +32,7 @@ else
                         }
                     </div>
                     <h3 class="h6" style="color:black;">Project title: "@_project?.Title":</h3>
-                    <h6 style="color:black;">Authored by: <x onclick="@(() => _navigationManager.NavigateTo($"/user/{_project.AuthorName}"))" style="cursor: pointer;">@_project?.AuthorName</x>
+                    <h6 style="color:black;">Authored by: <x onclick="@(() => _navigationManager.NavigateTo($"/user/{_project?.AuthorName}"))" style="cursor: pointer;">@_project?.AuthorName</x>
                         <br><h7 style="color:black;"> (Role: @_role) </h7>
                     </h6>
                     <div class="d-flex flex-row">
@@ -68,11 +68,11 @@ else
                                 <h3 style="display: flex">_____________</h3>
                             </div>                                <br>
                                 <div style="display: flex; justify-items: center; justify-content: center" >
-                                    @if (_project.AuthorName == _name){
+                                    @if (_project?.AuthorName == _name){
                                         <RadzenButton style="width: 250px; background: linear-gradient(10deg, #fd297b, #ff655b)" Icon="accessibility" BusyText="Saving ..." Text="Share project idea" Click=@ShowCloseableFromOverlayDialogRequest/>
                                     } else {
                                         <div style="display: grid; grid-template-columns: 50% 50%">
-                                            <RadzenButton style="width: 7em; background: linear-gradient(10deg, #fd297b, #ff655b); margin-right: 1em;" BusyText="Saving ..." Text="Apply" Click="@(args => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))" />  
+                                            <RadzenButton style="width: 7em; background: linear-gradient(10deg, #fd297b, #ff655b); margin-right: 1em;" BusyText="Saving ..." Text="Apply" Click="@(_ => ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "placeholder", Duration = 4000 }))" />  
                                             <RadzenButton style="width: 7em; background: linear-gradient(10deg, #fd297b, #ff655b)" BusyText="Saving ..." Text="Contact" Click=@ShowCloseableFromOverlayDialogContact />
                                         </div>
                                     }
@@ -127,9 +127,7 @@ else
         if (user.Identity?.IsAuthenticated == true)
         {
             var _user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
-            if (_user != null)
             {
-                var claims = _user.Claims;
                 _name = _user.Identity?.Name;
                 _aToken = _user.FindFirst(c => c.Type.Contains("aud"))?.Value;
                 var account = await _http.GetFromJsonAsync<AccountDetailsDto>($"/api/Account/{_aToken}");
@@ -146,32 +144,32 @@ else
         try
         {
             _project = await _http.GetFromJsonAsync<ProjectDetailsDto>("/api/Project/" + Id);
-            _lastUpdated = DateTime.UtcNow - _project.LastUpdated;
+            if (_project != null) _lastUpdated = DateTime.UtcNow - _project.LastUpdated;
         }
         catch
         {
             _project = null;
         }
-        _role = _project.AuthorName.Length > 15 ? "Student" : "Supervisor";
+        _role = _project!.AuthorName!.Length > 15 ? "Student" : "Supervisor";
     }
 
     async Task ShowCloseableFromOverlayDialogContact()
     {
-        var email = _project.AuthorName.ToString() + "@gmail.com";
+        var email = _project?.AuthorName + "@gmail.com";
         email = email.Replace(" ", String.Empty);
         await _dialogService.OpenAsync("", ds =>
             @<div style="color:black;">
                 <div>
                     <h2 style="color:black;">Author Information</h2> </div>
                 <div>
-                    Name: @_project.AuthorName</div>
+                    Name: @_project?.AuthorName</div>
                 <div>
                     Email: @email</div>
                 <div>
                     <RadzenTextArea Placeholder="Write message" Style="height:75px;width:300px"/>
                     <div>
-                        <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() {Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "", Duration = 4000}))"/>
-                        <RadzenButton style="width: 75px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
+                        <RadzenButton BusyText="Saving ..." Text="Send" Click="@(_ => ShowNotification(new NotificationMessage() {Severity = NotificationSeverity.Success, Summary = "Applied", Detail = "", Duration = 4000}))"/>
+                        <RadzenButton BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
                     </div>
                 </div>
             </div>, new DialogOptions() {CloseDialogOnOverlayClick = true});
@@ -188,7 +186,7 @@ else
                 <div>
                     <RadzenTextArea Placeholder="Enter email" Style="height:37px;width:400px"/>
                     <div>
-                        <RadzenButton style="width: 100px;" BusyText="Saving ..." Text="Send" Click="@(args => ShowNotification(new NotificationMessage() {Severity = NotificationSeverity.Success, Summary = "Request send", Detail = "", Duration = 4000}))"/>
+                        <RadzenButton style="width: 100px;" BusyText="Saving ..." Text="Send" Click="@(_ => ShowNotification(new NotificationMessage() {Severity = NotificationSeverity.Success, Summary = "Request send", Detail = "", Duration = 4000}))"/>
                         <RadzenButton style="width: 100px;" BusyText="Saving ..." Text="Close" Click="() => ds.Close(true)"/>
                     </div>
                 </div>

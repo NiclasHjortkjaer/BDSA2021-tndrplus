@@ -6,7 +6,7 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
-@inject NotificationService notificationService
+@inject NotificationService _notificationService
 
 @attribute [Authorize]
 
@@ -49,10 +49,10 @@
                 <td>
                     <div class="my_project_options">
                         <button id="edit_my_project" style="display: none;"
-                                @onclick="e => UpdateProject(project!.Id)"></button>
+                                @onclick="_ => UpdateProject(project!.Id)"></button>
                         <label for="edit_my_project" class="oi oi-pencil" style="cursor: pointer;"></label>
                         <button id="delete_My_project" style="display: none;" IsBusy=@_busyProfile
-                                @onclick="(e => DeleteProject(project!.Id))"></button>
+                                @onclick="(_ => DeleteProject(project!.Id))"></button>
                         <label for="delete_My_project" class="oi oi-trash" style="cursor: pointer;"></label>
                     </div>
                 </td>
@@ -84,16 +84,21 @@ else
             </tr>
             </thead>
             <tbody>
-            @foreach (var project in _account?.SavedProjects)
+            @if (_account?.SavedProjects != null)
             {
-                <tr style="color: white">
-                    <td><x id="MyProject_title">@project</x></td>
-                    <td>
-                        <div class="my_project_options">
-                            <button id="mobile_favorite_btn" onclick="@(() => NavigateToFavorite(project))"> Go to project</button>
-                        </div>
-                    </td>
-                </tr>
+                foreach (var project in _account?.SavedProjects!)
+                {
+                    <tr style="color: white">
+                        <td>
+                            <x id="MyProject_title">@project</x>
+                        </td>
+                        <td>
+                            <div class="my_project_options">
+                                <button id="mobile_favorite_btn" onclick="@(() => NavigateToFavorite(project))"> Go to project</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
             }
             </tbody>
         </table>
@@ -109,13 +114,11 @@ else
           
 @code {
     //VARIABLES
-    private bool _busyProfile;
-    private string? _name;
+    private bool _busyProfile = false;
     private string? _email;
     private string? _currentRole;
     private string? _azureAdtoken;
     private AccountDetailsDto? _account;
-    private bool _isProject = false;
     ProjectDetailsDto[]? _projects;
     private readonly List<ProjectDetailsDto?> _userProjects = new List<ProjectDetailsDto?>();
 
@@ -123,7 +126,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
-        _name = user.Identity?.Name;
         _currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
         _email = user.FindFirst(c => c.Type.Contains("preferred_username"))?.Value;
         _azureAdtoken = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
@@ -143,9 +145,9 @@ else
     {
         var response = await _http.DeleteAsync($"/api/Project/{id}");
         Console.WriteLine(response.StatusCode);
-        var itemToRemove = _userProjects.Where(p => p.Id == id).FirstOrDefault();
+        var itemToRemove = _userProjects.FirstOrDefault(p => p!.Id == id);
         _userProjects.Remove(itemToRemove);
-        notificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "The project was successfully removed from the database", Duration = 2000});
+        _notificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "The project was successfully removed from the database", Duration = 2000});
     }
 
     private void UpdateProject(int id)

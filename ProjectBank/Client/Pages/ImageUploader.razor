@@ -107,6 +107,7 @@
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
 
+
         var file = e.GetMultipleFiles().FirstOrDefault().ContentType;
         if (!file.Contains("jpeg") && !file.Contains("jpg") && !file.Contains("png") && !file.Contains("gif"))
         {
