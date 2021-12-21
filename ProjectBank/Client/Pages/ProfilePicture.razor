@@ -85,6 +85,7 @@
     {
         var file = e.GetMultipleFiles().FirstOrDefault()?.ContentType;
         if (file != null && !file.Contains("jpeg") && !file.Contains("jpg") && !file.Contains("png") && !file.Contains("gif"))
+
         {
             var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Please only provide one of the following file types: .jpeg, .jpg, .png, .gif", Duration = 4000};
             _notificationService.Notify(error);

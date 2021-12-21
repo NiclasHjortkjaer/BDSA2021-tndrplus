@@ -12,5 +12,6 @@ public class DegreeModel
         new() {Value=Degree.Bachelor, Selected=false},
         new() {Value=Degree.Master, Selected=false},
         new() {Value=Degree.Phd, Selected=false},
+
     };
 }
