@@ -1,0 +1,15 @@
+#edit_pictureAndPdf{
+    margin: 0;
+}
+
+@media (max-width: 767.99px) {
+    #edit_pictureAndPdf{
+        font-size: 14pt;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992.99px) {
+    #edit_pictureAndPdf {
+        font-size: 17pt;
+    }
+}

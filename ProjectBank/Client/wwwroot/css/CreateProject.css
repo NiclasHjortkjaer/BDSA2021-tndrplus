@@ -1,0 +1,23 @@
+
+
+.grid-container_create_project{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+#create{
+    margin: 0;
+}
+
+@media (max-width: 767.99px) {
+    #create{
+        font-size: 14pt;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992.99px) {
+    #create{
+        font-size: 17pt;
+    }
+}
+

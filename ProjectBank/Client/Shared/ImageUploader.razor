@@ -21,9 +21,11 @@ else
         @if (!string.IsNullOrWhiteSpace(_imageUrl))
         {
             <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@_imageUrl" alt="Project Image" class="img-thumbnail"></div>
-            <div style="padding: 0.5em">
-                <RadzenButton style="width: 160px" Icon="save" BusyText="Saving ..." IsBusy=@_busy Click=@UploadImage Text="Upload"/>
-                <RadzenButton style="width: 160px" IsBusy=@_busy Click=@ClearImage Text="Clear"/>
+            <div style="padding: 0.5em; display: grid; grid-template-columns: 50% 50%; text-align: center">
+                <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)" 
+                              BusyText="Saving ..." IsBusy=@_busy Click=@UploadImage Text="Upload"/>
+                <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)" 
+                              IsBusy=@_busy Click=@ClearImage Text="Clear"/>
             </div>
 
         }

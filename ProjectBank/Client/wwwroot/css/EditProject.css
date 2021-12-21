@@ -1,0 +1,20 @@
+.grid-container_edit_project{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+#edit{
+    margin: 0;
+}
+
+@media (max-width: 767.99px) {
+    #edit{
+        font-size: 14pt;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992.99px) {
+    #edit{
+        font-size: 17pt;
+    }
+}

@@ -5,24 +5,34 @@
 
 <PageTitle>ProjectBank - Additional Setup</PageTitle>
 
-<RadzenFieldset class="mb-4">
-    <div class="row" style="padding: 1em">
-        <div class="align-items-center d-flex col-md-3">
-            <RadzenLabel Text="Project image:" />
+<h3 id="edit_pictureAndPdf" style="text-decoration: underline; text-align: center">Update image and PDF:</h3>
+
+<RadzenFieldset class="mb-4" Style="border: none">
+    <div class="row" style="padding: 0.5em; --bs-gutter-x: 0;">
+        <div class="align-items-center d-flex col-md-3" style="text-decoration: underline; width: 100%">
+            <RadzenLabel Text="Current project image:" />
         </div>
-        <div class="col-md-9">
+        <br>
+        <div class="col-md-9" style="width: 100%; display: flex; justify-content: center; justify-items: center;">
             @if (_project?.ImageUrl != null)
             {
                 <div style="padding: 1em;"><img src="@_project.ImageUrl" alt="Project Image missing" class="img-thumbnail" style="padding: 1em"></div>
             }
-            <ImageUploader Id="int.Parse(Id ?? string.Empty)" IsProject="true"></ImageUploader>
+                
         </div>
     </div>
-    <div class="row" style="padding: 1em">
-        <div class="align-items-center d-flex col-md-3">
+    <div class="row" style="width: 100%; --bs-gutter-x: 0;">
+        <div class="align-items-center d-flex col-md-3" style="text-decoration: underline;  width: 100%">
+            <RadzenLabel Text="Update project image:" />
+        </div>
+        <ImageUploader Id="int.Parse(Id ?? string.Empty)" IsProject="true"></ImageUploader>
+    </div>
+    <br/>
+    <div class="row" style="width: 100%; --bs-gutter-x: 0;">
+        <div class="align-items-center d-flex col-md-3" style="text-decoration: underline;  width: 100%">
             <RadzenLabel Text="Project file:" />
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9" style=" width: 100%">
             @if (_project?.FileUrl != null)
             {
                 <div style="justify-content: center; align-content: center; padding:1em;"><a style="color: #0a53be" href="@_project.FileUrl" download="@_project.FileUrl??.pdf">Project PDF</a></div>
@@ -30,8 +40,9 @@
             <PdfUploader projectId="int.Parse(Id ?? String.Empty)"></PdfUploader>
         </div>
     </div>
-    <div style="padding: 2em">
-        <RadzenButton style="width: 160px;" BusyText="Saving ..." Click=@CompleteSetup Text="Finish" />
+    <br/>
+    <div style="display: flex; justify-items: center; justify-content: center" >
+        <RadzenButton style="width: 7em; background: linear-gradient(10deg, #fd297b, #ff655b)" BusyText="Saving ..." Click=@CompleteSetup Text="Finish" />
     </div>
 </RadzenFieldset>
 
