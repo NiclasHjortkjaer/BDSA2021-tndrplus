@@ -25,7 +25,8 @@
         <div class="align-items-center d-flex col-md-3" style="text-decoration: underline;  width: 100%">
             <RadzenLabel Text="Update project image:" />
         </div>
-        <ImageUploader Id="int.Parse(Id ?? string.Empty)" IsProject="true"></ImageUploader>
+        <ImageUploader Id="int.Parse(Id ?? string.Empty)" IsProject="true" OnUpdate="UpdateImage"></ImageUploader>
+
     </div>
     <br/>
     <div class="row" style="width: 100%; --bs-gutter-x: 0;">
@@ -50,7 +51,7 @@
     [Parameter]
     public string? Id { get; set; }
     private ProjectDetailsDto? _project;
-
+    private string imgUrl = "";
     protected override async Task OnInitializedAsync()
     {
         _project = await _http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{Id}");
@@ -59,5 +60,11 @@
     private void CompleteSetup()
     {
        _navigationManager.NavigateTo("/projects/"+Id);
+    }
+
+    private async Task UpdateImage()
+    {
+        _project = await _http.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{Id}");
+        await InvokeAsync(StateHasChanged);
     }
 }

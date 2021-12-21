@@ -35,7 +35,7 @@ else
         }
     </div>
 }
-else //make a preview of profile picture.
+else @*make a preview of profile picture.*@
 {
     @if (!string.IsNullOrWhiteSpace(_imageUrl))
     {
@@ -53,6 +53,8 @@ else //make a preview of profile picture.
     public int Id { get; set; }
     [Parameter]
     public bool IsProject { get; set; }
+    [Parameter]
+    public EventCallback OnUpdate { get; set; }
     private ProjectDetailsDto? _toBeUpdated;
     private AccountDetailsDto? _toBeUpdatedAccount;
     private ProjectUpdateDto? _project;
@@ -122,6 +124,12 @@ else //make a preview of profile picture.
                         _project.ImageUrl = response.Headers.Location?.ToString();
                         var updated = await _http.PutAsJsonAsync($"api/Project/{_project.Id}", _project);
                         Console.WriteLine(updated.StatusCode);
+
+                        //Removes the image from the image uploader
+                        _imageUrl = "";
+
+                        //Calls the parent component
+                        await OnUpdate.InvokeAsync();
                     }
                 }
                 else if (_account != null)
@@ -132,7 +140,7 @@ else //make a preview of profile picture.
                         Console.WriteLine(updated.StatusCode);
                     }
                 }
-                _navigationManager.NavigateTo(_navigationManager.Uri, forceLoad: true);
+                await InvokeAsync(StateHasChanged);
             }
             await Task.Delay(2000);
             _busy = false;
