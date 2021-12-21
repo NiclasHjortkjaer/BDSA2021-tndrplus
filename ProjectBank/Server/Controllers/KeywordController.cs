@@ -6,12 +6,10 @@ namespace ProjectBank.Server.Controllers;
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class KeywordController : ControllerBase 
 {
-    private readonly ILogger<KeywordController> _logger;
     private readonly IKeywordRepository _repository;
 
-    public KeywordController(ILogger<KeywordController> logger, IKeywordRepository repository)
+    public KeywordController(IKeywordRepository repository)
     {
-        _logger = logger;
         _repository = repository;
     }    
 
@@ -29,21 +27,21 @@ public class KeywordController : ControllerBase
     [HttpGet("getby/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(KeywordDetailsDto), 200)]
-    public Task<KeywordDetailsDto>? Get(int id)
+    public Task<KeywordDetailsDto?> Get(int id)
        => _repository.ReadAsync(id);
 
     [AllowAnonymous]
     [HttpGet("typeOption/{keyword}/{timesSeen}/{degree}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
-    public Task<ProjectDetailsDto>? Get(string keyword, int timesSeen, [FromRoute] Degree degree)
+    public Task<ProjectDetailsDto> Get(string keyword, int timesSeen, [FromRoute] Degree degree)
        => _repository.ReadProjectGivenKeywordAndTimesSeenAsync(keyword, timesSeen, degree);
     
     [AllowAnonymous]
     [HttpGet("{keyword}/{timesSeen}/{degree}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ProjectDetailsDto), 200)]
-    public Task<ProjectDetailsDto>? GetBrowseAll(string keyword, int timesSeen, Degree degree)
+    public Task<ProjectDetailsDto> GetBrowseAll(string keyword, int timesSeen, Degree degree)
         => _repository.ReadProjectGivenKeywordAndTimesSeenRandAsync(keyword, timesSeen, degree);
 
     [AllowAnonymous]
@@ -56,7 +54,7 @@ public class KeywordController : ControllerBase
     [HttpGet("withType/{keyword}/{degree}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDto>), 200)]
-    public Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree) //hvad gør FromRoute lige? vi har ik gjort det alle steder?? -carl
+    public Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute]string keyword, [FromRoute] Degree degree)
         => _repository.ReadAllProjectsWithKeywordAndDegreeAsync(keyword, degree); 
 
     [Authorize]

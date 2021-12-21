@@ -1,4 +1,3 @@
-using Azure.Identity;
 using Azure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,10 +46,7 @@ var blobContainerUri = new Uri(builder.Configuration["BlobContainerUri"]);
 StorageSharedKeyCredential storageCredentials =
     new StorageSharedKeyCredential(builder.Configuration["StorageAccountName"], builder.Configuration["StorageAccountKey"]);
 
-// Create the blob client.
-BlobClient blobClient = new BlobClient(blobContainerUri, storageCredentials);
-
-builder.Services.AddScoped<BlobContainerClient>(_ => new BlobContainerClient(blobContainerUri, storageCredentials));
+builder.Services.AddScoped(_ => new BlobContainerClient(blobContainerUri, storageCredentials));
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 
 var app = builder.Build();

@@ -6,12 +6,10 @@ namespace ProjectBank.Server.Controllers;
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class AccountController : ControllerBase 
 {
-    private readonly ILogger<AccountController> _logger;
     private readonly IAccountRepository _repository;
 
-    public AccountController(ILogger<AccountController> logger, IAccountRepository repository)
+    public AccountController(IAccountRepository repository)
     {
-        _logger = logger;
         _repository = repository;
     }    
 
@@ -24,21 +22,21 @@ public class AccountController : ControllerBase
     [HttpGet("getBy/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
-    public Task<AccountDetailsDto>? Get(int id)
+    public Task<AccountDetailsDto?> Get(int id)
        => _repository.ReadAsync(id);
     
     [AllowAnonymous]
     [HttpGet("{azureAdToken}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
-    public Task<AccountDetailsDto> Get(string azureAdToken)
+    public Task<AccountDetailsDto?> Get(string azureAdToken)
         => _repository.ReadFromTokenAsync(azureAdToken);
     
     [Authorize]
     [HttpGet("likedProduct/{azureToken}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ICollection<int>), 200)]
-    public Task<ICollection<int>>? GetLiked(string azureToken)
+    public Task<ICollection<int>> GetLiked(string azureToken)
         => _repository.ReadLikedProjectsFromTokenAsync(azureToken);
 
 

@@ -3,11 +3,9 @@ namespace Server.Integration.Tests;
 public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory _factory;
 
     public ProjectTests(CustomWebApplicationFactory factory)
     {
-        _factory = factory;
         _client = factory.CreateClient(new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false
@@ -20,7 +18,7 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         var projects = await _client.GetFromJsonAsync<ProjectDto[]>("/api/Project");
         
         Assert.NotNull(projects);
-        Assert.True(projects.Length >= 2);
+        Assert.True(projects!.Length >= 2);
         Assert.Contains(projects, p => p.Title == "Artificial Intelligence 101");
         Assert.Contains(projects, p => p.AuthorName == "Elon Musk");
         
@@ -34,7 +32,7 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         var project = await _client.GetFromJsonAsync<ProjectDetailsDto>($"/api/Project/{id}");
        
         Assert.NotNull(project);
-        Assert.Equal("Artificial Intelligence 101", project.Title);
+        Assert.Equal("Artificial Intelligence 101", project!.Title);
         Assert.Equal("Elon Musk", project.AuthorName);
         Assert.NotEmpty(project.Keywords);
         
@@ -62,9 +60,9 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         var created = await response.Content.ReadFromJsonAsync<ProjectDetailsDto>();
         
         Assert.NotNull(created);
-        Assert.Equal("PostToken", created.AuthorToken);
-        Assert.Equal("Post Project", created.Title);
-        Assert.Equal("Jesper Buch", created.AuthorName);
+        Assert.Equal("PostToken", created?.AuthorToken);
+        Assert.Equal("Post Project", created?.Title);
+        Assert.Equal("Jesper Buch", created?.AuthorName);
         Assert.Contains("AI", project.Keywords);
         Assert.Equal(10f, project.Ects);
         Assert.Equal("Project about making money", project.Description);
@@ -79,9 +77,9 @@ public class ProjectTests : IClassFixture<CustomWebApplicationFactory>
         var projects = await _client.GetFromJsonAsync<ProjectDetailsDto[]?>($"/api/Project/{title}");
 
         Assert.NotNull(projects);
-        Assert.Equal(1, projects!.Length);
+        Assert.Single(projects!);
 
-        var project = projects.FirstOrDefault();
+        var project = projects!.FirstOrDefault();
         Assert.Equal("Artificial Intelligence 101", project!.Title);
         Assert.Equal("Elon Musk", project.AuthorName);
         Assert.NotEmpty(project.Keywords);

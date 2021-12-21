@@ -1,5 +1,3 @@
-using ProjectBank.Infrastructure.Entity;
-
 namespace ProjectBank.Infrastructure.Repository;
 
 public class SearchManagement : ISearchManagement
@@ -32,9 +30,9 @@ public class SearchManagement : ISearchManagement
         var projectsGivenAuthor = await _projectRepo.ReadAuthorGivenDegreeAsync(searchString, degree);
         var projectsGivenKeyword = await _keywordRepo.ReadAllProjectsWithKeywordAndDegreeAsync(searchString, degree);
     
-        var ProjectComparer = new ProjectComparer();
+        var projectComparer = new ProjectComparer();
 
-        var projects = projectsGivenTitle.Union(projectsGivenAuthor, ProjectComparer).Union(projectsGivenKeyword, ProjectComparer);
+        var projects = projectsGivenTitle.Union(projectsGivenAuthor, projectComparer).Union(projectsGivenKeyword, projectComparer);
         return projects.ToList();
     }
 }

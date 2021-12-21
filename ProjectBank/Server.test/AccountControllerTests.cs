@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Http;
-using ProjectBank.Infrastructure;
-using Xunit;
-
 namespace ProjectBank.Server.test;
 
 public class AccountControllerTests
@@ -15,7 +11,7 @@ public class AccountControllerTests
         var created = new AccountDetailsDto(1, "AzureAdToken", "Warren Buffet",null ,new HashSet<string>());
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var result = await controller.Post(toCreate) as CreatedAtActionResult;
@@ -35,7 +31,7 @@ public class AccountControllerTests
         var expected = Array.Empty<AccountDto>();
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.ReadAllAsync()).ReturnsAsync(expected);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var actual = await controller.Get();
@@ -51,10 +47,10 @@ public class AccountControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.ReadAsync(42)).ReturnsAsync(default(AccountDetailsDto));
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
-        var response = await controller.Get(42);
+        var response = await controller.Get(42)!;
 
         // Assert
         Assert.Null(response);
@@ -67,7 +63,7 @@ public class AccountControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.ReadFromTokenAsync("Invalid")).ReturnsAsync(default(AccountDetailsDto));
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Get("Invalid");
@@ -83,10 +79,10 @@ public class AccountControllerTests
         var repository = new Mock<IAccountRepository>();
         ICollection<int> expected = new List<int>(){1};
         repository.Setup(m => m.ReadLikedProjectsFromTokenAsync("token")).ReturnsAsync(expected);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
-        var response = await controller.GetLiked("token");
+        var response = await controller.GetLiked("token")!;
 
         // Assert
         Assert.Equal(response, expected);
@@ -100,7 +96,7 @@ public class AccountControllerTests
         var repository = new Mock<IAccountRepository>();
 
         repository.Setup(m => m.AddLikedProjectAsync("ya", "AI")).ReturnsAsync(Status.Created);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Post("ya","AI");
@@ -116,8 +112,8 @@ public class AccountControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
 
-        repository.Setup(m => m.RemoveLikedProjectAsync("ya","AI")).ReturnsAsync(Status.Deleted); //andreas se lige på de her returns pls
-        var controller = new AccountController(logger.Object, repository.Object);
+        repository.Setup(m => m.RemoveLikedProjectAsync("ya","AI")).ReturnsAsync(Status.Deleted);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Put("ya","AI");
@@ -134,10 +130,10 @@ public class AccountControllerTests
         var repository = new Mock<IAccountRepository>();
         var account = new AccountDetailsDto(1, "AzureAdToken", "Warren Buffet",null, new HashSet<string>());
         repository.Setup(m => m.ReadAsync(1)).ReturnsAsync(account);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
-        var response = await controller.Get(1);
+        var response = await controller.Get(1)!;
 
         // Assert
         Assert.Equal(account, response);
@@ -149,7 +145,7 @@ public class AccountControllerTests
         var repository = new Mock<IAccountRepository>();
         var account = new AccountDetailsDto(1, "AzureAdToken", "Warren Buffet",null, new HashSet<string>());
         repository.Setup(m => m.ReadFromTokenAsync("AzureAdToken")).ReturnsAsync(account);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Get("AzureAdToken");
@@ -166,7 +162,7 @@ public class AccountControllerTests
         var account = new AccountUpdateDto();
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.UpdateAsync(1, account)).ReturnsAsync(NotFound);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Put(1, account);
@@ -183,7 +179,7 @@ public class AccountControllerTests
         var account = new AccountUpdateDto();
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.UpdateAsync(1, account)).ReturnsAsync(Updated);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Put(1, account);
@@ -199,7 +195,7 @@ public class AccountControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.DeleteAsync(42)).ReturnsAsync(Status.NotFound);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Delete(42);
@@ -215,7 +211,7 @@ public class AccountControllerTests
         var logger = new Mock<ILogger<AccountController>>();
         var repository = new Mock<IAccountRepository>();
         repository.Setup(m => m.DeleteAsync(1)).ReturnsAsync(Status.Deleted);
-        var controller = new AccountController(logger.Object, repository.Object);
+        var controller = new AccountController(repository.Object);
 
         // Act
         var response = await controller.Delete(1);

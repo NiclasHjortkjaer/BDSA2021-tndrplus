@@ -1,15 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace Server.Integration.Tests;
 
 public class AccountTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory _factory;
-
     public AccountTests(CustomWebApplicationFactory factory)
     {
-        
         _factory = factory;
         _client = factory.CreateClient(new WebApplicationFactoryClientOptions
         {
@@ -25,7 +21,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var accounts = await _client.GetFromJsonAsync<AccountDto[]>("/api/Account");
         
         Assert.NotNull(accounts);
-        Assert.True(accounts.Length >= 2);
+        Assert.True(accounts!.Length >= 2);
         Assert.Contains(accounts, a => a.Name == "Elon Musk");
         
     }
@@ -38,7 +34,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var account = await _client.GetFromJsonAsync<AccountDto>($"/api/Account/getBy/{id}");
         
         Assert.NotNull(account);
-        Assert.Equal("Elon Musk",account.Name);
+        Assert.Equal("Elon Musk",account?.Name);
         
     }
     
@@ -50,20 +46,20 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var account = await _client.GetFromJsonAsync<AccountDto>($"/api/Account/{azureAdToken}");
         
         Assert.NotNull(account);
-        Assert.Equal("Elon Musk",account.Name);
+        Assert.Equal("Elon Musk",account?.Name);
         
     }
     
     [Fact]
-    public async Task get_by_Token_returns_liked_project_ids() //heeer
+    public async Task get_by_Token_returns_liked_project_ids()
     { 
         
         var azureAdToken = "AuthorToken2";
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
 
         Assert.NotNull(projectIDs);
-        Assert.True(projectIDs.Count > 0);
-        Assert.True(projectIDs.Contains(1));
+        Assert.True(projectIDs!.Count > 0);
+        Assert.Contains(1, projectIDs);
         
     }
     
@@ -75,7 +71,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
         Assert.NotNull(projectIDs);
-        Assert.True(projectIDs.Count == 0);
+        Assert.True(projectIDs!.Count == 0);
         
     }
     
@@ -87,7 +83,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
         Assert.NotNull(projectIDs);
-        Assert.Equal(projectIDs.Count, 0);
+        Assert.Empty(projectIDs);
         
     }
     
@@ -98,7 +94,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var azureAdToken = "UnknownToken";
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
-        Assert.True(projectIDs.Count==0);
+        Assert.True(projectIDs!.Count==0);
         
         var titleToAdd = "Artificial Intelligence 101";
         var response = await _client.PostAsJsonAsync($"api/Account/{azureAdToken}", titleToAdd);
@@ -106,8 +102,8 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         
         var projectIDs2 = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
-        Assert.True(projectIDs2.Count != 0);
-        Assert.True(projectIDs2.Contains(1));
+        Assert.NotEmpty(projectIDs2!);
+        Assert.Contains(1, projectIDs2!);
         Assert.Equal(Status.Updated.ToString(),actualResponse.ToString());
         
     }
@@ -149,7 +145,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var azureAdToken = "AuthorToken";
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
-        Assert.True(projectIDs.Contains(1));
+        Assert.Contains(1, projectIDs!);
         
         var titleToRemove = "Artificial Intelligence 101";
         
@@ -159,7 +155,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var projectIDs2 = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
         Assert.Equal(Status.Updated.ToString(), actual.ToString());
-        Assert.False(projectIDs2.Contains(1));
+        Assert.DoesNotContain(1, projectIDs2!);
         
     }
     [Fact]
@@ -184,7 +180,7 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var azureAdToken = "UnknownToken";
         var projectIDs = await _client.GetFromJsonAsync<List<int>>($"/api/Account/likedProduct/{azureAdToken}");
         
-        Assert.False(projectIDs.Contains(1));
+        Assert.DoesNotContain(1, projectIDs!);
         
         var titleToRemove = "Artificial Intelligence 101";
         
@@ -215,9 +211,9 @@ public class AccountTests : IClassFixture<CustomWebApplicationFactory>
         var created = await response.Content.ReadFromJsonAsync<AccountDetailsDto>();
         
         Assert.NotNull(created);
-        Assert.Equal("Jesper Buch", created.Name);
-        Assert.Equal("PostAccount", created.AzureAdToken);
-        Assert.Empty(created.SavedProjects);
+        Assert.Equal("Jesper Buch", created?.Name);
+        Assert.Equal("PostAccount", created?.AzureAdToken);
+        Assert.Empty(created!.SavedProjects);
         
     }
 }
