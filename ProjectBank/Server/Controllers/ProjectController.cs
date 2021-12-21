@@ -26,17 +26,6 @@ public class ProjectController : ControllerBase {
     public Task<ProjectDetailsDto>? Get(int id)
         => _repository.ReadAsync(id);
 
-    [AllowAnonymous]
-    [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
-    [ProducesResponseType(404)]
-    [HttpGet("{input}")]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string input) {
-        var projectsByTitle = await _repository.ReadTitleAsync(input);
-        var projectsByAuthor = await _repository.ReadAuthorAsync(input);
-
-        return projectsByTitle.Union(projectsByAuthor).ToList().AsReadOnly();
-    }
-
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(ProjectDetailsDto), 201)]
