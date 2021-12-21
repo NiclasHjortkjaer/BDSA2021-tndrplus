@@ -31,24 +31,16 @@
     private bool _newUser;
 
     protected override async Task OnInitializedAsync(){
-        var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
+        try {
+            var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         if (user.Identity is {IsAuthenticated: true })
         {   
             _name = user.Identity?.Name;
             _currentRole = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
             _token = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            try { 
-                var accountCheck = await _http.GetFromJsonAsync<AccountDetailsDto>("api/Account/"+_token);
-            } catch {
-                if (_token != null && _name != null){
-                    var account = new AccountCreateDto{
-                        AzureAAdToken = _token,
-                        Name = _name
-                    };
-                    var response = await _http.PostAsJsonAsync("api/Account",account);
-                    _newUser = true;
-                }
-            }
+            var accountCheck = await _http.GetFromJsonAsync<AccountDetailsDto>("api/Account/"+_token);
+        }
+        } catch {//TaskCancelException
         }
     }
 }
