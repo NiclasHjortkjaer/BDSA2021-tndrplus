@@ -16,33 +16,33 @@ public class ProjectStateChanged
 {
     public ProjectStateChanged()
     {
-        projects = new List<string>();
+        Projects = new List<string>();
     }
-    public List<string> projects { get; private set; }
-    public event Action OnChange;
+    public List<string> Projects { get; private set; }
+    public event Action? OnChange;
     public void AddSavedProjects(string title)
     {
-        if (!projects.Contains(title))
+        if (!Projects.Contains(title))
         {
-            projects.Add(title);
+            Projects.Add(title);
             NotifyStateChanged();
         }
     }
     public void RemoveSavedProjects(string title)
     {
-        if (projects.Contains(title))
+        if (Projects.Contains(title))
         {
-            projects.Remove(title);
+            Projects.Remove(title);
              NotifyStateChanged();
         }
     }
-    public void setList(ISet<string> titles)
+    public void SetList(ISet<string> titles)
     {
         foreach (string s in titles)
         {
-            if (!projects.Contains(s))
+            if (!Projects.Contains(s))
             {
-                projects.Add(s);   
+                Projects.Add(s);   
             }
         }
     }

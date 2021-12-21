@@ -7,9 +7,9 @@ public class DegreeOptions
     public Degree Value { get; set; }
     public bool Selected
     {
-        get => _Selected;
-        set => _Selected = value;
+        get => _selected;
+        set => _selected = value;
     }
 
-    private bool _Selected;
+    private bool _selected;
 }

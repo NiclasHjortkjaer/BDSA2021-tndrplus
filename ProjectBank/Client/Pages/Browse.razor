@@ -1,11 +1,11 @@
 @page "/browse"
-@inject HttpClient Http
-@inject NavigationManager navigationManager
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
 
 <PageTitle>ProjectBank - Browse</PageTitle>
 
 <div class="browse_all">
-    <button class="browse_all_btn" @onclick="(() => RedirectToSwipeAllPage())"> Browse all </button><p1 id="Browse_all_text" >or look for a specific keyword to browse:</p1>
+    <button class="browse_all_btn" @onclick="(RedirectToSwipeAllPage)"> Browse all </button><p1 id="Browse_all_text" >or look for a specific keyword to browse:</p1>
 </div>
 
 <div class="filter_browse">
@@ -71,14 +71,14 @@
 @code{
     private KeywordDto[]? _keywords;
 
-    private EditContext _editContext;
-    private DegreeModel _model;
+    private EditContext _editContext = null!;
+    private DegreeModel _model = null!;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
+            _keywords = await _http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
             _model = new DegreeModel() { Value = "Degrees" };
             _editContext = new EditContext(_model);
         }
@@ -90,11 +90,11 @@
     
     private void RedirectToSwipePage(string keyword)
     {
-        navigationManager.NavigateTo($"swipe/{keyword}/{(int) _model.Selected}");
+        _navigationManager.NavigateTo($"swipe/{keyword}/{(int) _model.Selected}");
     }
     private void RedirectToSwipeAllPage()
     {
-        navigationManager.NavigateTo($"swipe/all/{(int) _model.Selected}");
+        _navigationManager.NavigateTo($"swipe/all/{(int) _model.Selected}");
     }
 
 

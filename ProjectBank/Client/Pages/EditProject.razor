@@ -16,7 +16,7 @@
             <RadzenLabel Text="Title:" Style="text-decoration: underline"/>
         </div>
         <div class="col-md-9" style="width: 100%">
-            <RadzenTextBox MaxLength=100 Disabled=false Placeholder="Choose a title" @bind-Value="_project.Title" Change=@(args => OnChange(args, "TextArea with placeholder")) style="width: 100%;" Name="ProjectName"/>
+            <RadzenTextBox MaxLength=100 Disabled=false Placeholder="Choose a title" @bind-Value="_project.Title" style="width: 100%;" Name="ProjectName"/>
         </div>
     </div>
     <br>
@@ -25,7 +25,7 @@
             <RadzenLabel Text="Description:" Style="text-decoration: underline"/>
         </div>
         <div class="col-md-9" style="width: 100%">
-            <RadzenTextArea MaxLength=500 Placeholder="Enter here..." @bind-Value="_project.Description" Change=@(args => OnChange(args, "TextArea with placeholder")) Style="height:20em; resize: none;" Class="w-100"/>
+            <RadzenTextArea MaxLength=500 Placeholder="Enter here..." @bind-Value="_project.Description" Style="height:20em; resize: none;" Class="w-100"/>
         </div>
     </div>
     <br>
@@ -67,14 +67,15 @@
 
 @code{
     [Parameter]
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
+
     private string? _token;
     private ProjectDetailsDto? _oldProject;
     private ProjectUpdateDto _project = new();
     private List<string> _keywords = new();
     Enum[] _degrees = {Degree.Bachelor, Degree.Master, Degree.Phd};
     float[] _etcs = {7.5f, 15f};
-    private IEnumerable<string> _multipleValues;
+    private IEnumerable<string> _multipleValues = null!;
     bool _busy;
     
     protected override async Task OnInitializedAsync()
@@ -87,17 +88,20 @@
 
             try
             {
-                _oldProject = await _http.GetFromJsonAsync<ProjectDetailsDto>("api/Project/"+Id.ToString());
-                _multipleValues = _oldProject.Keywords;
-                _project.AuthorToken = _token;
-                _project.AuthorName = name;
-                _project.Title = _oldProject.Title;
-                _project.Description = _oldProject.Description;
-                _project.Degree = _oldProject.Degree;
-                _project.ImageUrl = _oldProject.ImageUrl;
-                _project.FileUrl = _oldProject.FileUrl;
-                _project.LastUpdated = _oldProject.LastUpdated;
-                _project.Ects = _oldProject.Ects;
+                _oldProject = await _http.GetFromJsonAsync<ProjectDetailsDto>("api/Project/"+Id);
+                if (_oldProject != null)
+                {
+                    _multipleValues = _oldProject.Keywords;
+                    _project.AuthorToken = _token;
+                    _project.AuthorName = name;
+                    _project.Title = _oldProject.Title;
+                    _project.Description = _oldProject.Description;
+                    _project.Degree = _oldProject.Degree;
+                    _project.ImageUrl = _oldProject.ImageUrl;
+                    _project.FileUrl = _oldProject.FileUrl;
+                    _project.LastUpdated = _oldProject.LastUpdated;
+                    _project.Ects = _oldProject.Ects;
+                }
                 _project.Id = Int32.Parse(Id);
             }
             catch (AccessTokenNotAvailableException exception)
@@ -191,10 +195,6 @@
                 exception.Redirect();
             }
         }
-        //END
         _busy = false;
-    }
-    void OnChange(string value, string name)
-    {
     }
 }

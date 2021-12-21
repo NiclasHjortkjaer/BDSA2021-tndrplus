@@ -7,7 +7,8 @@
     <Authorized>
         <div class="top-row ps-3 navbar navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
+                <a class="navbar-brand" href="/">
+                    <img src="Logo_white_projectBank.png" height="50" width="150" alt=""/></a>
                 <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
 
                 </NavLink>
@@ -53,9 +54,9 @@
         <br>
         <div class="favoriteList">
     
-            @if (_projectsChanged.projects != null)
+            @if (_projectsChanged.Projects != null)
             {
-                @foreach (var favorite in _projectsChanged.projects)
+                @foreach (var favorite in _projectsChanged.Projects)
                 {
                     <ul @onclick="() => NavigateToFavorite(favorite)">@favorite</ul>
                 }
@@ -65,7 +66,8 @@
     <NotAuthorized>
         <div class="top-row ps-3 navbar navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/"><img src="Logo_white_projectBank.png" height="75%" width="75%"/></a>
+                <a class="navbar-brand" href="/">
+                    <img src="Logo_white_projectBank.png" height="50" width="150" alt=""/></a>
                 <NavLink class="nav-link" href="/">
                 </NavLink>
                 <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -106,7 +108,7 @@
     private IEnumerable<string> _favorites = null!;
 
    
-    private string _role;
+    private string? _role;
     
     protected override async Task OnInitializedAsync()
     {
@@ -119,7 +121,7 @@
             var account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{aToken}");
             if (account != null)
             {
-                _projectsChanged.setList(account.SavedProjects);
+                _projectsChanged.SetList(account.SavedProjects);
             }
             _projectsChanged.OnChange +=(()=>ChangeState());
 
@@ -131,13 +133,13 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private bool collapseNavMenu = true;
+    private bool _collapseNavMenu = true;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string? NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        _collapseNavMenu = !_collapseNavMenu;
     }
 
     private async Task NavigateToFavorite(string favorite)
