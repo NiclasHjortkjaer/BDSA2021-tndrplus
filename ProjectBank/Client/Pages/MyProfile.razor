@@ -78,7 +78,11 @@ else
     <hr>
     <br/>
 <h3 id="myproject_h3" style="text-decoration: underline">Liked projects:</h3>
-    @if (_account?.SavedProjects != null)
+    @if (_account?.SavedProjects == null || _account?.SavedProjects.Count == 0)
+    {
+        <h3>No liked projects yet!</h3>
+    }
+    else
     {
         <table class="table table-striped" style="color: white; display: flow">
             <thead>
@@ -102,19 +106,12 @@ else
         </table>
 
     }
-    else
-    {
-        <h3>No liked projects yet!</h3>
-    }
     <br>
     <hr>
     <br>
     <div style="display: flex; justify-content: center; justify-items: center; ">
         <LoginDisplay IsMobile="true"></LoginDisplay>
     </div>
-    
-    
-    
 </div>
           
 @code {
