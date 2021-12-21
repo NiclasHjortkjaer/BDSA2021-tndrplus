@@ -106,6 +106,15 @@
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
+
+        var file = e.GetMultipleFiles().FirstOrDefault().ContentType;
+        if (!file.Contains("jpeg") || !file.Contains("jpg") || !file.Contains("png") || !file.Contains("gif"))
+        {
+            var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Please only provide one of the following file types: .jpeg, .jpg, .png, .gif", Duration = 4000};
+            _notificationService.Notify(error);
+            return;
+        }
+
         await LoadProject();
         _sizeExceeded = false;
         _imageFile = e.GetMultipleFiles().FirstOrDefault();
@@ -123,8 +132,9 @@
             {
                 _sizeExceeded = true;
                 Console.WriteLine(exception);
+                var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Image file is too large", Duration = 4000};
+                _notificationService.Notify(error);
             }
-
         }
     }
 }    

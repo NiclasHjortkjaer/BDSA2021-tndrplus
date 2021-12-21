@@ -101,6 +101,14 @@
 
     private async Task OnFileSelection(InputFileChangeEventArgs e)
     {
+        var file = e.GetMultipleFiles().FirstOrDefault().ContentType;
+        if (!file.Contains("pdf"))
+        {
+            var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Please only provide the following file type: .pdf", Duration = 4000};
+            _notificationService.Notify(error);
+            return;
+        }
+
         await LoadProject();
         
         sizeExceeded = false;
@@ -119,9 +127,9 @@
             {
                 sizeExceeded = true;
                 Console.WriteLine(e);
-                
+                var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Image file is too large", Duration = 4000};
+                _notificationService.Notify(error);
             }
-            
         }
     }
 } 
