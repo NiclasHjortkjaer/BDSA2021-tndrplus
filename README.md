@@ -7,7 +7,7 @@ Prerequisites:
 2. Clone the repository
 
 # Option 1: Docker Compose.
-1. Generate a self signed certificate using the folowing commands: 
+1. Generate a self signed certificate using the following commands: 
 
 Windows: 
 ```powershell  
