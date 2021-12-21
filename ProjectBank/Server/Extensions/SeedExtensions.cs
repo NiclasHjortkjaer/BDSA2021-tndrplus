@@ -1,16 +1,12 @@
-using ProjectBank.Infrastructure;
-
 namespace ProjectBank.Server.Extensions;
 
 public static class SeedExtensions
 {
     public static async Task<IHost> SeedAsync(this IHost host)
     {
-        using (var scope = host.Services.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<ProjectBankContext>();
-            await SeedProjectsAsync(context);
-        }
+        using var scope = host.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ProjectBankContext>();
+        await SeedProjectsAsync(context);
         return host;
     }
 
@@ -21,13 +17,13 @@ public static class SeedExtensions
         {
 
             //Accounts
-            var ElonA = new Account("UnknownToken", "Elon Musk");
-            var BillyA = new Account("AuthorToken1", "Billy Gates");
-            var JytteA = new Account("AuthorToken2", "Jytte Gurdesen");
-            var JohnA = new Account("AuthorToken3", "John Lee");
-            var IlseA = new Account("AutherToken4", "Ilse Bruun");
-            var StefanA = new Account("AutherToken5","Stefan Guul");
-            var JonA = new Account("AutherToken6", "Jon Jonsen");
+            var elonA = new Account("UnknownToken", "Elon Musk");
+            var billyA = new Account("AuthorToken1", "Billy Gates");
+            var jytteA = new Account("AuthorToken2", "Jytte Gurdesen");
+            var johnA = new Account("AuthorToken3", "John Lee");
+            var ilseA = new Account("AutherToken4", "Ilse Bruun");
+            var stefanA = new Account("AutherToken5","Stefan Guul");
+            var jonA = new Account("AutherToken6", "Jon Jonsen");
 
 
             //Keywords
@@ -46,209 +42,201 @@ public static class SeedExtensions
 
             var gameDes = new Project("Make a game with focus on design")
             { 
-                Author = JonA ,Keywords = new[]{gameKey,designKey
+                Author = jonA ,Keywords = new[]{gameKey,designKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
-            var gameAI = new Project("Make a game With AI")
+            var gameAi = new Project("Make a game With AI")
             { 
-                Author = JonA ,Keywords = new[]{gameKey,aiKey
+                Author = jonA ,Keywords = new[]{gameKey,aiKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
               var gameMa = new Project("Make a game With machine learning")
             { 
-                Author = JonA ,Keywords = new[]{gameKey,machineLearnKey
+                Author = jonA ,Keywords = new[]{gameKey,machineLearnKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
 
             var gameEnvir = new Project("Make a game about the environment")
             { 
-                Author = JonA ,Keywords = new[]{gameKey, environmentKey
+                Author = jonA ,Keywords = new[]{gameKey, environmentKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
             
             var gameDb = new Project("Make a game with a database")
             { 
-                Author = JonA ,Keywords = new[]{gameKey, dbKey
+                Author = jonA ,Keywords = new[]{gameKey, dbKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
              var gameSec = new Project("Make a game with security")
             { 
-                Author = JonA ,Keywords = new[]{gameKey, secKey
+                Author = jonA ,Keywords = new[]{gameKey, secKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
             
             var gameNe = new Project("Make a MMO")
             { 
-                Author = JonA ,Keywords = new[]{gameKey, dataComKey
+                Author = jonA ,Keywords = new[]{gameKey, dataComKey
                 }, Degree = Degree.Bachelor,
-                Ects = 15f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 15f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
               var gameHard = new Project("Make a Gamestation")
             { 
-                Author = JonA ,Keywords = new[]{gameKey, hardKey
+                Author = jonA ,Keywords = new[]{gameKey, hardKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
             var game = new Project("Theory about games")
             { 
-                Author = JonA ,Keywords = new[]{gameKey
+                Author = jonA ,Keywords = new[]{gameKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/games.jpg",
+                LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA,
                 }
             };
 
 
             var hardDes = new Project("Design and create a  computer")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey,designKey
+                Author = stefanA ,Keywords = new[]{hardKey,designKey
                 }, Degree = Degree.Master,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
             var hardAi = new Project("Make blinker with AI")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey,aiKey
-                }, Degree = Degree.Master,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Author = stefanA ,Keywords = new[]{hardKey,aiKey
+                }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/aihardware.jpg",
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
                 var hardMa = new Project("Make blinker with machine learning")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey,machineLearnKey
+                Author = stefanA ,Keywords = new[]{hardKey,machineLearnKey
                 }, Degree = Degree.Master,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
                 var hardEnv = new Project("Make a trash eating robot ")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey,environmentKey
+                Author = stefanA ,Keywords = new[]{hardKey,environmentKey
                 }, Degree = Degree.Master,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
 
                 var hardDb = new Project("Create a server ")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey,dbKey
+                Author = stefanA ,Keywords = new[]{hardKey,dbKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
                  var hardSec = new Project("Create a robot with security")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey,secKey
+                Author = stefanA ,Keywords = new[]{hardKey,secKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
                  var hardDa = new Project("Create a computer")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey,dataComKey
+                Author = stefanA ,Keywords = new[]{hardKey,dataComKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
                 var hard = new Project("Create crazy robot")
             { 
-                Author = StefanA ,Keywords = new[]{hardKey
+                Author = stefanA ,Keywords = new[]{hardKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{IlseA,JytteA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
              var dataComDes = new Project("Create network service with crisp UI")
             { 
-                Author = IlseA ,Keywords = new[]{dataComKey, designKey
+                Author = ilseA ,Keywords = new[]{dataComKey, designKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
 
-            var dataComAI = new Project("Create network service with AI")
+            var dataComAi = new Project("Create network service with AI")
             { 
-                Author = IlseA ,Keywords = new[]{dataComKey, aiKey
+                Author = ilseA ,Keywords = new[]{dataComKey, aiKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
             
             var dataComMa = new Project("Create network service with machine learning")
             { 
-                Author = IlseA ,Keywords = new[]{dataComKey, machineLearnKey
-                }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Author = ilseA ,Keywords = new[]{dataComKey, machineLearnKey
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/data commmmms-analytics-comms.jpg",
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
 
              var dataComEnvir = new Project("Create network service that can save the environment")
             { 
-                Author = IlseA ,Keywords = new[]{dataComKey, environmentKey
+                Author = ilseA ,Keywords = new[]{dataComKey, environmentKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
 
              var dataComDb = new Project("Create Chatbot with a database")
             { 
-                Author = IlseA ,Keywords = new[]{dataComKey, secKey
-                }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Author = ilseA ,Keywords = new[]{dataComKey, secKey
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/data-communication.jpg",
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
-
-              var dataComSec = new Project("Create Chatbot with security")
-            { 
-                Author = IlseA ,Keywords = new[]{dataComKey, secKey
-                }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
-                }
-            };
-
              var dataCom = new Project("Create Chatbot")
             { 
-                Author = IlseA ,Keywords = new[]{dataComKey
+                Author = ilseA ,Keywords = new[]{dataComKey
                 }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
 
             var sec = new Project("Security")
             { 
-                Author = JohnA ,Keywords = new[]{secKey
-                }, Degree = Degree.Master,
+                Author = johnA ,Keywords = new[]{secKey
+                }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/cybersecurity-vs-information-security-illustration.jpg",
 
-                Ects = 15, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Ects = 15, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
 
             };
         
                var secDb = new Project("How to secure data")
             { 
-                Author = ElonA ,Keywords = new[]{secKey
-                ,dbKey }, Degree = Degree.Bachelor,
+                Author = elonA ,Keywords = new[]{secKey
+                ,dbKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/Cybersecurity jpg.jpg",
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JohnA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
 
             };
@@ -256,20 +244,20 @@ public static class SeedExtensions
              
               var secEnvir = new Project("Security and Environment")
             { 
-                Author = ElonA ,Keywords = new[]{secKey
-                ,environmentKey }, Degree = Degree.Bachelor,
+                Author = elonA ,Keywords = new[]{secKey
+                ,environmentKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/env2.png",
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA, JytteA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, jytteA
                 }
 
             };
             
             var secMachine = new Project("Security and machinelearning")
             { 
-                Author = ElonA ,Keywords = new[]{secKey
+                Author = elonA ,Keywords = new[]{secKey
                 ,machineLearnKey }, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA,JytteA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA,jytteA
                 }
 
             };
@@ -277,125 +265,125 @@ public static class SeedExtensions
 
             var secAi = new Project("Security and AI")
             { 
-                Author = ElonA ,Keywords = new[]{secKey
+                Author = elonA ,Keywords = new[]{secKey
                 ,aiKey }, Degree = Degree.Master,
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA
                 }
 
             };
             var secDesing = new Project("Website and Security")
             { 
-                Author = ElonA ,Keywords = new[]{secKey
+                Author = elonA ,Keywords = new[]{secKey
                 ,designKey }, Degree = Degree.Master,
 
-                Ects = 15, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA
+                Ects = 15, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA
                 }
 
             };
 
-               var DbEnv = new Project("Environment and data")
+               var dbEnv = new Project("Environment and data")
             { 
-                Author = ElonA ,Keywords = new[]{environmentKey,dbKey }, Degree = Degree.Bachelor,
+                Author = elonA ,Keywords = new[]{environmentKey,dbKey }, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA,BillyA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA
                 }
 
             };
-             var DbAi = new Project("Make ai from collected data")
+             var dbAi = new Project("Make ai from collected data")
             { 
-                Author = ElonA ,Keywords = new[]{aiKey,dbKey }, Degree = Degree.Bachelor,
+                Author = elonA ,Keywords = new[]{aiKey,dbKey }, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA,ElonA,BillyA
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA,johnA,elonA,billyA
                 }
 
             };
 
-            var DbMachineProject = new Project("Machine learing from data ")
+            var dbMachineProject = new Project("Machine learing from data ")
             { 
-                Author = JohnA ,Keywords = new[]{machineLearnKey,dbKey }, Degree = Degree.Bachelor,
+                Author = johnA ,Keywords = new[]{machineLearnKey,dbKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/49451dbms1.jpg",
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA,ElonA}
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA,johnA,elonA}
 
             };
 
-             var DbDesignProject = new Project("Connect database to website")
+             var dbDesignProject = new Project("Connect database to website")
             { 
-                Author = JohnA ,Keywords = new[]{designKey,dbKey }, Degree = Degree.Master,
+                Author = johnA ,Keywords = new[]{designKey,dbKey }, Degree = Degree.Master, FileUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/Handbook_on_ER-diagram_to_DDL_translations.pdf",
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA,ElonA}
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA,johnA,elonA}
 
             };
            
-             var EnvProject = new Project("Crazy Project")
+             var envProject = new Project("Crazy Project")
             { 
-                Author = JohnA ,Keywords = new[]{designKey, machineLearnKey,environmentKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/defaultproj.jpg",
+                Author = johnA ,Keywords = new[]{designKey, machineLearnKey,environmentKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/defaultproj.jpg",
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA,JohnA}
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA,johnA}
 
             };
             var designaiProject = new Project("Design website with ai")
             { 
-                Author = JytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
             };
              var designAiProject = new Project("Create website with machine learning")
             { 
-                Author = JytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
+                Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
             };
              var designAi3Project = new Project("Save the worlds animals with ai and machinelearning ")
             { 
-                Author = JytteA ,Keywords = new[]{designKey, machineLearnKey,aiKey,environmentKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey,aiKey,environmentKey}, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
+                Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
             };
             //Projects
             var designProject = new Project("Create ai robot ")
             { 
-                Author = JytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "We will lookim. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
+                Ects = 7.5f, Description = "We will lookim. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
             };
-            var EnvAIiProject = new Project("Save Planet with AI")
+            var envAIiProject = new Project("Save Planet with AI")
             { 
-                Author = JytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,
 
-                Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{JytteA}
+                Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/Why-is-Environmental-Awareness-Important.jpg", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
             };
             var aiProject = new Project("Artificial Intelligence 101")
             { 
-                Author = ElonA ,Keywords = new[]{aiKey, machineLearnKey}, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/ai_watch_illustration_fp_886_500.jpg",
+                Author = elonA ,Keywords = new[]{aiKey, machineLearnKey}, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/ai_watch_illustration_fp_886_500.jpg",
 
-                Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA}
+                Ects = 7.5f, Description = "A dummies guide to AI. Make your own AI friend today", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA}
 
             };
             
             var mlProject = new Project("Machine Learning for dummies")
             {
-                Ects = 15, Author = BillyA, Description = "Very easy guide just for you", Keywords = new[]{machineLearnKey}, Degree = Degree.PHD, LastUpdated = DateTime.UtcNow, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/getmedia.ashx.jpeg"
+                Ects = 15, Author = billyA, Description = "Very easy guide just for you", Keywords = new[]{machineLearnKey}, Degree = Degree.PHD, LastUpdated = DateTime.UtcNow, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/getmedia.ashx.jpeg"
             };
             var designaProject = new Project("Design the future")
             {
-                Ects = 15, Author = BillyA, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey}, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/IN_DEsignthinking_Design-Thinking-2.png",
-                LastUpdated = DateTime.UtcNow, Accounts = new[]{ElonA, BillyA}
+                Ects = 15, Author = billyA, Description = "Everything design", Degree = Degree.Master, Keywords = new[]{designKey}, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/IN_DEsignthinking_Design-Thinking-2.png",
+                LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA, billyA}
 
             };
             context.Projects.AddRange
-                (aiProject, mlProject, designProject, EnvProject, 
-                    EnvAIiProject, designaiProject, designaProject, designAi3Project,
+                (aiProject, mlProject, designProject, envProject, 
+                    envAIiProject, designaiProject, designaProject, designAi3Project,
                     designAiProject, sec, secAi, secDb,secDesing, secEnvir, secMachine,
-                    DbAi, DbEnv, DbDesignProject, DbMachineProject,dataCom, dataComSec,
-                    dataComDb,dataComEnvir,dataComMa,dataComAI,dataComDes,hard,hardDa,
+                    dbAi, dbEnv, dbDesignProject, dbMachineProject,dataCom,
+                    dataComDb,dataComEnvir,dataComMa,dataComAi,dataComDes,hard,hardDa,
                     hardSec,hardDb,hardEnv,hardMa,hardAi,hardDes,game,gameHard,gameNe,
-                    gameSec,gameDb,gameEnvir,gameMa,gameAI,gameDes
+                    gameSec,gameDb,gameEnvir,gameMa,gameAi,gameDes
                 );
 
             await context.SaveChangesAsync();
