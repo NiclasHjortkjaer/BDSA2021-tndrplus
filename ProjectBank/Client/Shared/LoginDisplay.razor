@@ -3,21 +3,47 @@
 
 @inject NavigationManager _navigation
 @inject SignOutSessionStateManager _signOutManager
+@if (IsMobile)
+{
+    <AuthorizeView>
+        <Authorized>
+            <button class="nav-link btn btn-link" @onclick="BeginLogout" 
+                    style="border: none; border-radius: 5px; color: black; background: white">Log out
+            </button>
+        </Authorized>
+        <NotAuthorized>
+            <button class="nav-link btn btn-link" @onclick="Login" 
+                    style="border: none; border-radius: 5px; color: black; background: white">Log In
+            </button>
+        </NotAuthorized>
+    </AuthorizeView> 
+}
+else
+{
+  <AuthorizeView>
+      <Authorized>
+          Hello, @context.User.Identity?.Name!
+          <button class="nav-link btn btn-link" @onclick="BeginLogout">Log out</button>
+      </Authorized>
+      <NotAuthorized>
+          <a href="authentication/login">Log in</a>
+      </NotAuthorized>
+  </AuthorizeView>  
+}
 
-<AuthorizeView>
-    <Authorized>
-        Hello, @context.User.Identity?.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginLogout">Log out</button>
-    </Authorized>
-    <NotAuthorized>
-        <a href="authentication/login">Log in</a>
-    </NotAuthorized>
-</AuthorizeView>
 
 @code{
+    [Parameter]
+    public bool IsMobile { get; set; }
+    
     private async Task BeginLogout(MouseEventArgs args)
     {
         await _signOutManager.SetSignOutState();
         _navigation.NavigateTo("authentication/logout");
+    }
+
+    private void Login()
+    {
+        _navigation.NavigateTo("authentication/login");
     }
 }

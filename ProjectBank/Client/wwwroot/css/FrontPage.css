@@ -1,0 +1,16 @@
+.mobile_view_frontpage{
+    display: none;
+}
+
+@media (max-width: 991.99px) {
+    #mobile_view_txt{
+        display: none;
+    }
+    
+    .mobile_view_frontpage{
+        display: flex; 
+        justify-items: center; 
+        justify-content: center; 
+        margin-top:10em;
+    }
+}
