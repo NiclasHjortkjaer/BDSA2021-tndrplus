@@ -124,7 +124,7 @@
                 var account = await _http.GetFromJsonAsync<AccountDetailsDto>("api/Account/"+aToken);
                 if (account != null)
                 {
-                    _projectsChanged.setList(account.SavedProjects);
+                    _projectsChanged.SetList(account.SavedProjects);
                 }
             } catch {
                 if (aToken != null && _name != null){
