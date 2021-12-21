@@ -30,7 +30,7 @@ public class CustomWebApplicationFactory :  WebApplicationFactory<Program>
                     options.DefaultChallengeScheme = "Test";
                     options.DefaultScheme = "Test";
                 })
-                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
+                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
 
             var connection = new SqliteConnection("Filename=:memory:");
 

@@ -3,9 +3,10 @@ namespace Server.Integration.Tests;
 public class AccountTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
-
+    private readonly CustomWebApplicationFactory _factory;
     public AccountTests(CustomWebApplicationFactory factory)
     {
+        _factory = factory;
         _client = factory.CreateClient(new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false
