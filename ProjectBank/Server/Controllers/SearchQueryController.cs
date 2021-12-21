@@ -23,13 +23,13 @@ public class SearchQueryController : ControllerBase {
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
     [ProducesResponseType(404)]
     [HttpGet("{input}")]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get(string input) 
-        => await _management.ReadSearchQueryAsync(input);
+    public Task<IReadOnlyCollection<ProjectDetailsDto>> Get(string input) 
+        => _management.ReadSearchQueryAsync(input);
         
     [AllowAnonymous]
     [ProducesResponseType(typeof(IReadOnlyCollection<ProjectDetailsDto>), 200)]
     [ProducesResponseType(404)]
-    [HttpGet("{input}/{degreeInt}")]
-    public async Task<IReadOnlyCollection<ProjectDetailsDto>>? Get([FromRoute] string input, [FromRoute] int degreeInt) 
-        => await _management.ReadSearchQueryAsync(input, (Degree) degreeInt);
+    [HttpGet("{input}/{degree}")]
+    public Task<IReadOnlyCollection<ProjectDetailsDto>> Get([FromRoute] string input, [FromRoute] Degree degree) 
+        => _management.ReadSearchQueryAsync(input, degree);
 }

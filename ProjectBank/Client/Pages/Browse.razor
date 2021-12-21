@@ -4,18 +4,18 @@
 
 <PageTitle>ProjectBank - Browse</PageTitle>
 <div class="browse_all">
-            <button class="browse_all_btn" @onclick="(() => redirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
+            <button class="browse_all_btn" @onclick="(() => RedirectToSwipeAllPage())">Browse all</button>or look for a specific keyword to browse:
     </div>
 <div class="filter_browse">
     @if (!_isDropedDown)
     {
-        <button @onclick="dropdown" style="background: none; border: none;">
+        <button @onclick="Dropdown" style="background: none; border: none;">
             <img src="filter.png" alt="" style="height: 20px"/>
         </button>
     }
     @if(_isDropedDown)
     {
-        <button @onclick="dropdown" style="background: #ffffff; border: none; border-top-left-radius: 10px; border-top-right-radius: 10px">
+        <button @onclick="Dropdown" style="background: #ffffff; border: none; border-top-left-radius: 10px; border-top-right-radius: 10px">
             <img src="filterBlack.png" alt="" style="height: 20px"/>
         </button>
     }
@@ -25,13 +25,13 @@
     <div class="align-right">
         <div class="dropdown_menu_filter_browse">
             <div class="drop_filter_content_browse">
-                <EditForm EditContext="this.editContext">
+                <EditForm EditContext="this._editContext">
                     <p1 style="text-decoration: underline; font-weight: bold;">
-                        @model.Value:
+                        @_model.Value:
                     </p1>
                     <div>
-                        <InputRadioGroup @bind-Value="model.Selected">
-                            @foreach (var option in model.Options)
+                        <InputRadioGroup @bind-Value="_model.Selected">
+                            @foreach (var option in _model.Options)
                             {
                                 <div>
                                     <InputRadio  Value="option.Value" id="@option.Value" style="outline: none; border: none;"/> 
@@ -46,7 +46,7 @@
     </div>
 }
 
-@if (keywords == null)
+@if (_keywords == null)
     {
         <div id="app">
             <div class="centered">
@@ -54,9 +54,9 @@
         </div>
     }else{
         <div class="grid-container">
-            @foreach (var keyword in keywords)
+            @foreach (var keyword in _keywords)
             {
-                <button class="grid-item" @onclick="(() => redirectToSwipePage(keyword.Word))">@keyword.Word</button>
+                <button class="grid-item" @onclick="(() => RedirectToSwipePage(keyword.Word))">@keyword.Word</button>
             }
 
         </div>
@@ -64,18 +64,22 @@
 <br>
 
 @code{
-    private KeywordDto[]? keywords;
+    private KeywordDto[]? _keywords;
 
-    private EditContext editContext;
-    private DegreeModel model;
+    private EditContext _editContext;
+    private DegreeModel _model;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
-            model = new DegreeModel() { Value = "Degrees" };
-            editContext = new EditContext(model);
+            Console.WriteLine("STEEEEP 1111");
+            _keywords = await Http.GetFromJsonAsync<KeywordDto[]?>("/api/Keyword");
+            Console.WriteLine("STEEEEP 2222");
+            _model = new DegreeModel() { Value = "Degrees" };
+            Console.WriteLine("STEEEEP 3333");
+            _editContext = new EditContext(_model);
+            Console.WriteLine("STEEEEP 4444");
         }
         catch(AccessTokenNotAvailableException exception)
         {
@@ -83,27 +87,22 @@
         }
     }
     
-    private void redirectToSwipePage(string keyword)
+    private void RedirectToSwipePage(string keyword)
     {
-        navigationManager.NavigateTo($"swipe/{keyword}/{(int) model.Selected}");
+        Console.WriteLine("DEGREEEEEE: " + _model.Selected);
+        navigationManager.NavigateTo($"swipe/{keyword}/{(int) _model.Selected}");
     }
-    private void redirectToSwipeAllPage()
+    private void RedirectToSwipeAllPage()
     {
-        navigationManager.NavigateTo($"swipe/all/{(int) model.Selected}");
+        Console.WriteLine("DEGREEEEEE: " + _model.Selected);
+        navigationManager.NavigateTo($"swipe/all/{(int) _model.Selected}");
     }
 
 
     private bool _isDropedDown;
 
-    private void dropdown()
+    private void Dropdown()
     {
-        if (_isDropedDown)
-        {
-            _isDropedDown = false;
-        }
-        else
-        {
-            _isDropedDown = true;
-        }
+        _isDropedDown = !_isDropedDown;
     }
 }

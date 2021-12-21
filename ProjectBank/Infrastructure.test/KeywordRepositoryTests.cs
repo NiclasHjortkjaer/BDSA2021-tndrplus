@@ -187,38 +187,6 @@ public class KeywordRepositoryTests : IDisposable
     }
 
     [Fact]
-    public async Task ReadNumberOfProjectsGivenKeyword_returns_2_given_Machine_Learning()
-    {
-        var actual = await _repo.ReadNumberOfProjectsGivenKeyword("Machine Learning");
-
-        Assert.Equal(2, actual);
-    }
-
-    [Fact]
-    public async Task ReadNumberOfProjectsGivenKeyword_returns_0_given_Design()
-    {
-        var actual = await _repo.ReadNumberOfProjectsGivenKeyword("Design");
-
-        Assert.Equal(0, actual);
-    }
-    
-    [Fact]
-    public async Task ReadNumberOfProjectsGivenKeywordAndDegree_returns_1_given_Machine_Learning_and_PHD()
-    {
-        var actual = await _repo.ReadNumberOfProjectsGivenKeywordAndDegree("Machine Learning", Degree.PHD);
-
-        Assert.Equal(1, actual);
-    }
-
-    [Fact]
-    public async Task ReadNumberOfProjectsGivenKeywordAndDegree_returns_0_given_Machine_Learning_and_Master()
-    {
-        var actual = await _repo.ReadNumberOfProjectsGivenKeywordAndDegree("Machine Learning", Degree.Master);
-
-        Assert.Equal(0, actual);
-    }
-
-    [Fact]
     public async Task DeleteAsync_returnes_notfound_given_invalid_Id()
     {
         var actual = await _repo.DeleteAsync(111);

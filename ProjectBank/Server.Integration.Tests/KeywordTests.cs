@@ -144,21 +144,4 @@ public class KeywordTests : IClassFixture<CustomWebApplicationFactory>
         Assert.NotNull(actual);
         
     }
-
-    [Fact]
-    public async Task GetCount_returns_2_given_AI()
-    {
-        var actual = await _client.GetFromJsonAsync<int>($"/api/Keyword/count/AI");
-        Assert.Equal(2, actual);
-        
-    }
-
-    [Fact]
-    public async Task GetCount_returns_0_given_Design()
-    {
-        
-        var actual = await _client.GetFromJsonAsync<int>($"/api/Keyword/count/Design");
-        Assert.Equal(0, actual);
-        
-    }
 }

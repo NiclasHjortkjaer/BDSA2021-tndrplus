@@ -126,7 +126,7 @@ public class AccountRepositoryTests
     }
     
     [Fact]
-    public async Task DeleteAsync_returnes_notfound_given_invalid_Id()
+    public async Task DeleteAsync_returns_notfound_given_invalid_Id()
     {
         var actual = await _repo.DeleteAsync(111);
         
@@ -219,17 +219,15 @@ public class AccountRepositoryTests
     // Disposable methods.-----------------------------
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposedValue)
+        if (_disposedValue) return;
+        if (disposing)
         {
-            if (disposing)
-            {
-                // dispose managed state (managed objects)
-                _context.Dispose();
-            }
-            // free unmanaged resources (unmanaged objects) and override finalizer
-            // set large fields to null
-            _disposedValue = true;
+            // dispose managed state (managed objects)
+            _context.Dispose();
         }
+        // free unmanaged resources (unmanaged objects) and override finalizer
+        // set large fields to null
+        _disposedValue = true;
     }
     public void Dispose()
     {

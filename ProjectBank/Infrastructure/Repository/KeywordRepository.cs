@@ -118,28 +118,7 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         }
         return list.AsReadOnly();
     
-    }
-    
-    //TODO bør den her være async?
-    public async Task<int> ReadNumberOfProjectsGivenKeyword(string keyword)
-        => _context.Keywords
-            .Where(k => k.Word == keyword)
-            .Select(k => k.Projects)
-            .FirstOrDefault()!
-            .Count();
-
-    public async Task<int> ReadNumberOfProjectsGivenKeywordAndDegree(string keyword, Degree degree)
-    {
-        var projects = _context.Keywords
-            .Where(k => k.Word == keyword)
-            .Select(k => k.Projects)
-            .FirstOrDefault()!;
-        
-        return projects
-            .Where(p => p.Degree == degree)
-            .Count();
-    }
-        
+    }        
 
     public async Task<Status> DeleteAsync(int keywordId)
     {
@@ -200,7 +179,7 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
             .Include("Projects.Keywords")
             .FirstOrDefaultAsync(e => e.Word == keyword);
        
-        var keyProjects = new List<Project>();
+        List<Project> keyProjects;
         if (entity == null)
         {
             return null; //skal vi lave lidt error handling på nulls i denne sammenhæng
@@ -215,19 +194,13 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
            keyProjects = entity.Projects.Where(p => p.Degree == degree).ToList();
         }
 
-        if (keyProjects.Count > 0)
-        {
-            if (timesSeen < keyProjects.Count())
-                {
-                    var p = keyProjects.ElementAt(timesSeen);
-                    ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
+        if (keyProjects.Count <= 0 || timesSeen >= keyProjects.Count) return null;
         
-                    return new ProjectDetailsDto(
-                        p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
-                }
-        }
-
-        return null;
-    }
+        var p = keyProjects.ElementAt(timesSeen);
+        ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();
     
+        return new ProjectDetailsDto(
+        p.Id, p.Author?.AzureAdToken, p.Author?.Name, p.Title, p.Description, p.Degree, p.ImageUrl, p.FileUrl, p.Ects, p.LastUpdated, keywords);
+
+    }
 }

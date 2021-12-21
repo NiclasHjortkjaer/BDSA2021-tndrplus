@@ -1,5 +1,3 @@
-using ProjectBank.Server.Extensions;
-
 namespace ProjectBank.Server.Controllers;
 
 [Authorize]
@@ -19,29 +17,29 @@ public class AccountController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IReadOnlyCollection<AccountDto>> Get()
-        => await _repository.ReadAllAsync();
+    public Task<IReadOnlyCollection<AccountDto>> Get()
+        => _repository.ReadAllAsync();
 
     [AllowAnonymous]
     [HttpGet("getBy/{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
-    public async Task<AccountDetailsDto>? Get(int id)
-       => await _repository.ReadAsync(id);
+    public Task<AccountDetailsDto>? Get(int id)
+       => _repository.ReadAsync(id);
     
     [AllowAnonymous]
     [HttpGet("{azureAdToken}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(AccountDto), 200)]
-    public async Task<AccountDetailsDto> Get(string azureAdToken)
-        => await _repository.ReadFromTokenAsync(azureAdToken);
+    public Task<AccountDetailsDto> Get(string azureAdToken)
+        => _repository.ReadFromTokenAsync(azureAdToken);
     
     [Authorize]
     [HttpGet("likedProduct/{azureToken}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(ICollection<int>), 200)]
-    public async Task<ICollection<int>>? GetLiked(string azureToken)
-        => await _repository.ReadLikedProjectsFromTokenAsync(azureToken);
+    public Task<ICollection<int>>? GetLiked(string azureToken)
+        => _repository.ReadLikedProjectsFromTokenAsync(azureToken);
 
 
     [Authorize]
@@ -50,12 +48,9 @@ public class AccountController : ControllerBase
     [ProducesResponseType(200)]
     public async Task<IActionResult> Post(string azureToken, [FromBody] string projectTitle)
     {
-     
         var response = await _repository.AddLikedProjectAsync(azureToken,projectTitle);
-        
         return CreatedAtAction(nameof(Get), response);
     }
-
 
     [Authorize]
     [HttpPut("{azureToken}/remove")]
@@ -63,9 +58,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(200)]
     public async Task<IActionResult> Put(string azureToken, [FromBody] string projectTitle)
     {
-        
         var response = await _repository.RemoveLikedProjectAsync(azureToken,projectTitle);
-
         return CreatedAtAction(nameof(Get), response);
     }
 
@@ -75,7 +68,6 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> Post(AccountCreateDto account)
     {
         var created = await _repository.CreateAsync(account);
-
         return CreatedAtAction(nameof(Get), new { created.Id }, created);
     }
 
