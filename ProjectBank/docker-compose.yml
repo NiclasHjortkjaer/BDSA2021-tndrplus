@@ -1,4 +1,3 @@
-
 version: '3.9'
 
 services:
@@ -12,8 +11,9 @@ services:
     secrets:
       - db_password
 
+
   server:
-    image: andreaskongstad/projectbank
+    image: projectbankserver
     build:
       context: .
       dockerfile: ./Dockerfile
