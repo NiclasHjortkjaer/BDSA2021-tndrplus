@@ -117,7 +117,7 @@
             var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something wrong with authentication right now", Detail = "", Duration = 4000};
             _notificationService.Notify(error);
         }
-        else if (_project.Title.Length < 1)
+        else if (_project.Title != null && _project.Title.Length < 1)
         {
             var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Title cannot be left empty", Detail = "Fix please", Duration = 4000};
             _notificationService.Notify(error);
