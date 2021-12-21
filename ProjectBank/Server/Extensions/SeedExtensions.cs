@@ -43,7 +43,7 @@ public static class SeedExtensions
             var gameDes = new Project("Make a game with focus on design")
             { 
                 Author = jonA ,Keywords = new[]{gameKey,designKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game1.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -51,7 +51,7 @@ public static class SeedExtensions
             var gameAi = new Project("Make a game With AI")
             { 
                 Author = jonA ,Keywords = new[]{gameKey,aiKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game2.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -59,7 +59,7 @@ public static class SeedExtensions
               var gameMa = new Project("Make a game With machine learning")
             { 
                 Author = jonA ,Keywords = new[]{gameKey,machineLearnKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game3.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -68,7 +68,7 @@ public static class SeedExtensions
             var gameEnvir = new Project("Make a game about the environment")
             { 
                 Author = jonA ,Keywords = new[]{gameKey, environmentKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game4.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -76,14 +76,14 @@ public static class SeedExtensions
             var gameDb = new Project("Make a game with a database")
             { 
                 Author = jonA ,Keywords = new[]{gameKey, dbKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game5.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
              var gameSec = new Project("Make a game with security")
             { 
                 Author = jonA ,Keywords = new[]{gameKey, secKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game1.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -91,7 +91,7 @@ public static class SeedExtensions
             var gameNe = new Project("Make a MMO")
             { 
                 Author = jonA ,Keywords = new[]{gameKey, dataComKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game2.jpeg",
                 Ects = 15f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -99,7 +99,7 @@ public static class SeedExtensions
               var gameHard = new Project("Make a Gamestation")
             { 
                 Author = jonA ,Keywords = new[]{gameKey, hardKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/game3.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -107,8 +107,8 @@ public static class SeedExtensions
             var game = new Project("Theory about games")
             { 
                 Author = jonA ,Keywords = new[]{gameKey
-                }, Degree = Degree.Bachelor,
-                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/games.jpg",
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/games.jpg",
+                Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc",
                 LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA,
                 }
             };
@@ -117,7 +117,7 @@ public static class SeedExtensions
             var hardDes = new Project("Design and create a  computer")
             { 
                 Author = stefanA ,Keywords = new[]{hardKey,designKey
-                }, Degree = Degree.Master,
+                }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard1.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -133,7 +133,7 @@ public static class SeedExtensions
                 var hardMa = new Project("Make blinker with machine learning")
             { 
                 Author = stefanA ,Keywords = new[]{hardKey,machineLearnKey
-                }, Degree = Degree.Master,
+                }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard2.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -141,7 +141,7 @@ public static class SeedExtensions
                 var hardEnv = new Project("Make a trash eating robot ")
             { 
                 Author = stefanA ,Keywords = new[]{hardKey,environmentKey
-                }, Degree = Degree.Master,
+                }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard3.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
@@ -149,35 +149,35 @@ public static class SeedExtensions
                 var hardDb = new Project("Create a server ")
             { 
                 Author = stefanA ,Keywords = new[]{hardKey,dbKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard4.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
                  var hardSec = new Project("Create a robot with security")
             { 
                 Author = stefanA ,Keywords = new[]{hardKey,secKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard6.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
                  var hardDa = new Project("Create a computer")
             { 
                 Author = stefanA ,Keywords = new[]{hardKey,dataComKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard1.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
                 var hard = new Project("Create crazy robot")
             { 
                 Author = stefanA ,Keywords = new[]{hardKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard2.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{ilseA,jytteA, johnA
                 }
             };
              var dataComDes = new Project("Create network service with crisp UI")
             { 
                 Author = ilseA ,Keywords = new[]{dataComKey, designKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/datacom2.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
@@ -185,7 +185,7 @@ public static class SeedExtensions
             var dataComAi = new Project("Create network service with AI")
             { 
                 Author = ilseA ,Keywords = new[]{dataComKey, aiKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/datacom3.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
@@ -201,7 +201,7 @@ public static class SeedExtensions
              var dataComEnvir = new Project("Create network service that can save the environment")
             { 
                 Author = ilseA ,Keywords = new[]{dataComKey, environmentKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/datacom4.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
@@ -216,7 +216,7 @@ public static class SeedExtensions
              var dataCom = new Project("Create Chatbot")
             { 
                 Author = ilseA ,Keywords = new[]{dataComKey
-                }, Degree = Degree.Bachelor,
+                }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/datacom5.jpeg",
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA, johnA
                 }
             };
@@ -255,7 +255,7 @@ public static class SeedExtensions
             var secMachine = new Project("Security and machinelearning")
             { 
                 Author = elonA ,Keywords = new[]{secKey
-                ,machineLearnKey }, Degree = Degree.Bachelor,
+                    ,machineLearnKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/sec1.jpeg",
 
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA,jytteA
                 }
@@ -266,7 +266,7 @@ public static class SeedExtensions
             var secAi = new Project("Security and AI")
             { 
                 Author = elonA ,Keywords = new[]{secKey
-                ,aiKey }, Degree = Degree.Master,
+                ,aiKey }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/sec2.jpeg",
 
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA
                 }
@@ -275,7 +275,7 @@ public static class SeedExtensions
             var secDesing = new Project("Website and Security")
             { 
                 Author = elonA ,Keywords = new[]{secKey
-                ,designKey }, Degree = Degree.Master,
+                ,designKey }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/sec3.jpeg",
 
                 Ects = 15, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA
                 }
@@ -284,7 +284,7 @@ public static class SeedExtensions
 
                var dbEnv = new Project("Environment and data")
             { 
-                Author = elonA ,Keywords = new[]{environmentKey,dbKey }, Degree = Degree.Bachelor,
+                Author = elonA ,Keywords = new[]{environmentKey,dbKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/db1.jpeg",
 
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{elonA,billyA
                 }
@@ -292,7 +292,7 @@ public static class SeedExtensions
             };
              var dbAi = new Project("Make ai from collected data")
             { 
-                Author = elonA ,Keywords = new[]{aiKey,dbKey }, Degree = Degree.Bachelor,
+                Author = elonA ,Keywords = new[]{aiKey,dbKey }, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/db2.jpeg",
 
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA,johnA,elonA,billyA
                 }
@@ -324,21 +324,21 @@ public static class SeedExtensions
             };
             var designaiProject = new Project("Design website with ai")
             { 
-                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/des1.jpeg",
 
                 Ects = 7.5f, Description = "im. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
             };
              var designAiProject = new Project("Create website with machine learning")
             { 
-                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey}, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/des2.jpeg",
 
                 Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
             };
              var designAi3Project = new Project("Save the worlds animals with ai and machinelearning ")
             { 
-                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey,aiKey,environmentKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{designKey, machineLearnKey,aiKey,environmentKey}, Degree = Degree.Bachelor, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/db2.jpeg",
 
                 Ects = 7.5f, Description = "We will look at how to programme ai that can save the Environemnt", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 
@@ -346,7 +346,7 @@ public static class SeedExtensions
             //Projects
             var designProject = new Project("Create ai robot ")
             { 
-                Author = jytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,
+                Author = jytteA ,Keywords = new[]{aiKey, environmentKey}, Degree = Degree.Bachelor,ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/hard2.jpeg",
 
                 Ects = 7.5f, Description = "We will lookim. Donec vulputate aliquam neque a vulputate. Aliquam sit amet malesuada odio. Pellentesque malesuada felis dapibus lectus maximus ultricies. Duis at auc", LastUpdated = DateTime.UtcNow, Accounts = new[]{jytteA}
 

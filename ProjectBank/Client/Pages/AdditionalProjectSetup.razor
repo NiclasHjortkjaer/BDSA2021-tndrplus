@@ -25,8 +25,7 @@
         <div class="align-items-center d-flex col-md-3" style="text-decoration: underline;  width: 100%">
             <RadzenLabel Text="Update project image:" />
         </div>
-        <ImageUploader Id="int.Parse(Id ?? string.Empty)" IsProject="true" OnUpdate="UpdateImage"></ImageUploader>
-
+        <ImageUploader Id="int.Parse(Id ?? string.Empty)" IsProject="true" HasProfilePicture="false" OnUpdate="UpdateImage"></ImageUploader>
     </div>
     <br/>
     <div class="row" style="width: 100%; --bs-gutter-x: 0;">
