@@ -1,6 +1,6 @@
 namespace ProjectBank.Infrastructure.test;
 
-public class AccountRepositoryTests
+public class AccountRepositoryTests : IDisposable
 {
     private readonly IProjectBankContext _context;
     
@@ -72,7 +72,7 @@ public class AccountRepositoryTests
     {
         var account = await _repo.ReadAsync(3);
         
-        Assert.Equal(3, account.Id);
+        Assert.Equal(3, account!.Id);
         Assert.Equal("AuthorToken", account.AzureAdToken);
         Assert.True(account.SavedProjects.SetEquals(new []{"Artificial Intelligence 101"}));
     }
@@ -81,7 +81,7 @@ public class AccountRepositoryTests
     {
         var account = await _repo.ReadFromTokenAsync("AuthorToken");
         
-        Assert.Equal(3, account.Id);
+        Assert.Equal(3, account!.Id);
         Assert.Equal("AuthorToken", account.AzureAdToken);
         Assert.True(account.SavedProjects.SetEquals(new []{"Artificial Intelligence 101"}));
     }
@@ -122,7 +122,7 @@ public class AccountRepositoryTests
         };
         var status = await _repo.UpdateAsync(1, account);
         Assert.Equal(Status.Updated, status);
-        var actual = await _repo.ReadAsync(1);
+        await _repo.ReadAsync(1);
     }
     
     [Fact]
@@ -155,11 +155,11 @@ public class AccountRepositoryTests
         var account = await _context.Accounts.FindAsync(3);
         var actualProject = await _context.Projects.FindAsync(1);
         
-        Assert.True(account.SavedProjects.Contains(actualProject));
+        Assert.True(account!.SavedProjects.Contains(actualProject!));
         
         var projects = await _repo.ReadLikedProjectsFromTokenAsync("AuthorToken");
         
-        Assert.Equal(actualProject.Id, projects.FirstOrDefault());
+        Assert.Equal(actualProject!.Id, projects.FirstOrDefault());
     }
     [Fact]
     public async Task ReadLikedProjectsFromTokenAsync_return_empty_on_wrong_token()
@@ -175,7 +175,7 @@ public class AccountRepositoryTests
         var account3 = await _context.Accounts.FindAsync(3);
         var actualProject = await _context.Projects.FindAsync(2);
         
-        Assert.False(account3.SavedProjects.Contains(actualProject));
+        Assert.False(account3!.SavedProjects.Contains(actualProject ?? throw new InvalidOperationException()));
         
         var status = await _repo.AddLikedProjectAsync("AuthorToken", actualProject.Title);
         
@@ -190,12 +190,12 @@ public class AccountRepositoryTests
         var account3 = await _context.Accounts.FindAsync(3);
         var actualProject = await _context.Projects.FindAsync(2);
 
-        Assert.False(account3.SavedProjects.Contains(actualProject));
+        Assert.False(account3!.SavedProjects.Contains(actualProject!));
 
-        var status = await _repo.AddLikedProjectAsync("AuthorToken", actualProject.Title);
-        var status2 = await _repo.AddLikedProjectAsync("AuthorToken", actualProject.Title);
+        var status = await _repo.AddLikedProjectAsync("AuthorToken", actualProject?.Title!);
+        var status2 = await _repo.AddLikedProjectAsync("AuthorToken", actualProject?.Title!);
 
-        Assert.True(account3.SavedProjects.Contains(actualProject));
+        Assert.True(account3.SavedProjects.Contains(actualProject!));
         Assert.Equal(Status.Updated, status);
         Assert.Equal(Status.Conflict, status2);
 
@@ -207,13 +207,13 @@ public class AccountRepositoryTests
         var account3 = await _context.Accounts.FindAsync(3);
         var projectToRemove = await _context.Projects.FindAsync(1);    
         
-        Assert.True(account3.SavedProjects.Contains(projectToRemove));
+        Assert.True(account3!.SavedProjects.Contains(projectToRemove!));
         
-        var status = await _repo.RemoveLikedProjectAsync("AuthorToken", projectToRemove.Title);
+        var status = await _repo.RemoveLikedProjectAsync("AuthorToken", projectToRemove?.Title!);
         
         Assert.Equal(Status.Updated, status);
         
-        Assert.False(account3.SavedProjects.Contains(projectToRemove));
+        Assert.False(account3.SavedProjects.Contains(projectToRemove!));
     }
 
     // Disposable methods.-----------------------------

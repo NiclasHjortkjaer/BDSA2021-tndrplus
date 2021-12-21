@@ -1,6 +1,6 @@
 namespace ProjectBank.Infrastructure.test;
 
-public class ProjectRepositoryTests
+public class ProjectRepositoryTests : IDisposable
 {
     private readonly IProjectBankContext _context;
     
@@ -95,7 +95,7 @@ public class ProjectRepositoryTests
         var expected = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
             "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
             DateTime.UtcNow, new HashSet<string>(new[] {"AI", "Machine Learning"}));
-        Assert.Equal(1, project.Id);
+        Assert.Equal(1, project!.Id);
         Assert.Equal(expected.AuthorToken, project.AuthorToken);
         Assert.Equal(expected.AuthorName, project.AuthorName);
         Assert.Equal(expected.Degree, project.Degree);
@@ -113,7 +113,7 @@ public class ProjectRepositoryTests
         var projects = await _repo.ReadTitleAsync("Machine Learning");
         var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         
-        Assert.Equal(1, projects.Count());
+        Assert.Single(projects);
         Assert.Equal(2, projects.First().Id);
         Assert.Equal(mlProject.AuthorToken, projects.First().AuthorToken);
         Assert.Equal(mlProject.AuthorName, projects.First().AuthorName);
@@ -131,7 +131,7 @@ public class ProjectRepositoryTests
     {
         var projects = await _repo.ReadTitleAsync(" ");
 
-        Assert.Equal(0, projects.Count());
+        Assert.Empty(projects);
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class ProjectRepositoryTests
         var projects = await _repo.ReadTitleGivenDegreeAsync("Machine Learning", Degree.PHD);
         var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         
-        Assert.Equal(1, projects.Count());
+        Assert.Single(projects);
         Assert.Equal(2, projects.First().Id);
         Assert.Equal(mlProject.AuthorToken, projects.First().AuthorToken);
         Assert.Equal(mlProject.AuthorName, projects.First().AuthorName);
@@ -164,9 +164,9 @@ public class ProjectRepositoryTests
     [Fact]
     public async Task ReadAuthorAsync_returns_aiProject_given_Elon_Musk() {
         var projects = await _repo.ReadAuthorAsync("Elon Musk");
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
 
-        Assert.Equal(1, projects.Count());
+        Assert.Single(projects);
         Assert.Equal(1, projects.First().Id);
         Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
         Assert.Equal(projects.First().AuthorName, aiProject.AuthorName);
@@ -176,15 +176,15 @@ public class ProjectRepositoryTests
         Assert.Equal(projects.First().ImageUrl, aiProject.ImageUrl);
         Assert.Equal(projects.First().FileUrl, aiProject.FileUrl);
         Assert.Equal(projects.First().LastUpdated, aiProject.LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
+        Assert.True(projects.First().Keywords.SetEquals(new[]{"AI", "Machine Learning"}));
     }
 
     [Fact]
     public async Task ReadAuthorAsync_returns_aiProject_given_El() {
         var projects = await _repo.ReadAuthorAsync("El");
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
 
-        Assert.Equal(1, projects.Count());
+        Assert.Single(projects);
         Assert.Equal(1, projects.First().Id);
         Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
         Assert.Equal(projects.First().AuthorName, aiProject.AuthorName);
@@ -194,7 +194,7 @@ public class ProjectRepositoryTests
         Assert.Equal(projects.First().ImageUrl, aiProject.ImageUrl);
         Assert.Equal(projects.First().FileUrl, aiProject.FileUrl);
         Assert.Equal(projects.First().LastUpdated, aiProject.LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
+        Assert.True(projects.First().Keywords.SetEquals(new[]{"AI", "Machine Learning"}));
     }
 
     [Fact]
@@ -202,7 +202,7 @@ public class ProjectRepositoryTests
     {
         var projects = await _repo.ReadAuthorAsync(" ");
 
-        Assert.Equal(0, projects.Count());
+        Assert.Empty(projects);
     }
 
     [Fact]
@@ -217,9 +217,9 @@ public class ProjectRepositoryTests
     public async Task ReadAuthorGivenDegreeAsync_returns_list_with_aiProject_given_Elon_Musk_and_Bachelor() 
     {
         var projects = await _repo.ReadAuthorGivenDegreeAsync("Elon Musk", Degree.Bachelor);
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
 
-        Assert.Equal(1, projects.Count());
+        Assert.Single(projects);
         Assert.Equal(1, projects.First().Id);
         Assert.Equal(aiProject.AuthorToken, projects.First().AuthorToken);
         Assert.Equal(aiProject.AuthorName, projects.First().AuthorName);
@@ -229,7 +229,7 @@ public class ProjectRepositoryTests
         Assert.Equal(aiProject.ImageUrl, projects.First().ImageUrl);
         Assert.Equal(aiProject.FileUrl, projects.First().FileUrl);
         Assert.Equal(aiProject.LastUpdated, projects.First().LastUpdated, TimeSpan.FromSeconds(5));
-        Assert.True(projects.First().Keywords.SetEquals(new string[]{"AI", "Machine Learning"}));
+        Assert.True(projects.First().Keywords.SetEquals(new[]{"AI", "Machine Learning"}));
     }
 
     [Fact]
@@ -269,8 +269,8 @@ public class ProjectRepositoryTests
         Assert.Equal(Status.Updated, status);
 
         var updatedProject = await _repo.ReadAsync(2);
-        Assert.Equal("Machine Learning for dummies", updatedProject.Title);
-        Assert.Equal(DateTime.UtcNow, updatedProject.LastUpdated, TimeSpan.FromSeconds(5));
+        Assert.Equal("Machine Learning for dummies", updatedProject?.Title);
+        Assert.Equal(DateTime.UtcNow, updatedProject!.LastUpdated, TimeSpan.FromSeconds(5));
         Assert.Equal(project.AuthorToken, updatedProject.AuthorToken);
         Assert.Equal(project.AuthorName, updatedProject.AuthorName);
         Assert.Equal(project.FileUrl, updatedProject.FileUrl);

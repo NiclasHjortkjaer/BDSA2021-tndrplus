@@ -48,8 +48,6 @@ public class SearchQueryControllerTests
         // Arrange
         var logger = new Mock<ILogger<SearchQueryController>>();
         var repository = new Mock<ISearchManagement>();
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
-                "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadSearchQueryAsync("asdf")).ReturnsAsync(new ProjectDetailsDto[]{});
         var controller = new SearchQueryController(logger.Object, repository.Object);
 
@@ -67,14 +65,14 @@ public class SearchQueryControllerTests
         var logger = new Mock<ILogger<SearchQueryController>>();
         var repository = new Mock<ISearchManagement>();
         var mlProject = new ProjectDetailsDto(2, "AuthorToken1", "Billy Gates", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
-        repository.Setup(m => m.ReadSearchQueryAsync("Billy")).ReturnsAsync(new ProjectDetailsDto[]{mlProject});
+        repository.Setup(m => m.ReadSearchQueryAsync("Billy")).ReturnsAsync(new[]{mlProject});
         var controller = new SearchQueryController(logger.Object, repository.Object);
 
         // Act
         var response = await controller.Get("Billy");
 
         // Assert
-        Assert.Equal(new ProjectDetailsDto[]{mlProject}, response);
+        Assert.Equal(new[]{mlProject}, response);
     }
 
     [Fact]
@@ -84,11 +82,11 @@ public class SearchQueryControllerTests
         var logger = new Mock<ILogger<SearchQueryController>>();
         var repository = new Mock<ISearchManagement>();
 
-        var keyList = new List<ProjectDetailsDto>()
+        var keyList = new List<ProjectDetailsDto>
         {
             new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
-                new DateTime(50), new HashSet<string>() {"AI"})
+                new DateTime(50), new HashSet<string> {"AI"})
 
         };
 
@@ -109,11 +107,11 @@ public class SearchQueryControllerTests
         var logger = new Mock<ILogger<SearchQueryController>>();
         var repository = new Mock<ISearchManagement>();
 
-        var keyList = new List<ProjectDetailsDto>()
+        var keyList = new List<ProjectDetailsDto>
         {
             new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f,
-                new DateTime(50), new HashSet<string>() {"AI"})
+                new DateTime(50), new HashSet<string> {"AI"})
 
         };
 

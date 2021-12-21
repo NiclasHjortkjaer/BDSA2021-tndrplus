@@ -6,8 +6,6 @@ global using Microsoft.Identity.Web;
 global using Microsoft.Identity.Web.Resource;
 global using Microsoft.OpenApi.Models;
 global using Azure.Storage.Blobs;
-
-global using ProjectBank.Infrastructure;
 global using ProjectBank.Infrastructure.Repository;
 global using ProjectBank.Infrastructure.Entity;
 global using ProjectBank.Server.Extensions;

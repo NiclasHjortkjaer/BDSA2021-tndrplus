@@ -272,7 +272,7 @@ public static class SeedExtensions
                 }
 
             };
-            var secDesing = new Project("Website and Security")
+            var secDesign = new Project("Website and Security")
             { 
                 Author = elonA ,Keywords = new[]{secKey
                 ,designKey }, Degree = Degree.Master, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/sec3.jpeg",
@@ -379,7 +379,7 @@ public static class SeedExtensions
             context.Projects.AddRange
                 (aiProject, mlProject, designProject, envProject, 
                     envAIiProject, designaiProject, designaProject, designAi3Project,
-                    designAiProject, sec, secAi, secDb,secDesing, secEnvir, secMachine,
+                    designAiProject, sec, secAi, secDb,secDesign, secEnvir, secMachine,
                     dbAi, dbEnv, dbDesignProject, dbMachineProject,dataCom,
                     dataComDb,dataComEnvir,dataComMa,dataComAi,dataComDes,hard,hardDa,
                     hardSec,hardDb,hardEnv,hardMa,hardAi,hardDes,game,gameHard,gameNe,

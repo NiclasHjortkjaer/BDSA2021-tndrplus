@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace ProjectBank.Server.test;
 
 public class ProjectControllerTests
@@ -13,7 +11,7 @@ public class ProjectControllerTests
         var created = new ProjectDetailsDto(1, "AuthorToken", "AuthorName", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync(created);
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
         var result = await controller.Post(toCreate) as CreatedAtActionResult;
@@ -32,7 +30,7 @@ public class ProjectControllerTests
         var expected = Array.Empty<ProjectDto>();
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.ReadAllAsync()).ReturnsAsync(expected);
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
         var actual = await controller.Get();
@@ -48,10 +46,10 @@ public class ProjectControllerTests
         var logger = new Mock<ILogger<ProjectController>>();
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.ReadAsync(42)).ReturnsAsync(default(ProjectDetailsDto));
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
-        var response = await controller.Get(42);
+        var response = await controller.Get(42)!;
 
         // Assert
         Assert.Null(response);
@@ -65,10 +63,10 @@ public class ProjectControllerTests
         var repository = new Mock<IProjectRepository>();
         var project = new ProjectDetailsDto(1, "AuthorToken", "AuthorName", "Title", "Description", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadAsync(1)).ReturnsAsync(project);
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
-        var response = await controller.Get(1);
+        var response = await controller.Get(1)!;
 
         // Assert
         Assert.Equal(project, response);
@@ -86,10 +84,10 @@ public class ProjectControllerTests
         repository.Setup(m => m.ReadTitleAsync("Artificial")).ReturnsAsync(new []{aiProject});
         repository.Setup(m => m.ReadAuthorAsync("Artificial")).ReturnsAsync(new ProjectDetailsDto[]{});
 
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
-        var response = await controller.Get("Artificial");
+        var response = await controller.Get("Artificial")!;
 
         // Assert
         Assert.Equal(new []{aiProject}, response);
@@ -105,10 +103,10 @@ public class ProjectControllerTests
                 "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadTitleAsync("Ar")).ReturnsAsync(new []{aiProject});
         repository.Setup(m => m.ReadAuthorAsync("Ar")).ReturnsAsync(new ProjectDetailsDto[]{});
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
-        var response = await controller.Get("Ar");
+        var response = await controller.Get("Ar")!;
 
         // Assert
         Assert.Equal(new []{aiProject}, response);
@@ -120,14 +118,12 @@ public class ProjectControllerTests
         // Arrange
         var logger = new Mock<ILogger<ProjectController>>();
         var repository = new Mock<IProjectRepository>();
-        var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101",
-                "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, "ImageUrl", "Body", 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadTitleAsync("asdf")).ReturnsAsync(new ProjectDetailsDto[]{});
         repository.Setup(m => m.ReadAuthorAsync("asdf")).ReturnsAsync(new ProjectDetailsDto[]{});
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
-        var response = await controller.Get("asdf");
+        var response = await controller.Get("asdf")!;
 
         // Assert
         Assert.Equal(new ProjectDetailsDto[]{}, response);
@@ -141,7 +137,7 @@ public class ProjectControllerTests
         var project = new ProjectUpdateDto();
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.UpdateAsync(1, project)).ReturnsAsync(NotFound);
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
         var response = await controller.Put(1, project);
@@ -158,7 +154,7 @@ public class ProjectControllerTests
         var project = new ProjectUpdateDto();
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.UpdateAsync(1, project)).ReturnsAsync(Updated);
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
         var response = await controller.Put(1, project);
@@ -174,7 +170,7 @@ public class ProjectControllerTests
         var logger = new Mock<ILogger<ProjectController>>();
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.DeleteAsync(42)).ReturnsAsync(Status.NotFound);
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
         var response = await controller.Delete(42);
@@ -190,7 +186,7 @@ public class ProjectControllerTests
         var logger = new Mock<ILogger<ProjectController>>();
         var repository = new Mock<IProjectRepository>();
         repository.Setup(m => m.DeleteAsync(1)).ReturnsAsync(Status.Deleted);
-        var controller = new ProjectController(logger.Object, repository.Object);
+        var controller = new ProjectController(repository.Object);
 
         // Act
         var response = await controller.Delete(1);

@@ -178,7 +178,7 @@ public class AccountRepository : IAccountRepository
     
     
     //-----------------------Private helper methods---------------------------//
-    private async IAsyncEnumerable<Project> GetSavedProjectsAsync(IEnumerable<string> projects)
+    private async IAsyncEnumerable<Project?> GetSavedProjectsAsync(IEnumerable<string> projects)
     {
         var existing = await _context.Projects
             .Where(p => projects.Contains(p.Title))
