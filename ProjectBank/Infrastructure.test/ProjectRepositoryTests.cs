@@ -32,7 +32,7 @@ public class ProjectRepositoryTests : IDisposable
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
+            Id = 2, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.Phd, LastUpdated = DateTime.UtcNow
         };
         context.Projects.AddRange(aiProject, mlProject);
         context.Keywords.Add(new Keyword("Design"){Id = 3});
@@ -111,7 +111,7 @@ public class ProjectRepositoryTests : IDisposable
     public async Task ReadTitleAsync_returns_listWithMlProject_given_Machine_Learning()
     {
         var projects = await _repo.ReadTitleAsync("Machine Learning");
-        var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+        var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         
         Assert.Single(projects);
         Assert.Equal(2, projects.First().Id);
@@ -145,8 +145,8 @@ public class ProjectRepositoryTests : IDisposable
     [Fact]
     public async Task ReadTitleAsync_returns_listWithMlProject_given_Machine_Learning_and_PHD()
     {
-        var projects = await _repo.ReadTitleGivenDegreeAsync("Machine Learning", Degree.PHD);
-        var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+        var projects = await _repo.ReadTitleGivenDegreeAsync("Machine Learning", Degree.Phd);
+        var mlProject = new ProjectDetailsDto(2, null, null, "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         
         Assert.Single(projects);
         Assert.Equal(2, projects.First().Id);
@@ -241,7 +241,7 @@ public class ProjectRepositoryTests : IDisposable
             AuthorToken = "UpdatedToken",
             AuthorName = "Mark Zuckerberg",
             FileUrl = "Im the new body",
-            Degree = Degree.PHD,
+            Degree = Degree.Phd,
             Description = "Very easy guide just for you",
             Title = "Machine Learning for dummies",
             Ects = 15
@@ -260,7 +260,7 @@ public class ProjectRepositoryTests : IDisposable
             AuthorToken = "UpdatedToken",
             AuthorName = "Mark Zuckerberg",
             FileUrl = "Im the new body",
-            Degree = Degree.PHD,
+            Degree = Degree.Phd,
             Description = "Very easy guide just for you",
             Ects = 15,
             Keywords = new HashSet<string>()

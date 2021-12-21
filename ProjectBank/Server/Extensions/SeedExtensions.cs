@@ -368,7 +368,7 @@ public static class SeedExtensions
             
             var mlProject = new Project("Machine Learning for dummies")
             {
-                Ects = 15, Author = billyA, Description = "Very easy guide just for you", Keywords = new[]{machineLearnKey}, Degree = Degree.PHD, LastUpdated = DateTime.UtcNow, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/getmedia.ashx.jpeg"
+                Ects = 15, Author = billyA, Description = "Very easy guide just for you", Keywords = new[]{machineLearnKey}, Degree = Degree.Phd, LastUpdated = DateTime.UtcNow, ImageUrl = "https://projectbankstorage.blob.core.windows.net/azurecontainer/getmedia.ashx.jpeg"
             };
             var designaProject = new Project("Design the future")
             {

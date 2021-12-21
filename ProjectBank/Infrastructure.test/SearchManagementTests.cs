@@ -31,7 +31,7 @@ public class SearchManagementTests : IDisposable
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
+            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.Phd, LastUpdated = DateTime.UtcNow
         };
         
         context.Projects.AddRange(aiProject, mlProject);
@@ -49,7 +49,7 @@ public class SearchManagementTests : IDisposable
     {
         var projects = await _management.ReadSearchQueryAsync("Machine Learning for dummies");
 
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         
         Assert.Single(projects);
         Assert.Equal(2, projects.First().Id);
@@ -77,7 +77,7 @@ public class SearchManagementTests : IDisposable
         var projects = await _management.ReadSearchQueryAsync("Elon Musk");
 
         var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
 
         Assert.Collection(projects,
                 project => {
@@ -110,7 +110,7 @@ public class SearchManagementTests : IDisposable
         var projects = await _management.ReadSearchQueryAsync("AI");
        
         var aiProject = new ProjectDetailsDto(1, "UnknownToken", "Elon Musk", "Artificial Intelligence 101", "A dummies guide to AI. Make your own AI friend today", Degree.Bachelor, null, null, 7.5f, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string> {"AI", "Machine Learning"});
 
         Assert.Collection(projects,
                 project => {

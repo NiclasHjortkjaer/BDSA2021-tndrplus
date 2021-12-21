@@ -31,7 +31,7 @@ public class KeywordRepositoryTests : IDisposable
         };
         var mlProject = new Project("Machine Learning for dummies")
         {
-            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.PHD, LastUpdated = DateTime.UtcNow
+            Id = 2, AuthorId = 1,Author = unknownAccount , Keywords = new[]{aiKeyword, machineLearnKey}, Ects = 15, Description = "Very easy guide just for you", Degree = Degree.Phd, LastUpdated = DateTime.UtcNow
         };
         
         context.Projects.AddRange(aiProject, mlProject);
@@ -227,7 +227,7 @@ public class KeywordRepositoryTests : IDisposable
     {
         var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 1);
 
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
 
         Assert.Equal(2, actual.Id);
         Assert.Equal(mlProject.AuthorToken, actual.AuthorToken);
@@ -246,9 +246,9 @@ public class KeywordRepositoryTests : IDisposable
     [Fact]
     public async Task ReadProjectGivenKeywordAndTimesSeenAsync_returns_mlProject_given_correct_degree() 
     {
-        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.PHD);
+        var actual = await _repo.ReadProjectGivenKeywordAndTimesSeenAsync("AI", 0, Degree.Phd);
 
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
 
         Assert.Equal(2, actual.Id);
         Assert.Equal(mlProject.AuthorToken, actual.AuthorToken);

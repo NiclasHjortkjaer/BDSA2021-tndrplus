@@ -34,7 +34,7 @@ public class Project
 
     public DateTime LastUpdated { get; set; }
 
-    public ICollection<Account> Accounts { get; set; } = null!; //vi har den kun for at lave relation mellem many to many
+    public ICollection<Account> Accounts { get; set; } = null!;
 
     public ICollection<Keyword> Keywords { get; set; } = null!;
 

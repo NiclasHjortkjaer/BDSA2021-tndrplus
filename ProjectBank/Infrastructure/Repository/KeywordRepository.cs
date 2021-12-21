@@ -148,7 +148,6 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         {
             return project;
         }
-
         //Returns random project, when there are no more projects with the given keyword
         //Does not promise, not to show an already shown project
         Random rand = new Random();
@@ -182,7 +181,7 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
         List<Project> keyProjects;
         if (entity == null)
         {
-            return null; //skal vi lave lidt error handling på nulls i denne sammenhæng
+            return null!;
         }
         
         if (degree == Degree.Unspecified)
@@ -194,7 +193,7 @@ public Task<KeywordDetailsDto?> ReadAsync(int keywordId)
            keyProjects = entity.Projects.Where(p => p.Degree == degree).ToList();
         }
 
-        if (keyProjects.Count <= 0 || timesSeen >= keyProjects.Count) return null;
+        if (keyProjects.Count <= 0 || timesSeen >= keyProjects.Count) return null!;
         
         var p = keyProjects.ElementAt(timesSeen);
         ISet<string> keywords = p.Keywords.Select(k => k.Word).ToHashSet();

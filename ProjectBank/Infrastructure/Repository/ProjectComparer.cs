@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace ProjectBank.Infrastructure.Repository;
 
 public class ProjectComparer : IEqualityComparer<ProjectDetailsDto>

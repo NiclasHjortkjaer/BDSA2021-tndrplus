@@ -64,7 +64,7 @@ public class SearchQueryControllerTests
         // Arrange
         var logger = new Mock<ILogger<SearchQueryController>>();
         var repository = new Mock<ISearchManagement>();
-        var mlProject = new ProjectDetailsDto(2, "AuthorToken1", "Billy Gates", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>());
+        var mlProject = new ProjectDetailsDto(2, "AuthorToken1", "Billy Gates", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>());
         repository.Setup(m => m.ReadSearchQueryAsync("Billy")).ReturnsAsync(new[]{mlProject});
         var controller = new SearchQueryController(logger.Object, repository.Object);
 

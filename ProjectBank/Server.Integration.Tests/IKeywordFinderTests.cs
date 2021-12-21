@@ -96,7 +96,7 @@ public class KeywordFinderTests : IClassFixture<CustomWebApplicationFactory>
 
         var actual = await _finder.ReadProjectGivenKeywordAsync("Machine Learning");
 
-        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.PHD, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
+        var mlProject = new ProjectDetailsDto(2, "UnknownToken", "Elon Musk", "Machine Learning for dummies", "Very easy guide just for you", Degree.Phd, null, null, 15, DateTime.UtcNow, new HashSet<string>(){"AI", "Machine Learning"});
 
         Assert.Equal(2, actual!.Id);
         Assert.Equal(mlProject.AuthorToken, actual.AuthorToken);
