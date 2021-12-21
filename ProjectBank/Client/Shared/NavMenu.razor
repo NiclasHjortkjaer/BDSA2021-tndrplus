@@ -113,13 +113,24 @@
         var user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
         if (user.Identity?.IsAuthenticated == true)
         {
+            var _name = user.Identity?.Name;
             _role = user.FindFirst(c => c.Type.Contains("appRole"))?.Value;
             var _user = (await _authenticationStateProvider.GetAuthenticationStateAsync()).User;
             var aToken = user.FindFirst(c => c.Type.Contains("aud"))?.Value;
-            var account = await _http.GetFromJsonAsync<AccountDetailsDto>($"api/Account/{aToken}");
-            if (account != null)
-            {
-                _projectsChanged.setList(account.SavedProjects);
+            try { 
+                var account = await _http.GetFromJsonAsync<AccountDetailsDto>("api/Account/"+aToken);
+                if (account != null)
+                {
+                    _projectsChanged.setList(account.SavedProjects);
+                }
+            } catch {
+                if (aToken != null && _name != null){
+                    var _account = new AccountCreateDto{
+                        AzureAAdToken = aToken,
+                        Name = _name
+                    };
+                    var response = await _http.PostAsJsonAsync("api/Account",_account);
+                }
             }
             _projectsChanged.OnChange +=(()=>ChangeState());
 
@@ -142,10 +153,14 @@
 
     private async Task NavigateToFavorite(string favorite)
     {
-        var project = await _http.GetFromJsonAsync<IReadOnlyCollection<ProjectDetailsDto>>("/api/Project/"+favorite);
-        if (project != null)
-        {
-            _navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
-        }
+        try{
+            var project = await _http.GetFromJsonAsync<IReadOnlyCollection<ProjectDetailsDto>>("/api/Project/"+favorite);
+            if (project != null)
+            {
+                _navigationManager.NavigateTo("/projects/" + project.ElementAt(0).Id);
+            }
+        } catch {
+            _navigationManager.NavigateTo("/", true);
+        } 
     }
 }
