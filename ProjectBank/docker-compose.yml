@@ -38,7 +38,7 @@ services:
       - "~/.aspnet/https:/https:ro" #Should be cross platform
       #- "${HOME}/.aspnet/https:/https/" #Mac/linux
       #- %USERPROFILE%\.aspnet\https:/https/ #Windows
-      #- ../../../.aspnet/https:/https/ #Default. Locate the certificate by going backwards
+      #- ../../../.aspnet/https:/https/ #Default. Locate the certificate by going backwards 
 
 secrets:
   db_password:
