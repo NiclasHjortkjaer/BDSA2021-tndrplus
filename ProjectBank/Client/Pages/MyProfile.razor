@@ -21,11 +21,11 @@
         <div class="picture_container">
             @if (_account?.PictureUrl != null)
             {
-                <div class="profile_pic" style="background-image: url('@_account?.PictureUrl')"><span>Change</span></div>
+                <ImageUploader Id="_account!.Id" IsProject="false" HasProfilePicture="true"></ImageUploader>
             }
             else
             {
-                <ImageUploader Id="_account!.Id" IsProject="false"></ImageUploader>
+                <ImageUploader Id="_account!.Id" IsProject="false" HasProfilePicture="false"></ImageUploader>
             }
         </div>
         <div class="profile_contact_info">

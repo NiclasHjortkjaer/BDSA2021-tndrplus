@@ -2,12 +2,20 @@
 @inject NavigationManager _navigationManager
 @inject DialogService _dialogService
 
-@if (IsProject)
+@if (IsProject && !HasProfilePicture)
 {
     <div class="form-group input-group">
         <InputFile id="Image" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg" class="form-control"/>
     </div>
 }
+else if (!IsProject && HasProfilePicture)
+{
+    <div class="profile_no_pic" style="background-image: url('@_account?.PictureUrl')">
+        <InputFile class="img_profile_overlay" id="Image" style="display: none" OnChange="@OnFileSelection" accept=".png, .jpeg, .gif, .jpg"></InputFile>
+        <label for="Image" class="overlay"><span>Change</span></label>
+    </div>
+}
+
 else
 {
     <div class="profile_no_pic" style="background-image: url('./Unknown_profile_pic.png')">
@@ -40,24 +48,14 @@ else //make a preview of profile picture.
 {
     @if (!string.IsNullOrWhiteSpace(_imageUrl))
     {
-        <div class="form-group">
-            @if (!string.IsNullOrWhiteSpace(_imageUrl))
-            {
-                <div style="display: flex; justify-content: center; align-content: center; padding: 1em"><img src="@_imageUrl" alt="Project Image" class="img-thumbnail"></div>
-                <div style="padding: 0.5em; display: grid; grid-template-columns: 50% 50%; text-align: center">
-                    <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)"
-                                  BusyText="Saving ..." IsBusy=@_busy Click=@UploadImage Text="Upload"/>
-                    <RadzenButton style="width: 90%; text-align: center; background: linear-gradient(10deg, #fd297b, #ff655b)"
-                                  IsBusy=@_busy Click=@ClearImage Text="Clear"/>
-                </div>
-            }
-        </div>
-        <div>
-            @if (_sizeExceeded)
+        @if (_sizeExceeded)
             {
                 <div style="display: flex; justify-content: center; align-content: center; padding: 1em; color: red">Maximum file size of 1.24 mb exceded.</div>
             }
-        </div>
+        else
+        {
+           UploadImage();
+        }
     }
 }
 @code {
@@ -67,6 +65,9 @@ else //make a preview of profile picture.
 
     [Parameter]
     public bool IsProject { get; set; }
+    
+    [Parameter]
+    public bool HasProfilePicture { get; set; }
 
     private ProjectDetailsDto? _toBeUpdated;
     private AccountDetailsDto? _toBeUpdatedAccount;
