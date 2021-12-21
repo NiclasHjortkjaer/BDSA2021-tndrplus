@@ -1,12 +1,12 @@
 # BDSA2021-tndrplus
-This software was developed as part of the course: Analysis, Design and Software Architecture (2021)
+# This software was developed as part of the course: Analysis, Design and Software Architecture (2021)
 
-Run the program
+# Run the program
 Prerequisites:
 1. Have docker desktop installed on yopur machine: https://docs.docker.com/get-docker/
 2. Clone the repository
 
-Option 1: Docker Compose.
+# Option 1: Docker Compose.
 1. Generate a self signed certificate using the folowing commands: 
 
 Windows: 
@@ -35,7 +35,7 @@ echo "$password" > db_password.txt
 ```
 - Database ConnectionString
 ```powershell
-echo "Server=projectbank_db_1;Database=ProjectBank;User Id=sa;Password=$password;Trusted_Connection=False;Encrypt=False" > connection_string.txt
+echo "Server=projectbank-db-1;Database=ProjectBank;User Id=sa;Password=$password;Trusted_Connection=False;Encrypt=False" > connection_string.txt
 ```
 - Azure Storage key(Optimally this should be omitted in favor of using AAD for authentication or azure key vault. However we did not succeed in getting that to work)
 - Access the storage account key using the ProjectBank tenant on Azure Hub.
@@ -52,11 +52,11 @@ echo "Secret key" > storage_key.txt
 - (If you are running an arm64 machine open the "docker-compose.yml" file and switch the mssql image to the outcommented azure-sql-edge image.)
 Run the program:
 ```powershell
-docker-compuse up
+docker-compose up
 ```
 
 
-Run the program. Option 2: start-application.ps1
+# Run the program. Option 2: start-application.ps1
 -Prerequisites: Have the dotnet 6 sdk and runtime installed.
 1. Navigate to the ProjectBank folder
 2. Access the the azure storage key the same way as described above.
