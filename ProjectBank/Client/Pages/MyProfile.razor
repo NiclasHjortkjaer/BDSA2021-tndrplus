@@ -6,8 +6,11 @@
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
+@inject NotificationService notificationService
 
 @attribute [Authorize]
+
+<RadzenNotification/>
 
 <PageTitle>ProjectBank - My Profile</PageTitle>
 
@@ -106,7 +109,9 @@ else
     {
         var response = await _http.DeleteAsync($"/api/Project/{id}");
         Console.WriteLine(response.StatusCode);
-        _uriHelper.NavigateTo(_uriHelper.Uri, forceLoad: true);
+        var itemToRemove = _userProjects.Where(p => p.Id == id).FirstOrDefault();
+        _userProjects.Remove(itemToRemove);
+        notificationService.Notify(new NotificationMessage {Severity = NotificationSeverity.Success, Summary = "Success", Detail = "The project was successfully removed from the database", Duration = 2000});
     }
 
     private void UpdateProject(int id)
