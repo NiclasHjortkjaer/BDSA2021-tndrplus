@@ -35,7 +35,9 @@ services:
         target: StorageAccountKey
 
     volumes:
-      - ../../../.aspnet/https:/https/
+      - "${HOME}/.aspnet/https:/https/" #Mac/linux
+      #- %USERPROFILE%\.aspnet\https:/https/ #Windows
+      #- ../../../.aspnet/https:/https/ #Default
 
 secrets:
   db_password:
