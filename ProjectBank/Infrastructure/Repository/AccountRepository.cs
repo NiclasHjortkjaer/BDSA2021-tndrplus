@@ -139,7 +139,7 @@ public class AccountRepository : IAccountRepository
         return Status.Updated;
     }
 
-    public async Task<Status> RemoveLikedProjectAsync(string azureToken, string projectTitle) //evt lav det her tilbage til id?? på projekt
+    public async Task<Status> RemoveLikedProjectAsync(string azureToken, string projectTitle)
     {
         var account = await _context.Accounts.Include(a => a.SavedProjects).FirstOrDefaultAsync(a => a.AzureAdToken == azureToken);
         

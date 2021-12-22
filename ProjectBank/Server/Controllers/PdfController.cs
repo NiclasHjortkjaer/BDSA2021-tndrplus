@@ -1,4 +1,6 @@
 namespace ProjectBank.Server.Controllers;
+//Used for generating and and seeding an HttpClient
+//Heavily inspired by Rasmus Lystrøm's BDSA2021 repository on GitHub: https://github.com/ondfisk/BDSA2021/tree/main/MyApp.Server
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]

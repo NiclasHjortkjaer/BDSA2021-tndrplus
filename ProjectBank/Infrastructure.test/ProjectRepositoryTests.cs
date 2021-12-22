@@ -292,6 +292,9 @@ public class ProjectRepositoryTests : IDisposable
         
         Assert.Equal(Status.Deleted, status);
     }
+   
+    
+    // Reference https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -306,8 +309,6 @@ public class ProjectRepositoryTests : IDisposable
             _disposedValue = true;
         }
     }
-
-    //From BDSA2021.
     public void Dispose()
     {
         Dispose(disposing: true);
