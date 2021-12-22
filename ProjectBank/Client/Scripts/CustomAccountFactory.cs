@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 
 namespace ProjectBank.Client.Scripts;
-
+//Used to support app roles and authorization.
+//Taken from: https://code-maze.com/using-app-roles-with-azure-active-directory-and-blazor-webassembly-hosted-apps/
 public class CustomAccountFactory : AccountClaimsPrincipalFactory<CustomAccount>
 {
     public CustomAccountFactory(IAccessTokenProviderAccessor accessor) : base(accessor)

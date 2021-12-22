@@ -1,5 +1,5 @@
 namespace ProjectBank.Infrastructure.Repository;
-//from ondfisk BDSA 2021
+//Taken from Rasmus Lystrøm's BDSA2021 repository on GitHub: https://github.com/ondfisk/BDSA2021/tree/main/MyApp.Infrastructure
 public class FileRepository : IFileRepository
 {
     private readonly BlobContainerClient _client;

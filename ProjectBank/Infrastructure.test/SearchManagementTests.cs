@@ -175,6 +175,7 @@ public class SearchManagementTests : IDisposable
     }
 
     // Disposable methods.-----------------------------
+    // reference: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)

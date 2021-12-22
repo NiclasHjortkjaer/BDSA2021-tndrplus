@@ -1,5 +1,8 @@
-namespace Server.Integration.Tests;
 
+namespace Server.Integration.Tests;
+//Used for generating and and seeding an HttpClient
+//Heavily inspired by Rasmus Lystrøm's BDSA2021 repository on GitHub: https://github.com/ondfisk/BDSA2021/tree/main/MyApp.Server.Integration.Tests
+//and https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0
 public class CustomWebApplicationFactory :  WebApplicationFactory<Program>
 {
     protected override IHost CreateHost(IHostBuilder builder)

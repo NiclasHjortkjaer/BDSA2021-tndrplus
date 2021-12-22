@@ -1,5 +1,7 @@
 namespace Server.Integration.Tests;
 
+//Used for generating test authentication for integration testing
+//Taken from Rasmus Lystrøm's BDSA2021 repository on GitHub: https://github.com/ondfisk/BDSA2021/tree/main/MyApp.Server.Integration.Tests
 internal sealed class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     public TestAuthHandler(
