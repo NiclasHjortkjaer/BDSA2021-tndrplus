@@ -47,7 +47,7 @@ echo "Server=projectbank-db-1;Database=ProjectBank;User Id=sa;Password=$password
 3. Navigate to "Storage Accounts" using the Azure´s searchbar
 4. Choose the account "projectbankstorage"
 5. Using the search bar on the left. Search "Access Keys".
-6. Use the show keys option and copy one of the secre keys
+6. Use the show keys option and copy one of the secret keys.
 ```
 
 ```powershell
@@ -61,6 +61,17 @@ Run the program:
 docker-compose up
 ```
 
+Debug:
+If this returns an error please check the name of the database container created by docker using docker hub
+Edit the servername in connection_string.txt from: "projectbank-db-1" to the name of the container.
+```
+"Server=NameOfYourContainer;Database=ProjectBank;User Id=sa;Password=$password;Trusted_Connection=False;Encrypt=False"
+```
+Then:
+```powershell
+docker-compose up
+```
+If this does still not work. Use Option 2.
 # Run the program. Option 2: start-application.ps1
 -Prerequisites: Have the dotnet 6 sdk and runtime installed.
 ```
@@ -73,6 +84,6 @@ docker-compose up
 ```
 
 ```powershell
-start-application.ps1 -SQL
+Start-Application.ps1 -SQL
 ```
 
