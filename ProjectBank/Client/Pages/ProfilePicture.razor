@@ -32,7 +32,6 @@
     private string _imageName = Guid.NewGuid().ToString();
     private string _imageUrl = string.Empty;
     private IBrowserFile? _imageFile;
-    private bool _sizeExceeded = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,7 +91,6 @@
             return;
         }
 
-        _sizeExceeded = false;
         _imageFile = e.GetMultipleFiles().FirstOrDefault();
 
         if (_imageFile != null)
@@ -108,7 +106,6 @@
             }
             catch (IOException exception)
             {
-                _sizeExceeded = true;
                 Console.WriteLine(exception);
                 var error = new NotificationMessage {Severity = NotificationSeverity.Error, Summary = "Something went wrong", Detail = "Image file is too large", Duration = 4000};
                 _notificationService.Notify(error);
